@@ -100,4 +100,16 @@
     <color name="lightblue">#81B8C2</color>
     <color name="black">#0D0D0D</color>
     
+    <!-- Fragment fragment_my_profile.xml -->
+    <string name="frg_my_profile_lastname">Lastname</string>
+    <string name="frg_my_profile_firstname">Firstname</string>
+    <string name="frg_my_profile_email">E-mail</string>
+    <string name="frg_my_profile_phone">Phone</string>
+    <string name="frg_my_profile_username">Username</string>
+    <string name="frg_my_profile_password">Password</string>
+    <string name="frg_my_profile_info">About me</string>
+    <string name="frg_my_profile_driverlicense">Driverslicense</string>
+    <string name="frg_my_profile_btn_update">Update Profile</string>    
+    <string name="frg_my_profile_vehicles">My Vehicles</string>
+    
 </resources>

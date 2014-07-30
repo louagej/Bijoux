@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp" >
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1" >
+    </ListView>
+
+    <Button
+        android:id="@+id/btn_my_profile_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etxt_my_profile_driverlicense"
+        android:text="@string/frg_my_profile_btn_update" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_lastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_lastname"
+        android:layout_alignBottom="@+id/etxt_my_profile_lastname"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_lastname" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_lastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/txt_my_profile_driverlicense"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_lastname"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_firstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_my_profile_lastname"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_my_profile_lastname"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_firstname"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_firstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_firstname"
+        android:layout_alignBottom="@+id/etxt_my_profile_firstname"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_firstname" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_my_profile_firstname"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/txt_my_profile_firstname"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_email"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_email"
+        android:layout_alignBottom="@+id/etxt_my_profile_email"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_email" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_my_profile_email"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_my_profile_email"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_phone"
+        android:inputType="phone" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_phone"
+        android:layout_alignBottom="@+id/etxt_my_profile_phone"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_phone" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_info"
+        android:layout_alignBottom="@+id/etxt_my_profile_info"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_info" />
+
+    <TextView
+        android:id="@+id/txt_my_profile_driverlicense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_my_profile_driverlicense"
+        android:layout_alignBottom="@+id/etxt_my_profile_driverlicense"
+        android:layout_alignParentLeft="true"
+        android:text="@string/frg_my_profile_driverlicense" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_driverlicense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_my_profile_info"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_my_profile_info"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_driverlicense" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btn_my_profile_update"
+        android:text="@string/frg_my_profile_vehicles" />
+
+    <EditText
+        android:id="@+id/etxt_my_profile_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_my_profile_phone"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_my_profile_phone"
+        android:ems="10"
+        android:hint="@string/frg_my_profile_info"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText>
+
+</RelativeLayout>
