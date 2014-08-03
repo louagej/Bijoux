@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import net.louage.bijoux.R;
 import net.louage.bijoux.constants.Constants;
 import net.louage.bijoux.constants.Installation;
@@ -21,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,9 +104,11 @@ public class MyProfileFragment extends ListFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		Vehicle vh = vehicles.get(position);
-		String message = vh.getBrand() + " - " + vh.getType().getType() + ": " + vh.getLicenseplate() + " was clicked.";
-		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
+		//String message = vh.getBrand() + " - " + vh.getType().getType() + ": " + vh.getLicenseplate() + " was clicked.";
+		//Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(ma, VehicleActivity.class);
+		intent.putExtra("Vehicle", vh);
+		startActivity(intent);
 	}
 
 	@Override

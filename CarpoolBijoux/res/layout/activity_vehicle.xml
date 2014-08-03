@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    tools:context="net.louage.bijoux.userinterface.VehicleActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/txtActVehAutonumberId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_id" />
+
+    <TextView
+        android:id="@+id/txtActVehLicenseplate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActVehLicenseplate"
+        android:layout_alignBottom="@+id/eTxtActVehLicenseplate"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_licenseplate" />
+
+    <TextView
+        android:id="@+id/txtActVehNoOfPassengers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActVehNoOfPassengers"
+        android:layout_alignBottom="@+id/eTxtActVehNoOfPassengers"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_numberOfPassengers" />
+
+    <Button
+        android:id="@+id/btnActVehUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txtActVehVehicleType"
+        android:text="@string/act_vehicle_btn_vehicle_update" />
+
+    <EditText
+        android:id="@+id/eTxtActVehNoOfPassengers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/autComplActVehCountry"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/autComplActVehCountry"
+        android:ems="10"
+        android:hint="@string/act_vehicle_numberOfPassengers"
+        android:inputType="number" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autComplActVehCountry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActVehLicenseplate"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActVehLicenseplate"
+        android:ems="10"
+        android:hint="@string/act_vehicle_country" />
+
+    <TextView
+        android:id="@+id/txtActVehCountry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/autComplActVehCountry"
+        android:layout_alignBottom="@+id/autComplActVehCountry"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_country" />
+
+    <EditText
+        android:id="@+id/eTxtActVehVehicleType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/autComplActVehBrand"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/autComplActVehBrand"
+        android:ems="10"
+        android:hint="@string/act_vehicle_vehicle_type" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autComplActVehBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActVehNoOfPassengers"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActVehNoOfPassengers"
+        android:ems="10"
+        android:hint="@string/act_vehicle_brand" />
+
+    <TextView
+        android:id="@+id/txtActVehBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/autComplActVehBrand"
+        android:layout_alignBottom="@+id/autComplActVehBrand"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_brand" />
+
+    <TextView
+        android:id="@+id/txtActVehVehicleType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActVehVehicleType"
+        android:layout_alignBottom="@+id/eTxtActVehVehicleType"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_vehicle_type" />
+
+    <EditText
+        android:id="@+id/eTxtActVehLicenseplate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtActVehAutonumberId"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/txtActVehCountry"
+        android:ems="10"
+        android:hint="@string/act_vehicle_licenseplate" />
+
+</RelativeLayout>

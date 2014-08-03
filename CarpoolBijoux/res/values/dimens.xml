@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="TextSize10">10sp</dimen>
     <dimen name="TextSize15">15sp</dimen>
     <dimen name="TextSize20">20sp</dimen>
@@ -9,4 +10,7 @@
     <dimen name="TextSize40">40sp</dimen>
     <dimen name="TextSize45">45sp</dimen>
     <dimen name="TextSize50">50sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
 </resources>

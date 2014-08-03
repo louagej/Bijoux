@@ -1,8 +1,13 @@
 package net.louage.bijoux.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Vehicle {
+public class Vehicle implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6304856622638567791L;
 	private int vehicle_id;
 	private String licenseplate; //License plate code known by governmental instances
 	private Country country; //Country where this vehicle is registered
@@ -22,14 +27,16 @@ public class Vehicle {
 	public static final String TAG_UPDATED_AT = "update_at";
 	
 	public Vehicle(int vehicle_id, String licenseplate, Country country,
-			int numberOfPassengers, VehicleType type, int user_id) {
+			int numberOfPassengers, String brand, VehicleType type, int user_id, Date update_at) {
 		super();
 		this.vehicle_id = vehicle_id;
 		this.licenseplate = licenseplate;
 		this.country = country;
 		this.numberOfPassengers = numberOfPassengers;
+		this.brand = brand;
 		this.type = type;
 		this.user_id = user_id;
+		this.update_at = update_at;
 	}
 
 	public Vehicle() {

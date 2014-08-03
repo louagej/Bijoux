@@ -1,6 +1,12 @@
 package net.louage.bijoux.model;
 
-public class Country {
+import java.io.Serializable;
+
+public class Country implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6751058850459116436L;
 	private String iso3166;
 	private String description;
 	
@@ -8,6 +14,8 @@ public class Country {
 		super();
 		this.iso3166 = iso3166;
 		this.description = description;
+	}
+	public Country() {
 	}
 	public String getIso3166() {
 		return iso3166;

@@ -1,6 +1,12 @@
 package net.louage.bijoux.model;
 
-public class VehicleType {
+import java.io.Serializable;
+
+public class VehicleType implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4657833837202730271L;
 	private String type;
 
 	public VehicleType(String type) {
