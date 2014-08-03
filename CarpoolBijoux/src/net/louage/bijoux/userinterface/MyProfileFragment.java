@@ -2,26 +2,26 @@ package net.louage.bijoux.userinterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import net.louage.bijoux.R;
 import net.louage.bijoux.constants.Constants;
 import net.louage.bijoux.constants.Installation;
 import net.louage.bijoux.constants.SharedPreferences;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.model.Vehicle;
-import net.louage.bijoux.server.AsyncTaskCompleteListener;
-import net.louage.bijoux.server.FetchMyVehicleTaskCompleteListener;
+import net.louage.bijoux.server.AsTskArrayListCompleteListener;
 import net.louage.bijoux.server.GetMyVehicles;
 import net.louage.bijoux.server.JSONParser;
+import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +36,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MyProfileFragment extends ListFragment implements
-		OnItemClickListener, OnClickListener, AsyncTaskCompleteListener {
+		OnItemClickListener, OnClickListener,
+		AsTskArrayListCompleteListener<Vehicle> {
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
 	public static final String RES_UPDATE_OK = "Update was successfully";
 	public static final String RES_UPDATE_NOK = "Update was unsuccessfully";
@@ -50,12 +51,14 @@ public class MyProfileFragment extends ListFragment implements
 	EditText etxt_my_profile_driverlicense;
 	// Example array until php script can return array of cars
 	// TODO get Array from MySQL
-	String[] carListData = { "1-DGH-782, Audi, A3, BE",
-			"1-SFG-125, Hyundai, i20, BE", "1-TSF-964, Mercedes, A, BE" };;
-	// TypedArray menuIcons;
+	// String[] carListData = { "1-DGH-782, Audi, A3, BE",
+	// "1-SFG-125, Hyundai, i20, BE", "1-TSF-964, Mercedes, A, BE" };;
+	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+	TypedArray menuIcons;
 	CustomIconAdapter adapter;
 	private List<RowIconItem> rowIconItems;
 	User appUser;
+	MainActivity ma;
 
 	public MyProfileFragment() {
 		// Empty constructor required for fragment subclasses
@@ -65,7 +68,7 @@ public class MyProfileFragment extends ListFragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
-		MainActivity ma = (MainActivity) getActivity();
+		ma = (MainActivity) getActivity();
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
 		View myProfileView = inflater.inflate(R.layout.fragment_my_profile,
 				container, false);
@@ -97,8 +100,9 @@ public class MyProfileFragment extends ListFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		Toast.makeText(getActivity(), carListData[position], Toast.LENGTH_SHORT)
-				.show();
+		Vehicle vh = vehicles.get(position);
+		String message = vh.getBrand() + " - " + vh.getType().getType() + ": " + vh.getLicenseplate() + " was clicked.";
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
 	}
 
@@ -138,21 +142,7 @@ public class MyProfileFragment extends ListFragment implements
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
-		/*
-		 * // menuIcons = //
-		 * getResources().obtainTypedArray(R.array.list_item_img_icons);
-		 * rowIconItems = new ArrayList<RowIconItem>();
-		 * 
-		 * for (int i = 0; i < menutitles.length; i++) { // RowIconItem items =
-		 * new RowIconItem(menutitles[i], // menuIcons.getResourceId(i, -1));
-		 * RowIconItem items = new RowIconItem(menutitles[i],
-		 * R.drawable.calender); rowIconItems.add(items); }
-		 * 
-		 * adapter = new CustomIconAdapter(getActivity(), rowIconItems);
-		 * setListAdapter(adapter); getListView().setOnItemClickListener(this);
-		 */
 		etxt_my_profile_lastname.setText(appUser.getLastname());
 		etxt_my_profile_firstname.setText(appUser.getFirstname());
 		etxt_my_profile_email.setText(appUser.getEmail());
@@ -265,24 +255,36 @@ public class MyProfileFragment extends ListFragment implements
 
 	}
 
+	@SuppressLint("DefaultLocale")
 	@Override
-	public void onTaskComplete(ArrayList vehicles) {
+	public void onTaskComplete(ArrayList<Vehicle> vhs) {
+		Log.d("onTaskComplete: ", "MyProfileFragment Started");
+		vehicles = vhs;
 		rowIconItems = new ArrayList<RowIconItem>();
 		for (int i = 0; i < vehicles.size(); i++) {
-			
-		}
-
-		for (int i = 0; i < carListData.length; i++) {
-			// RowIconItem items = new RowIconItem(menutitles[i],
-			// menuIcons.getResourceId(i, -1));
-			RowIconItem items = new RowIconItem(carListData[i],
-					R.drawable.calender);
+			Vehicle vh = vehicles.get(i);
+			String vhData = vh.getBrand() + " - " + vh.getType().getType() + ": " + vh.getLicenseplate();
+			String logo = vh.getBrand().replaceAll(" ", "_")
+					.toLowerCase(Locale.getDefault());
+			int id = ma.getResources().getIdentifier(logo, "drawable",
+					ma.getPackageName());
+			RowIconItem items = new RowIconItem(vhData, id);
 			rowIconItems.add(items);
 		}
 
 		adapter = new CustomIconAdapter(getActivity(), rowIconItems);
+		Log.d("setListAdapter: ", "MyProfileFragment Started");
 		setListAdapter(adapter);
 		getListView().setOnItemClickListener(this);
-
 	}
+
+	class FetchMyVehicleTaskCompleteListener implements
+			AsTskArrayListCompleteListener<Vehicle> {
+		@Override
+		public void onTaskComplete(ArrayList<Vehicle> vhs) {
+			Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
+			MyProfileFragment.this.onTaskComplete(vhs);			
+		}
+	}
+
 }
