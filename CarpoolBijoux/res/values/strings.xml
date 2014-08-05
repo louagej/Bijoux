@@ -128,6 +128,7 @@
     <string name="act_vehicle_btn_vehicle_update">Update</string>
     <string name="act_vehicle_actb_new_vehicle">New Vehicle</string>
     <string name="act_vehicle_actb_del_vehicle">Delete Vehicle</string>
+    <string name="act_vehicle_actb_del_vehicle_canceled">Deletion was canceled</string>
 
     <string-array name="country_array">
         <item>Andorra</item>
@@ -380,5 +381,89 @@
         <item>Zambia</item>
         <item>Zimbabwe</item>
     </string-array>
-
+    
+	<string-array name="brand_array">
+		<item>Accent</item>
+		<item>Accord</item>
+		<item>Acura</item>
+		<item>Alfa Romeo</item>
+		<item>Aston Martin</item>
+		<item>Audi</item>
+		<item>AZLK</item>
+		<item>Belaz</item>
+		<item>Bentley</item>
+		<item>BMW</item>
+		<item>Cadillac</item>
+		<item>Calender</item>
+		<item>Chana</item>
+		<item>Cherry</item>
+		<item>Chevrolet</item>
+		<item>Chrysler</item>
+		<item>Citroen</item>
+		<item>Corvette</item>
+		<item>Dacia</item>
+		<item>Daewoo</item>
+		<item>Daikin Clutch</item>
+		<item>Ducati</item>
+		<item>Eclipse</item>
+		<item>Ferrari</item>
+		<item>Fiat</item>
+		<item>Ford</item>
+		<item>GAZ</item>
+		<item>GMC</item>
+		<item>Harley Davidson</item>
+		<item>Highlander</item>
+		<item>Honda</item>
+		<item>Horch</item>
+		<item>Hummer</item>
+		<item>Hybrid</item>
+		<item>Hyundai</item>
+		<item>Ikarus</item>
+		<item>Impreza</item>
+		<item>Infiniti</item>
+		<item>Isuzu</item>
+		<item>Iveco</item>
+		<item>Jaguar</item>
+		<item>Kamazo</item>
+		<item>Kawasaki</item>
+		<item>Kia</item>
+		<item>Lada</item>
+		<item>Lamborghini</item>
+		<item>Land Rover</item>
+		<item>Lexus</item>
+		<item>Lincoln</item>
+		<item>Lotus</item>
+		<item>Mazda</item>
+		<item>Mercedes</item>
+		<item>Mercury</item>
+		<item>Mini Cooper</item>
+		<item>Mitsubishi</item>
+		<item>NCR</item>
+		<item>Nissan</item>
+		<item>Oka</item>
+		<item>Oldsmobile</item>
+		<item>Opel</item>
+		<item>Peugeot</item>
+		<item>Plymouth</item>
+		<item>Pontiac</item>
+		<item>Renault</item>
+		<item>Rolls Royce</item>
+		<item>Rover</item>
+		<item>Saab</item>
+		<item>SSangyong</item>
+		<item>Subaru</item>
+		<item>Suzuki</item>
+		<item>Toyota</item>
+		<item>UAZ</item>
+		<item>VAZ</item>
+		<item>Volkswagen</item>
+		<item>Volvo</item>
+		<item>ZAZ</item>
+    </string-array>
+    
+	
+	<!-- DeleteDialog  -->
+	<string name="frg_delete_dialog_delete_rec">Delete record?</string>
+	<string name="frg_delete_dialog_delete_yes">Deleted</string>
+	<string name="frg_delete_dialog_delete_cancel">Canceled</string>
 </resources>

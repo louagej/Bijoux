@@ -95,10 +95,12 @@ public class MyProfileFragment extends ListFragment implements
 		appUser = SharedPreferences.getUser(ma);
 
 		String[] params = { Integer.toString(appUser.getUser_id()) };
-		new GetMyVehicles(ma, new FetchMyVehicleTaskCompleteListener(), params)
+		new GetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params)
 				.execute();
 		return myProfileView;
 	}
+	
+	
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -264,6 +266,7 @@ public class MyProfileFragment extends ListFragment implements
 	@Override
 	public void onTaskComplete(ArrayList<Vehicle> vhs) {
 		Log.d("onTaskComplete: ", "MyProfileFragment Started");
+		vehicles.clear();
 		vehicles = vhs;
 		rowIconItems = new ArrayList<RowIconItem>();
 		for (int i = 0; i < vehicles.size(); i++) {
@@ -283,13 +286,20 @@ public class MyProfileFragment extends ListFragment implements
 		getListView().setOnItemClickListener(this);
 	}
 
-	class FetchMyVehicleTaskCompleteListener implements
+	class GetMyVehiclesTaskCompleteListener implements
 			AsTskArrayListCompleteListener<Vehicle> {
 		@Override
 		public void onTaskComplete(ArrayList<Vehicle> vhs) {
 			Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
 			MyProfileFragment.this.onTaskComplete(vhs);			
 		}
+	}
+
+	@Override
+	public void onResume() {
+		String[] params = { Integer.toString(appUser.getUser_id()) };
+		new GetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params).execute();
+		super.onResume();
 	}
 
 }
