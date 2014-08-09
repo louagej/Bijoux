@@ -17,7 +17,7 @@ import net.louage.bijoux.constants.SharedPreferences;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.model.Vehicle;
 import net.louage.bijoux.server.AsTskArrayListCompleteListener;
-import net.louage.bijoux.server.GetMyVehicles;
+import net.louage.bijoux.server.VehiclesAsyncGetMyVehicles;
 import net.louage.bijoux.server.JSONParser;
 import android.annotation.SuppressLint;
 import android.app.ListFragment;
@@ -95,7 +95,7 @@ public class MyProfileFragment extends ListFragment implements
 		appUser = SharedPreferences.getUser(ma);
 
 		String[] params = { Integer.toString(appUser.getUser_id()) };
-		new GetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params)
+		new VehiclesAsyncGetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params)
 				.execute();
 		return myProfileView;
 	}
@@ -298,7 +298,7 @@ public class MyProfileFragment extends ListFragment implements
 	@Override
 	public void onResume() {
 		String[] params = { Integer.toString(appUser.getUser_id()) };
-		new GetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params).execute();
+		new VehiclesAsyncGetMyVehicles(ma, new GetMyVehiclesTaskCompleteListener(), params).execute();
 		super.onResume();
 	}
 

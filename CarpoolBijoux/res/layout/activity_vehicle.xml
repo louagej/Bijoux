@@ -118,4 +118,13 @@
         android:ems="10"
         android:hint="@string/act_vehicle_licenseplate" />
 
+    <Button
+        android:id="@+id/btnActVehCreate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnActVehUpdate"
+        android:layout_alignBottom="@+id/btnActVehUpdate"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_vehicle_btn_vehicle_create" />
+
 </RelativeLayout>

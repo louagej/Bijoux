@@ -7,6 +7,7 @@ public class Country implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -6751058850459116436L;
+	private int id;
 	private String iso3166;
 	private String description;
 	
@@ -28,6 +29,12 @@ public class Country implements Serializable{
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

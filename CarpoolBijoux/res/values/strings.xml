@@ -126,6 +126,7 @@
     <string name="act_vehicle_brand">Brand</string>
     <string name="act_vehicle_vehicle_type">Vehicle Type</string>
     <string name="act_vehicle_btn_vehicle_update">Update</string>
+    <string name="act_vehicle_btn_vehicle_create">Create</string>
     <string name="act_vehicle_actb_new_vehicle">New Vehicle</string>
     <string name="act_vehicle_actb_del_vehicle">Delete Vehicle</string>
     <string name="act_vehicle_actb_del_vehicle_canceled">Deletion was canceled</string>

@@ -17,10 +17,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class DeleteVehicle extends AsyncTask<String[], Integer, Vehicle> {
+public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 
-	public static final String RES_DEL_OK = "Get was successfully";
-	public static final String RES_DEL_NOK = "Get was unsuccessfully";
+	public static final String RES_DEL_OK = "Delete was successfully";
+	public static final String RES_DEL_NOK = "Delete was unsuccessfully";
 	public static final String RES_DEL_NULL = "Could not connect to the server";
 	private static final String TAG_CALL_SUCCESFULL = "result";
 	private static final String TAG_DEL_SUCCESFULL = "result_message";
@@ -32,7 +32,7 @@ public class DeleteVehicle extends AsyncTask<String[], Integer, Vehicle> {
 	private String[] parameters;
 	private AsTskObjectCompleteListener<Vehicle> listener;
 
-	public DeleteVehicle(Context context,
+	public VehicleAsyncDelete(Context context,
 			AsTskObjectCompleteListener<Vehicle> listener, String[] params) {
 		super();
 		this.context = context;
@@ -87,22 +87,22 @@ public class DeleteVehicle extends AsyncTask<String[], Integer, Vehicle> {
 				if (success == 1) {
 					boolean deleted = json.getBoolean(TAG_DEL_SUCCESFULL);
 					if (deleted) {
-						Log.d("Try Catch: ", "Vehicle was deleted");
+						Log.d("Try Catch: ", RES_DEL_OK);
 						Vehicle vh = new Vehicle();
 						vh.setVehicle_id(Integer.parseInt(parameters[1]));
 						return vh;
 					} else {
-						Log.d("Try Catch: ", "Server didn't deleted vehicle");
+						Log.d("Try Catch: ", RES_DEL_NOK);
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", "Vehicle wasn't deleted");
+				Log.d("Try Catch: ", RES_DEL_NOK);
 				return null;
 			}
 		} else {
-			Log.d("json is null", "Server couldn't be called");
+			Log.d("json is null", RES_DEL_NULL);
 			return null;
 		}
 

@@ -11,6 +11,7 @@ import net.louage.bijoux.constants.Installation;
 import net.louage.bijoux.model.Country;
 import net.louage.bijoux.model.Vehicle;
 import net.louage.bijoux.model.VehicleType;
+import net.louage.bijoux.sqlite.SchemaHelper;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -23,7 +24,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class GetMyVehicles extends AsyncTask<String[], Integer, ArrayList<Vehicle>> {
+public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, ArrayList<Vehicle>> {
 	public static final String RES_GET_OK = "Get was successfully";
 	public static final String RES_GET_NOK = "Get was unsuccessfully";
 	public static final String RES_GET_NULL = "Could not connect to the server";
@@ -39,7 +40,7 @@ public class GetMyVehicles extends AsyncTask<String[], Integer, ArrayList<Vehicl
 	
 	private AsTskArrayListCompleteListener<Vehicle> listener;
 
-	public GetMyVehicles(Context context, AsTskArrayListCompleteListener<Vehicle> listener,String[] params) {
+	public VehiclesAsyncGetMyVehicles(Context context, AsTskArrayListCompleteListener<Vehicle> listener,String[] params) {
 		this.context = context;
 		this.listener = listener;
 		parameters = params;
@@ -100,7 +101,12 @@ public class GetMyVehicles extends AsyncTask<String[], Integer, ArrayList<Vehicl
 						Vehicle vhc = new Vehicle();
 						vhc.setVehicle_id(json_vehicle.getInt(Vehicle.TAG_ID));
 						vhc.setLicenseplate(json_vehicle.getString(Vehicle.TAG_LICENSEPLATE));
+						SchemaHelper sh = new SchemaHelper(context);
+						sh.getCountryDescription(json_vehicle.getString(Vehicle.TAG_COUNTRY));
+						
 						Country ct = new Country(json_vehicle.getString(Vehicle.TAG_COUNTRY),json_vehicle.getString(Vehicle.TAG_COUNTRY));
+						
+						
 						vhc.setCountry(ct);
 						vhc.setNumberOfPassengers(json_vehicle.getInt(Vehicle.TAG_NUMBER_OF_PASS));
 						vhc.setBrand(json_vehicle.getString(Vehicle.TAG_BRAND));
