@@ -427,5 +427,19 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		}
 		return country;
 	}
+	
+	public Country getCountryFromIso3166(String iso3166) {
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO, CountryTable.DESCRIPTION };
+		String[] selectionArgs = new String[] { iso3166 };
+		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.ISO + "= ? ", selectionArgs, null, null, null);
+		Country country = new Country();
+		while (c.moveToNext()) {			
+			country.setId(c.getInt(c.getColumnIndex(CountryTable.ID)));
+			country.setDescription(c.getString(c.getColumnIndex(CountryTable.DESCRIPTION)));
+			country.setIso3166(c.getString(c.getColumnIndex(CountryTable.ISO)));
+		}
+		return country;
+	}
 
 }

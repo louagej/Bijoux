@@ -5,7 +5,7 @@ import java.util.Date;
 
 import android.location.Address;
 
-public class Tour {
+public class Tour{
 	private int tour_id;
 	private Date date;
 	private Date time;
@@ -15,6 +15,7 @@ public class Tour {
 	private Double seat_price;
 	private Address fromAddress;
 	private Address toAddress;
+	private ArrayList<Seat> seats;
 	
 	public static final String TAG_ID = "_id";
 	public static final String TAG_DATE = "date";
@@ -32,18 +33,15 @@ public class Tour {
 	public static final String TAG_TO_POST_CODE = "to_post_code";
 	public static final String TAG_TO_CITY = "to_city";
 	public static final String TAG_TO_COUNTRY = "to_country";
-	
-	public Tour() {
-		super();	
-	}
-	
+	public static final String TAG_SEATS = "seats";
+
 	public void setTour_id(int tour_id) {
 		this.tour_id = tour_id;
 	}
-	public int getTourtId() {
+
+	public int getTour_id() {
 		return tour_id;
 	}
-
 	public Date getDate() {
 		return date;
 	}
@@ -92,10 +90,6 @@ public class Tour {
 		this.seat_price = seat_price;
 	}
 
-	public int getTour_id() {
-		return tour_id;
-	}
-
 	public Address getFromAddress() {
 		return fromAddress;
 	}
@@ -110,6 +104,14 @@ public class Tour {
 
 	public void setToAddress(Address toAddress) {
 		this.toAddress = toAddress;
+	}
+
+	public ArrayList<Seat> getSeats() {
+		return seats;
+	}
+
+	public void setSeats(ArrayList<Seat> seats) {
+		this.seats = seats;
 	}
 
 }

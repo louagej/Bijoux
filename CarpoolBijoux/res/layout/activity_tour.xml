@@ -1,0 +1,171 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    tools:context="net.louage.bijoux.userinterface.TourActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/txtActTourDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActTourDate"
+        android:layout_alignBottom="@+id/eTxtActTourDate"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_tour_txtActTourDate" />
+
+    <EditText
+        android:id="@+id/eTxtActTourTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActTourDate"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActTourDate"
+        android:ems="10"
+        android:hint="@string/act_tour_eTxtActTourTime"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/txtActTourTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActTourTime"
+        android:layout_alignBottom="@+id/eTxtActTourTime"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_tour_txtActTourTime" />
+
+    <Spinner
+        android:id="@+id/spnnActTourVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActTourTime"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActTourTime" />
+
+    <TextView
+        android:id="@+id/txtActTourVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/spnnActTourVehicle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/spnnActTourVehicle"
+        android:text="@string/act_tour_txtActTourVehicle" />
+
+    <EditText
+        android:id="@+id/eTxtActTourSeatPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spnnActTourVehicle"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/spnnActTourVehicle"
+        android:ems="10"
+        android:hint="@string/act_tour_eTxtActTourSeatPrice"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:id="@+id/txtActTourSeatPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActTourSeatPrice"
+        android:layout_alignBottom="@+id/eTxtActTourSeatPrice"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_tour_txtActTourSeatPrice" />
+
+    <EditText
+        android:id="@+id/eTxtActTourFromAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActTourSeatPrice"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActTourSeatPrice"
+        android:ems="10"
+        android:hint="@string/act_tour_eTxtActTourFromAddress"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:minLines="2"
+        android:maxLines="6" />
+
+    <TextView
+        android:id="@+id/txtActTourFromAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActTourFromAddress"
+        android:layout_alignBottom="@+id/eTxtActTourFromAddress"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_tour_txtActTourFromAddress" />
+
+    <EditText
+        android:id="@+id/eTxtActTourToAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eTxtActTourFromAddress"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActTourFromAddress"
+        android:ems="10"
+        android:hint="@string/act_tour_eTxtActTourToAddress"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:minLines="2"
+        android:maxLines="6" />
+
+    <TextView
+        android:id="@+id/txtActTourToAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eTxtActTourToAddress"
+        android:layout_alignBottom="@+id/eTxtActTourToAddress"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_tour_txtActTourToAddress" />
+
+    <Button
+        android:id="@+id/btnActTourUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/eTxtActTourToAddress"
+        android:layout_toLeftOf="@+id/btnActTourSeatRequest"
+        android:text="@string/act_tour_btnActTourUpdate" />
+
+    <TextView
+        android:id="@+id/txtActTourPassengers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnActTourUpdate"
+        android:text="@string/act_tour_txtActTourPassengers" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txtActTourPassengers" >
+    </ListView>
+
+    <EditText
+        android:id="@+id/eTxtActTourDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/txtActTourFromAddress"
+        android:ems="10"
+        android:hint="@string/act_tour_eTxtActTourDate"
+        android:inputType="date" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnActTourSeatRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/eTxtActTourToAddress"
+        android:text="@string/act_tour_btnActTourSeatRequest" />
+
+</RelativeLayout>
+

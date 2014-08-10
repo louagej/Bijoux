@@ -4,139 +4,15 @@ package net.louage.bijoux.constants;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.text.format.Time;
 
 public abstract class DateTime {
-
-	public static String getStrDateTimeStamp(final Context context) {
-		String dateTimeStamp;
-		dateTimeStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat
-				.getDateFormat(context);
-		java.text.DateFormat timeFormat = android.text.format.DateFormat
-				.getTimeFormat(context);
-		if (dateFormat != null && timeFormat != null) {
-			dateTimeStamp = dateFormat.format(now) + " "
-					+ timeFormat.format(now);
-		}
-		return dateTimeStamp;
-	}
-
-	public static String getStrDateStamp(final Context context) {
-		String dateStamp;
-		dateStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat
-				.getDateFormat(context);
-		if (dateFormat != null) {
-			dateStamp = dateFormat.format(now);
-		}
-		return dateStamp;
-	}
-
-	public static String getStrTimeStamp(final Context context) {
-		String timeStamp;
-		timeStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat timeFormat = android.text.format.DateFormat
-				.getTimeFormat(context);
-		if (timeFormat != null) {
-			timeStamp = timeFormat.format(now);
-		}
-		return timeStamp;
-	}
-	
-	public static String getStrUTCDateTimeStamp(final Context context) {
-		String dateTimeStamp;
-		dateTimeStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		if (dateFormat != null && timeFormat != null) {
-			dateTimeStamp = dateFormat.format(now) + " "
-					+ timeFormat.format(now);
-		}
-		return dateTimeStamp;
-	}
-
-	public static String getStrUTCDateStamp(final Context context) {
-		String dateStamp;
-		dateStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		if (dateFormat != null) {
-			dateStamp = dateFormat.format(now);
-		}
-		return dateStamp;
-	}
-
-	public static String getStrUTCTimeStamp(final Context context) {
-		String timeStamp;
-		timeStamp = "unknown";
-		Date now = new Date();
-		java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		if (timeFormat != null) {
-			timeStamp = timeFormat.format(now);
-		}
-		return timeStamp;
-	}
-	
-	public static DateFormat getDateStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateFormat.format(now);
-		return dateFormat;
-	}
-	
-	public static DateFormat getTimeStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		timeFormat.format(now);
-		return timeFormat;
-	}
-	
-	public static DateFormat getUTCDateStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		dateFormat.format(now);
-		return dateFormat;
-	}
-	
-	public static DateFormat getUTCTimeStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		timeFormat.format(now);
-		return timeFormat;
-	}
-	
-	public static DateFormat getDateTimeStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat dateTimeFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		dateTimeFormat.format(now);
-		return dateTimeFormat;
-	}
-	
-	public static DateFormat getUTCDateTimeStamp(final Context context) {
-		Date now = new Date();
-		java.text.DateFormat dateTimeFormat = android.text.format.DateFormat.getDateFormat(context);
-		dateTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
-		dateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		dateTimeFormat.format(now);
-		return dateTimeFormat;
-	}
-	
 	
 	/**
 	 * @param date
@@ -198,7 +74,7 @@ public abstract class DateTime {
 	/**
 	 * @param String
 	 * @return Date
-	 * This method to return a Date that can be saved as a date in SQLite database with the format yyyy-MM-dd.
+	 * This method to return a Date that can be saved as a date in SQLite database with the format HH:mm:ss.
 	 * The string represents the date in UTC offset, the returned Date is converted to the local date settings of the device
 	 */
 	@SuppressLint("SimpleDateFormat")
@@ -235,5 +111,65 @@ public abstract class DateTime {
 		return date;
 	}
 	
+	/**
+	 * @param date
+	 * @return String
+	 * This method to return a medium String of a date formatted in local date settings.
+	 */
+	public static String getDateMediumFormat(Date date) {
+		DateFormat mediumdate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+		return mediumdate.format(date);
+	}
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method to return a short String of a date formatted in local date settings.
+	 */
+	public static String getDateShortFormat(Date date) {
+		DateFormat shortdate = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+		return shortdate.format(date);
+	}
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method to return a long String of a date formatted in local date settings.
+	 */
+	public static String getDateLongFormat(Date date) {
+		DateFormat longdate = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+		return longdate.format(date);
+	}
+	
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method Starts with a Date object that is set in UTC time.
+	 * This is very common when you're querying a database to receive a date in UTC time.
+	 * To convert this object, we first compare the locale time zone to the UTC.
+	 * With the difference between the two time zones, we build a new Calendar object.
+	 * This Calendar object then is converted in to a String that is formatted according the default locale settings
+	 */
+	public static String getLocaleTimeDefaultFormat(Date utcDateTime) {
+		//Android documentation
+		//Construct a Time object in the time zone named by the string argument "time zone".
+		Time utc = new Time("UTC");
+		//Construct a Time object in the default time zone.
+		Time time = new Time();
+		//Compare two Time objects and return a negative number if a is less than b,
+		// a positive number if a is greater than b, or 0 if they are equal.
+		int diff = Time.compare(utc, time);
+		//Calculate difference between
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(utcDateTime);
+		//Add the differences between two time zones to the hours of the calendar
+		calendar.add(Calendar.HOUR_OF_DAY, diff);
+		//Get a default representation of the time
+		DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault());
+		//Create a string from time in the default locale settings
+		String formattedLocaleTime = timeFormatter.format(calendar.getTime());
+		return formattedLocaleTime;
+	}
 	
 }
