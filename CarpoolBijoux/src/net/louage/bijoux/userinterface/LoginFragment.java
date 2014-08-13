@@ -267,9 +267,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 						for (int i = 0; i < json_teams.length(); i++) {
 							JSONObject json_team = json_teams
 									.getJSONObject(i);
-							String teamname = json_team
-									.getString(Team.TAG_USER_TEAMNAME);
-							Team team = new Team(teamname);
+							String teamname = json_team.getString(Team.TAG_USER_TEAMNAME);
+							int teamid = Integer.parseInt(json_team.getString(Team.TAG_ID));
+							Team team = new Team(teamname, teamid);
 							teams.add(team);
 						}
 						user.setMemberOf(teams);
@@ -282,9 +282,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 						for (int i = 0; i < json_teamleaderteams.length(); i++) {
 							JSONObject json_team = json_teams
 									.getJSONObject(i);
-							String teamname = json_team
-									.getString(Team.TAG_USER_TEAMNAME);
-							Team team = new Team(teamname);
+							String teamname = json_team.getString(Team.TAG_USER_TEAMNAME);
+							int teamid = Integer.parseInt(json_team.getString(Team.TAG_ID));
+							Team team = new Team(teamname, teamid);
 							managedTeams.add(team);
 						}
 						user.setManagerOf(managedTeams);

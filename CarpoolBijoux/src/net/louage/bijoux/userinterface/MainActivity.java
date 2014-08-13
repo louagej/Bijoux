@@ -17,6 +17,7 @@
 package net.louage.bijoux.userinterface;
 
 import java.util.ArrayList;
+
 import net.louage.bijoux.R;
 import net.louage.bijoux.model.Role;
 import net.louage.bijoux.model.User;
@@ -247,9 +248,10 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	/** Swaps fragments in the main content view
-	 * The method selectItem(int) must be visible from other external fragments
-	 * of the same package. Therefore, visibility is set to default
+	/**
+	 * Swaps fragments in the main content view The method selectItem(int) must
+	 * be visible from other external fragments of the same package. Therefore,
+	 * visibility is set to default
 	 */
 	void selectItem(int position) {
 		switch (getmNavDrawerTitles()[position]) {
@@ -308,10 +310,11 @@ public class MainActivity extends Activity {
 		fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
 		// update selected item and title, then close the drawer
 	}
-	
+
 	private void buildComingTours(int position) {
 		// update the main content by replacing fragments
 		Fragment fragment = new ComingToursFragment();
@@ -395,12 +398,12 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void setTitle(CharSequence title) {
-		if (appUser!=null){
+		if (appUser != null) {
 			mTitle = title + " - " + appUser.getFirstname();
-		}else{
-			mTitle = title;			
+		} else {
+			mTitle = title;
 		}
-		
+
 		getActionBar().setTitle(mTitle);
 	}
 
@@ -429,4 +432,5 @@ public class MainActivity extends Activity {
 	public void setmNavDrawerTitles(String[] mNavDrawerTitles) {
 		this.mNavDrawerTitles = mNavDrawerTitles;
 	}
+
 }

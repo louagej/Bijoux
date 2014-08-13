@@ -3,7 +3,7 @@ package net.louage.bijoux.model;
 public class Seat {
 	private int seat_id;
 	private int created_by_user_id;
-	private long device_id;
+	private String device_id;
 	private int tour_id;
 	private int user_id;
 	private String status;
@@ -29,10 +29,10 @@ public class Seat {
 	public void setCreated_by_user_id(int created_by_user_id) {
 		this.created_by_user_id = created_by_user_id;
 	}
-	public long getDevice_id() {
+	public String getDevice_id() {
 		return device_id;
 	}
-	public void setDevice_id(long device_id) {
+	public void setDevice_id(String device_id) {
 		this.device_id = device_id;
 	}
 	public int getTour_id() {

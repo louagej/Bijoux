@@ -11,6 +11,7 @@ import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
 import android.text.format.Time;
+import android.util.Log;
 
 public abstract class DateTime {
 	
@@ -33,6 +34,22 @@ public abstract class DateTime {
 	}
 	
 	/**
+	 * @param date
+	 * @return String
+	 * This method to return a String that can be saved as a date in SQLite database with the format yyyy-MM-dd.
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static String getStrDateStamp(Date date) {
+		String stringDate;
+		stringDate = "unknown";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		if (simpleDateFormat != null) {
+			stringDate = simpleDateFormat.format(date);
+		}
+		return stringDate;
+	}
+	
+	/**
 	 * @param Date
 	 * @return String
 	 * This method to return a String that can be saved as a date in SQLite database with the format HH:mm:SS.
@@ -49,12 +66,47 @@ public abstract class DateTime {
 		}
 		return sqliteDate;
 	}
-	
+
+	/**
+	 * @param String
+	 * @return Date
+	 * This method returns a Date with the format yyyy-MM-dd.
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static Date getDateFormString(String stringDate) {
+		Date date = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//sdf.setTimeZone(TimeZone.getDefault());
+			date = sdf.parse(stringDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		};
+		return date;
+	}
 	
 	/**
 	 * @param String
 	 * @return Date
-	 * This method to return a Date that can be saved as a date in SQLite database with the format yyyy-MM-dd.
+	 * This method returns a Date with the format HH:mm:ss.
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static Date getTimeFormString(String stringTime) {
+		Date date = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+			//sdf.setTimeZone(TimeZone.getDefault());
+			date = sdf.parse(stringTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		};
+		return date;
+	}
+	
+	/**
+	 * @param String
+	 * @return Date
+	 * This method returns a Date that can be saved as a date in SQLite database with the format yyyy-MM-dd.
 	 * The string represents the date in UTC offset, the returned Date is converted to the local date settings of the device
 	 */
 	@SuppressLint("SimpleDateFormat")
@@ -74,8 +126,8 @@ public abstract class DateTime {
 	/**
 	 * @param String
 	 * @return Date
-	 * This method to return a Date that can be saved as a date in SQLite database with the format HH:mm:ss.
-	 * The string represents the date in UTC offset, the returned Date is converted to the local date settings of the device
+	 * This method returns a Date that can be saved as a date in SQLite database with the format HH:mm:ss.
+	 * The string represents the time in UTC offset, the returned Date is converted to the local date settings of the device
 	 */
 	@SuppressLint("SimpleDateFormat")
 	public static Date getTimeSQLiteString(String sqliteTime) {
@@ -116,9 +168,32 @@ public abstract class DateTime {
 	 * @return String
 	 * This method to return a medium String of a date formatted in local date settings.
 	 */
-	public static String getDateMediumFormat(Date date) {
+	public static String dateToStringMediumFormat(Date date) {
 		DateFormat mediumdate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 		return mediumdate.format(date);
+	}
+	
+	/**
+	 * @param dateStringMediumFormat
+	 * @return String
+	 * This method to return a medium String of a date formatted in local date settings.
+	 * @throws ParseException 
+	 */
+	public static Date stringToDateMediumFormat(String dateStringMediumFormat) throws ParseException {
+		DateFormat mediumFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+		Date dateMedium = mediumFormat.parse(dateStringMediumFormat);
+		System.out.println(dateMedium);
+		return dateMedium;
+	}
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method to return a short String of a date formatted in local date settings.
+	 */
+	public static String getDateMediumFormat(Date date) {
+		DateFormat shortdate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+		return shortdate.format(date);
 	}
 	
 	/**
@@ -170,6 +245,67 @@ public abstract class DateTime {
 		//Create a string from time in the default locale settings
 		String formattedLocaleTime = timeFormatter.format(calendar.getTime());
 		return formattedLocaleTime;
+	}
+	
+	/**
+	 * @param String
+	 * @return Date
+	 * This method Starts with a String formatted as HH:mm:ss representing the local time.
+	 * This is very common when you're writing to a database, you need to set time in UTC time.
+	 * To convert the String, we first compare the locale time zone to the UTC.
+	 * With the difference between the two time zones, we build a new Calendar object.
+	 * This Calendar object then is converted in to a String that is formatted according the default locale settings
+	 * @throws ParseException 
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static Date getUTCTimeDefaultFormat(String localDateTime) throws ParseException {
+		//Android documentation
+		//Construct a Time object in the time zone named by the string argument "time zone".
+		Time utc = new Time("UTC");
+		//Construct a Time object in the default time zone.
+		Time time = new Time();
+		//Compare two Time objects and return a negative number if a is less than b,
+		// a positive number if a is greater than b, or 0 if they are equal.
+		int diff = Time.compare(time, utc);
+		//Parse the locale time to a Date Object
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		Date date = sdf.parse(localDateTime);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		//Add the differences between two time zones to the hours of the calendar
+		calendar.add(Calendar.HOUR_OF_DAY, diff);
+		//Return the date that was calculated in the calendar
+		return calendar.getTime();
+	}
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method Starts with a Date object that is set in local time and returns a string in UTC time
+	 * This is very common when you're writing to a database, you need to set time in UTC time.
+	 * To convert this object, we first compare the locale time zone to the UTC.
+	 * With the difference between the two time zones (daylight saving time taken into account), we build a new Calendar object.
+	 * This Calendar object then is converted in to a String that is formatted according the default locale settings
+	 */
+	public static String getUTCTimeDefaultFormat(Date localeDateTime) {
+		//Android documentation
+		Time utc = new Time("UTC");
+		//Construct a Time object in the default time zone.
+		Time time = new Time();
+		//Compare two Time objects and return a negative number if a is less than b,
+		// a positive number if a is greater than b, or 0 if they are equal.
+		int diff = Time.compare(time, utc)+time.isDst;
+		//Calculate difference between
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(localeDateTime);
+		//Add the differences between two time zones to the hours of the calendar
+		calendar.add(Calendar.HOUR_OF_DAY, diff);
+		//Get a default representation of the time
+		DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault());
+		//Create a string from time in the default locale settings
+		String formattedUTCTime = timeFormatter.format(calendar.getTime());
+		Log.d("getUTCTimeDefaultFormat formattedUTCTime: ", formattedUTCTime);
+		return formattedUTCTime;
 	}
 	
 }

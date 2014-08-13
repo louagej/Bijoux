@@ -64,13 +64,10 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 		// string array
 		autComplActVehCountry.setText(getCountry(vh.getCountry().getIso3166())
 				.getDescription());
-		// Fill String array with values from SQLite database
 		// buildCountriesArray();
 		// Link the String array with a new ArrayAdapter
-		String[] countries = getResources().getStringArray(
-				R.array.country_array);
-		adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, countries);
+		String[] countries = getResources().getStringArray(R.array.country_array);
+		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, countries);
 		// adapter = new ArrayAdapter<String>(this,
 		// android.R.layout.simple_dropdown_item_1line, COUNTRIES);
 		// Link the adapter to the AutoCompleteTextView in the layout

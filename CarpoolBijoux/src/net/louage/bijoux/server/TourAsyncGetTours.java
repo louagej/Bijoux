@@ -116,34 +116,33 @@ public class TourAsyncGetTours extends
 				// Check if GetTours was successfully
 				int success = json.getInt(TAG_GET_SUCCESFULL);
 				if (success == 1) {
-					Log.d("success GetTours: ", json.toString());
+					//Log.d("success GetTours: ", json.toString());
 					JSONObject json_tour_list = json
 							.getJSONObject(TAG_TOUR_INFO_RESULT);
-					Log.d("JSON tour_list: ", json_tour_list.toString());
+					//Log.d("JSON tour_list: ", json_tour_list.toString());
 					JSONArray json_tours = json_tour_list
 							.getJSONArray(TAG_USER_TOURS);
-					Log.d("JSON tours: ", json_tours.toString());
+					//Log.d("JSON tours: ", json_tours.toString());
 					ArrayList<Tour> tours = new ArrayList<Tour>();
 					for (int i = 0; i < json_tours.length(); i++) {
 						JSONObject json_tour = json_tours.getJSONObject(i);
 						Tour tr = new Tour();
 						tr.setTour_id(json_tour.getInt(Tour.TAG_ID));
-						Date tourDate = DateTime.getDateSQLiteString(json_tour
-								.getString(Tour.TAG_DATE));
+						Date tourDate = DateTime.getDateSQLiteString(json_tour.getString(Tour.TAG_DATE));
 						tr.setDate(tourDate);
-						Date tourTime = DateTime.getTimeSQLiteString(json_tour
-								.getString(Tour.TAG_TIME));
+						Date tourTime = DateTime.getTimeSQLiteString(json_tour.getString(Tour.TAG_TIME));
 						tr.setTime(tourTime);
-						JSONObject json_user = json_tour
-								.getJSONObject(TAG_USER);
+						JSONObject json_user = json_tour.getJSONObject(TAG_USER);
 						User tourUser = getUserFromJson(json_user);
 						tr.setUser(tourUser);
-						JSONObject json_vehicle = json_tour
-								.getJSONObject(TAG_VEHICLE);
+						JSONObject json_vehicle = json_tour.getJSONObject(TAG_VEHICLE);
 						Vehicle vh = getVehicleFromJson(json_vehicle);
 						tr.setVehicle(vh);
-						tr.setSeat_price(Double.parseDouble(json_tour
-								.getString(Tour.TAG_SEAT_PRICE)));
+						tr.setSeat_price(Double.parseDouble(json_tour.getString(Tour.TAG_SEAT_PRICE)));
+						JSONObject json_team = json_tour.getJSONObject(Tour.TAG_TOUR_TEAM);
+						tr.setTeam(JSONParser.getTeamfromJson(json_team));
+						//Log.d(tag, "Team: "+ tr.getTeam().getTeam());
+						//Log.d(tag, "Team id: "+tr.getTeam().getTeam_id());
 						Address fromAddress = getFromAddress(json_tour);
 						tr.setFromAddress(fromAddress);
 						Address toAddress = getToAddress(json_tour);
@@ -157,9 +156,6 @@ public class TourAsyncGetTours extends
 							seats.add(seat);
 						}
 						tr.setSeats(seats);
-						// Date updateAtDate =
-						// DateTime.getDateTimeSQLiteString(json_tour.getString(Tour.TAG_UPDATED_AT));
-						// tr.setDate(updateAtDate);
 						tours.add(tr);
 					}
 					Log.d("Try Catch: ", "OK building Object tours");
@@ -182,7 +178,7 @@ public class TourAsyncGetTours extends
 		Seat seat = new Seat();
 		seat.setSeat_id(json_seat.getInt(Seat.TAG_ID));
 		seat.setCreated_by_user_id(json_seat.getInt(Seat.TAG_CREATED_BY_USER_ID));
-		seat.setDevice_id(json_seat.getLong(Seat.TAG_DEVICE_ID));
+		seat.setDevice_id(json_seat.getString(Seat.TAG_DEVICE_ID));
 		seat.setTour_id(json_seat.getInt(Seat.TAG_TOUR_ID));
 		seat.setUser_id(json_seat.getInt(Seat.TAG_USER_ID));
 		seat.setStatus(json_seat.getString(Seat.TAG_STATUS));

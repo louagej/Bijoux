@@ -40,4 +40,13 @@ public class Installation {
         out.write(id.getBytes());
         out.close();
     }
+ 
+    public static String getInstallationID(Context context){
+    	String instalId = Installation.id(context);
+    	UUID uid = UUID.fromString(instalId);
+    	Long lng = uid.getMostSignificantBits();
+    	instalId = Long.toString(lng);
+		return instalId;
+    	
+    }
 }

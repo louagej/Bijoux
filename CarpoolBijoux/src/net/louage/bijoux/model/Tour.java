@@ -16,11 +16,13 @@ public class Tour{
 	private Address fromAddress;
 	private Address toAddress;
 	private ArrayList<Seat> seats;
+	private Team team;
 	
 	public static final String TAG_ID = "_id";
 	public static final String TAG_DATE = "date";
 	public static final String TAG_TIME = "time";
 	public static final String TAG_USER_ID = "user_id";
+	public static final String TAG_USER = "user";
 	public static final String TAG_VEHICLE_ID = "vehicle_id";
 	public static final String TAG_SEAT_PRICE = "seat_price";
 	public static final String TAG_UPDATED_AT = "update_at";
@@ -28,12 +30,14 @@ public class Tour{
 	public static final String TAG_FROM_POST_CODE = "from_post_code";
 	public static final String TAG_FROM_CITY = "from_city";
 	public static final String TAG_FROM_COUNTRY = "from_country";
-	
+	public static final String TAG_TOUR_VEHICLE = "tour_vehicle";
+	public static final String TAG_TOUR_TEAM = "tour_team";
 	public static final String TAG_TO_ADDRESS = "to_address";
 	public static final String TAG_TO_POST_CODE = "to_post_code";
 	public static final String TAG_TO_CITY = "to_city";
 	public static final String TAG_TO_COUNTRY = "to_country";
 	public static final String TAG_SEATS = "seats";
+	public static final String TAG_TOUR_SEATS = "tour_seats";
 
 	public void setTour_id(int tour_id) {
 		this.tour_id = tour_id;
@@ -112,6 +116,14 @@ public class Tour{
 
 	public void setSeats(ArrayList<Seat> seats) {
 		this.seats = seats;
+	}
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 }

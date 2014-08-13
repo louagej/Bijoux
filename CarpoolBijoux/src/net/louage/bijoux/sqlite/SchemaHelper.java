@@ -25,7 +25,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		Log.v("Schemahelper constructor", "Step 1");
+		//Log.v("Schemahelper constructor", "Step 1");
 		path = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
 	}
 

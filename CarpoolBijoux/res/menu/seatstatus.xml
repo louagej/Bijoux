@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/item1"
-        android:title="@string/act_tour_seat_choice_approved">
-    </item>
-    <item
-        android:id="@+id/item2"
-        android:title="@string/act_tour_seat_choice_canceled">
-    </item>
-    <item
-        android:id="@+id/item3"
-        android:title="@string/act_tour_seat_choice_declined">
-    </item>
-    <item
-        android:id="@+id/item4"
-        android:title="@string/act_tour_seat_choice_pending">
-    </item>
+    <group
+        android:id="@+id/Seat_Status"
+        android:enabled="true"
+        android:menuCategory="container"
+        android:orderInCategory="1"
+        android:visible="true" >
+        <item android:id="@+id/seat_status_approved" android:title="@string/act_tour_seat_choice_approved"></item>
+        <item android:id="@+id/seat_status_pending" android:title="@string/act_tour_seat_choice_pending"></item>
+        <item android:id="@+id/seat_status_delete" android:title="@string/act_tour_seat_choice_delete"></item>
+        <item android:id="@+id/seat_status_canceled" android:title="@string/act_tour_seat_choice_canceled"></item>
+    </group>
+    <group
+        android:id="@+id/Payment"
+        android:enabled="true"
+        android:menuCategory="container"
+        android:orderInCategory="2"
+        android:visible="true" ><item
+            android:id="@+id/seat_status_paid"
+            android:title="@string/act_tour_seat_payment_paid">
+        </item>
+        <item
+            android:id="@+id/seat_status_not_paid"
+            android:title="@string/act_tour_seat_payment_not_paid">
+        </item>
+        
+    </group>
 
 </menu>

@@ -3,9 +3,16 @@
     tools:context="net.louage.bijoux.TourActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/create_new_tour"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/act_tour_actb_new_tour"
+        android:icon="@drawable/ic_action_new"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/delete_tour"
+        android:orderInCategory="200"
+        android:title="@string/act_tour_actb_del_tour"
+        android:icon="@drawable/ic_action_discard"
+        android:showAsAction="ifRoom"/>
 
 </menu>
