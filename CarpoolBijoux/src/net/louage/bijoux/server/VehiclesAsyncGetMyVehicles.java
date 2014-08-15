@@ -11,8 +11,6 @@ import net.louage.bijoux.constants.Installation;
 import net.louage.bijoux.model.Country;
 import net.louage.bijoux.model.Vehicle;
 import net.louage.bijoux.model.VehicleType;
-import net.louage.bijoux.sqlite.SchemaHelper;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -101,9 +99,9 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 						Vehicle vhc = new Vehicle();
 						vhc.setVehicle_id(json_vehicle.getInt(Vehicle.TAG_ID));
 						vhc.setLicenseplate(json_vehicle.getString(Vehicle.TAG_LICENSEPLATE));
-						SchemaHelper sh = new SchemaHelper(context);
-						sh.getCountryDescription(json_vehicle.getString(Vehicle.TAG_COUNTRY));
-						
+						//SchemaHelper sh = new SchemaHelper(context);
+						//sh.getCountryDescription(json_vehicle.getString(Vehicle.TAG_COUNTRY));
+						//sh.close();
 						Country ct = new Country(json_vehicle.getString(Vehicle.TAG_COUNTRY),json_vehicle.getString(Vehicle.TAG_COUNTRY));
 						
 						

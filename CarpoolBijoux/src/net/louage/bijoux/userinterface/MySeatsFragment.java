@@ -5,13 +5,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 
 import net.louage.bijoux.R;
 import net.louage.bijoux.constants.DateTime;
 import net.louage.bijoux.constants.SharedPreferences;
+import net.louage.bijoux.model.Seat;
 import net.louage.bijoux.model.Tour;
+import net.louage.bijoux.model.User;
 import net.louage.bijoux.server.AsTskArrayListCompleteListener;
 import net.louage.bijoux.server.TourAsyncGetTours;
 import android.app.Activity;
@@ -26,14 +29,14 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ComingToursFragment extends ListFragment implements
-		OnItemClickListener {
+public class MySeatsFragment extends ListFragment implements OnItemClickListener {
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
 	CustomIconAdapter adapter;
 	private List<RowIconItem> rowIconItems;
 	private ArrayList<Tour> tours = new ArrayList<Tour>();
-	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating ComingToursFragment
-	public ComingToursFragment() {
+	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating MySeatsFragment
+	private User appUser;
+	public MySeatsFragment() {
 		// Empty constructor required for fragment subclasses
 	}
 
@@ -43,25 +46,36 @@ public class ComingToursFragment extends ListFragment implements
 		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
 		MainActivity ma = (MainActivity) getActivity();
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
-		View comingToursView = inflater.inflate(R.layout.fragment_coming_tours,
-				container, false);
+		View mySeatsView = inflater.inflate(R.layout.fragment_my_tours, container, false);
 		getActivity().setTitle(selNavDrawItem);
 		String[] params = getTourParams();
 		new TourAsyncGetTours(getActivity(),
 				new TourAsyncGetToursTaskCompleteListener(), params).execute();
 		rowIconItems = new ArrayList<RowIconItem>();
-		SharedPreferences.getUser(ma);
-		return comingToursView;
+		appUser=SharedPreferences.getUser(ma);
+		return mySeatsView;
 	}
 
 	class TourAsyncGetToursTaskCompleteListener implements
 			AsTskArrayListCompleteListener<Tour> {
 		@Override
-		public void onTaskComplete(ArrayList<Tour> tours) {
-			ComingToursFragment.this.onTaskComplete(tours);
-
+		public void onTaskComplete(ArrayList<Tour> trs) {
+			ArrayList<Tour> tempTours = new ArrayList<Tour>();
+		for (int i = 0; i < trs.size(); i++) {
+			Tour tr = trs.get(i);
+			//Check if the tour has a seat with the appUser's id
+			ArrayList<Seat>sts=new ArrayList<Seat>();
+			sts=tr.getSeats();
+			for (int j = 0; j < sts.size(); j++) {
+				Seat st = sts.get(j);
+				if(appUser.getUser_id()==st.getUser_id()){
+					//Add tour to temporary ArrayList tempTours
+					tempTours.add(tr);
+					}
+				}
+			}
+		setTourList(tempTours);
 		}
-
 	}
 
 	private String[] getTourParams() {
@@ -70,12 +84,8 @@ public class ComingToursFragment extends ListFragment implements
 		return params;
 	}
 
-	public void onTaskComplete(ArrayList<Tour> trs) {
-		setTourList(trs);
-	}
-
 	private void setTourList(ArrayList<Tour> trs) {
-		String tag="ComingToursFragment setTourList";
+		String tag="MySeatsFragment setTourList";
 		//tours.clear();
 		Log.d(tag, "trs size: "+trs.size());
 		rowIconItems.clear();
@@ -93,20 +103,30 @@ public class ComingToursFragment extends ListFragment implements
 				Log.d(tag, "Tour: "+tr.getTour_id());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(tr.getDate());
-				int day = cal.get(Calendar.DAY_OF_MONTH);
 				String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
 				String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
 				//Log.d(tag, "tour date json: " + tr.getDate());
 				String trData = tourDate + " - " + tourtime + "\nFrom: "
 						+ tr.getFromAddress().getLocality() + "\nTo: "
 						+ tr.getToAddress().getLocality();
-				String logo = "calender" + day;
+				String logo="unknown";
+				ArrayList<Seat>sts=new ArrayList<Seat>();
+				sts=tr.getSeats();
+				for (int j = 0; j < sts.size(); j++) {
+					Seat st = sts.get(j);
+					if(appUser.getUser_id()==st.getUser_id()){
+						//Set logo of rowIconItem equal it's status
+						logo = st.getStatus().toLowerCase(Locale.getDefault());
+					}
+				}
+				//String logo = "calender" + day;
+				
 				int id = getActivity().getResources().getIdentifier(logo,
 						"drawable", getActivity().getPackageName());
 				RowIconItem items = new RowIconItem(trData, id);
 				rowIconItems.add(items);
 			}
-
+			
 			adapter = new CustomIconAdapter(getActivity(), rowIconItems);
 			setListAdapter(adapter);
 			getListView().setOnItemClickListener(this);
@@ -130,7 +150,7 @@ public class ComingToursFragment extends ListFragment implements
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		String tag = "ComingToursFragment onActivityResult";
+		String tag = "MySeatsFragment onActivityResult";
 		if (data==null) {
 			Toast.makeText(getActivity(), "Intent data is null", Toast.LENGTH_SHORT).show();
 		}
@@ -189,8 +209,7 @@ public class ComingToursFragment extends ListFragment implements
 						}
 					}
 				} else {
-					//Toast.makeText(getActivity(), "Bundle b was = null",
-					//		Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "Something went wrong in the while working in the tour. Please check the tour information again!", Toast.LENGTH_SHORT).show();
 				}
 				//Log.d("onTaskComplete", "tours size(): " + toursUpdate.size());
 				setTourList(toursUpdate);

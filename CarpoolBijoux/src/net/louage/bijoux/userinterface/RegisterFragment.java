@@ -30,8 +30,8 @@ import android.widget.Toast;
 
 public class RegisterFragment extends Fragment implements View.OnClickListener{
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
-	public static final String RES_REGISTRATION_OK = "Login was succesfull";
-	public static final String RES_REGISTRATION_NOK = "Login was unsuccesfull";
+	public static final String RES_REGISTRATION_OK = "Registration was succesfull";
+	public static final String RES_REGISTRATION_NOK = "Registration was unsuccesfull";
 	public static final String RES_REGISTRATION_NULL = "Could not connect to the server";
 	TextView txt_unknown_account;
 	EditText txtLastName;
@@ -43,6 +43,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 	EditText txtInfo;
 	EditText txtDriverLicense;
 	Button btnRegister;
+	TextView txtRegResult;
 
 	public RegisterFragment() {
 		// Empty constructor required for fragment subclasses
@@ -66,6 +67,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 		txtRegPassword = (EditText) registerView.findViewById(R.id.txtRegPassword);
 		txtInfo = (EditText) registerView.findViewById(R.id.txtInfo);
 		txtDriverLicense = (EditText) registerView.findViewById(R.id.txtDriverLicense);
+		txtRegResult = (TextView) registerView.findViewById(R.id.txtRegResult);
 		
 		btnRegister = (Button) registerView.findViewById(R.id.btnRegister);
 		btnRegister.setOnClickListener(this);
@@ -99,9 +101,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 	class RegisterLogin extends AsyncTask<String[], Integer, String> {
 		public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 		private static final String TAG_REGISTER_SUCCESFULL = "result";
-
+		private static final String TAG_REGISTER_MESSAGE = "result_message";
+		private static final String TAG_TOMCAT_USER = "result_tomcat_user_creation";
+		private static final String TAG_DEVICE = "result_device_creation";
 		private ProgressDialog mProgressDialog;
 		JSONParser jParser = new JSONParser();
+		String severResult="";
 
 		private Context context;
 		private String[] parameters;
@@ -165,16 +170,28 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 					// Check if login was successfull
 					int success = json.getInt(TAG_REGISTER_SUCCESFULL);
 					if (success == 1) {
-						return RES_REGISTRATION_OK;
+						severResult=json.getString(TAG_REGISTER_MESSAGE);
+						Boolean tomcatUser=json.getBoolean(TAG_TOMCAT_USER);
+						if (tomcatUser==true) {
+							severResult=severResult+"\nYou're account is waiting for approval.";
+							String deviceRegistration=json.getString(TAG_DEVICE);
+							if (deviceRegistration=="Message successfully sent!") {
+								severResult=severResult+"\nAn e-mail has been sent to welcome you on our carpool platform!";
+							}
+						}
+						return severResult;						
 					} else {
-						return RES_REGISTRATION_NOK;
+						severResult=RES_REGISTRATION_NOK;
+						return severResult;
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
-					return RES_REGISTRATION_NOK;
+					severResult=RES_REGISTRATION_NOK;
+					return severResult;
 				}
 			} else {
-				return RES_REGISTRATION_NULL;
+				severResult=RES_REGISTRATION_NULL;
+				return severResult;
 			}
 
 		}
@@ -187,9 +204,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			mProgressDialog.dismiss();
-			getActivity().finish();
-			startActivity(getActivity().getIntent());
-			Toast.makeText(getActivity(), result,Toast.LENGTH_LONG).show();	
+			txtRegResult.setText(result);
+			//Toast.makeText(getActivity(), result,Toast.LENGTH_LONG).show();	
 		}
 	}
 }

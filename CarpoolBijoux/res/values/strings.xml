@@ -28,6 +28,7 @@
         <item>Register</item>
         <item>My Team</item>
         <item>Approve Member</item>
+        <item>Approve Registration</item>
         <item>Admin</item>
     </string-array>
     <string-array name="team_array">
@@ -84,6 +85,7 @@
     <string name="frg_register_info">About me</string>
     <string name="frg_register_driverlicense">Driverslicense</string>
     <string name="frg_register_btn_register">Register</string>
+    <string name="frg_register_result">Registration result</string>
 
     <!-- list_item -->
     <string name="list_item_img_description">Image</string>
@@ -490,6 +492,7 @@
     <string name="act_tour_btnActTourUpdate">Update tour</string>
     <string name="act_tour_btnActTourCreate">Create tour</string>
     <string name="act_tour_btnActTourSeatRequest">Request Seat</string>
+    <string name="act_tour_btnActTourSeatCancel">Cancel Seat request</string>
     <string name="act_tour_txtActTourPassengers">Passengers</string>
     <string name="act_tour_seat_choice_pending">Pending</string>
     <string name="act_tour_seat_choice_approved">Approved</string>
@@ -500,4 +503,18 @@
     <string name="act_tour_actb_new_tour">New Tour</string>
     <string name="act_tour_actb_del_tour">Delete Tour</string>
     <string name="act_tour_actb_del_tour_canceled">Deletion was canceled</string>
+    
+    <!-- Fragment MyTeamFragment -->
+    <string name="frg_myteam_menu_delete_tm">No longer in my team</string>
+    <string name="frg_myteam_menu_delete_canceled">Action canceled</string>
+    
+    <!-- NoticeDialogFragmentMultiChoice -->
+    <string name="dia_multi_listener_title">Select teams</string>
+    <string name="dia_multi_listener_ok">OK</string>
+    <string name="dia_multi_listener_cancel">Cancel</string>
+    
+    <!-- ApproveRegFragment -->
+    <string name="frg_approve_reg_menu_approve_member">Approve Member</string>
+    <string name="frg_approve_reg_menu_decline_member">Decline Member</string>
+    
 </resources>

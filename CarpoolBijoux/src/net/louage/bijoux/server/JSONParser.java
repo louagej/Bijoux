@@ -119,7 +119,6 @@ public class JSONParser {
 	public static User getUserfromJson(JSONObject json_user) throws JSONException {
 		User user = new User();
 		user.setUser_id(Integer.parseInt(json_user.getString(User.TAG_ID)));
-		user.setUsername(json_user.getString(User.TAG_USERNAME));
 		Date activationDate = DateTime.getDateSQLiteString(json_user.getString(User.TAG_ACTIVATION));
 		user.setActivation(activationDate);
 		user.setLastname(json_user.getString(User.TAG_LASTNAME));
@@ -127,7 +126,15 @@ public class JSONParser {
 		user.setEmail(json_user.getString(User.TAG_EMAIL));
 		user.setPhone(json_user.getString(User.TAG_PHONE));
 		user.setInfo(json_user.getString(User.TAG_INFO));
+		Date updateAtDate=DateTime.getDateTimeSQLiteString(json_user.getString(User.TAG_UPDATED_AT));
+		user.setUpdate_at(updateAtDate);
 		user.setDriverlicense(json_user.getString(User.TAG_DRIVERLICENSE));
+		int approved = json_user.getInt(User.TAG_APPROVED);
+		if (approved==1) {
+			user.setApproved(true);
+		} else {
+			user.setApproved(false);
+		}
 		return user;
 
 	}
@@ -154,7 +161,7 @@ public class JSONParser {
 	public static Team getTeamfromJson(JSONObject json_team) throws JSONException {
 		Team tm = new Team();
 		tm.setTeam_id(json_team.getInt(Team.TAG_ID));
-		tm.setTeam(json_team.getString(Team.TAG_USER_TEAMNAME));
+		tm.setTeamname(json_team.getString(Team.TAG_USER_TEAMNAME));
 		return tm;
 	}
 	

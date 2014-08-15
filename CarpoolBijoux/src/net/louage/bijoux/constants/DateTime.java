@@ -66,6 +66,24 @@ public abstract class DateTime {
 		}
 		return sqliteDate;
 	}
+	
+	/**
+	 * @param date
+	 * @return String
+	 * This method to return a String that can be saved as a date in SQLite database with the format yyyy-MM-dd HH:mm:ss.
+	 * The Date represents the date in in local time settings, the returned String is converted to the UTC date
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static String getStrSQLiteDateTimeStamp(Date date) {
+		String sqliteDate;
+		sqliteDate = "unknown";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		if (simpleDateFormat != null) {
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			sqliteDate = simpleDateFormat.format(date);
+		}
+		return sqliteDate;
+	}
 
 	/**
 	 * @param String

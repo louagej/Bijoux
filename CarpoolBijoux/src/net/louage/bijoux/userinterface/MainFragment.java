@@ -22,19 +22,16 @@ public class MainFragment extends Fragment {
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
 		switch (selNavDrawItem) {
 		case "Coming Tours":
-			// TODO Build fragment for Coming Tours
 			View commingToursView = inflater.inflate(
 					R.layout.fragment_main, container, false);
 			getActivity().setTitle(selNavDrawItem);
 			return commingToursView;
 		case "My Tours":
-			// TODO Build fragment for My Tours
 			View myToursView = inflater.inflate(R.layout.fragment_main,
 					container, false);
 			getActivity().setTitle(selNavDrawItem);
 			return myToursView;
 		case "My Seats":
-			// TODO Build fragment for My Seats
 			View mySeatsView = inflater.inflate(R.layout.fragment_main,
 					container, false);
 			getActivity().setTitle(selNavDrawItem);

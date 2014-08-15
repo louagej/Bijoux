@@ -37,6 +37,8 @@ public class TourAsyncGetTours extends
 	private static final String TAG_GET_SUCCESFULL = "result";
 	private static final String TAG_TOUR_INFO_RESULT = "tour_list";
 	private static final String TAG_USER_TOURS = "tours";
+	private static final String TAG_USER_INFO_RESULT = "users_list";
+	private static final String TAG_USER_USERS = "users";
 	private static final String TAG_TOUR_SEATS = "tour_seats";
 	private static final String TAG_SEATS = "seats";
 	private static final String TAG_USER = "user";
@@ -82,12 +84,12 @@ public class TourAsyncGetTours extends
 		// Check if installation was already done by getting Universally
 		// unique identifier
 		String instalId = Installation.id(context);
-		Log.d(tag + " Installation.id uuid: ", instalId);
+		//Log.d(tag + " Installation.id uuid: ", instalId);
 		UUID uid = UUID.fromString(instalId);
 		Long lng = uid.getMostSignificantBits();
-		Log.d(tag, "getMostSignificantBits(): " + lng);
+		//Log.d(tag, "getMostSignificantBits(): " + lng);
 		instalId = Long.toString(lng);
-		Log.d(tag, "Long.toString(lng): " + instalId);
+		//Log.d(tag, "Long.toString(lng): " + instalId);
 		params1.add(new BasicNameValuePair("uuid", instalId));
 		User appUser = SharedPreferences.getUser(context);
 		ArrayList<Team> teams = appUser.getMemberOf();
@@ -96,7 +98,7 @@ public class TourAsyncGetTours extends
 		for (int i = 0; i < teams.size(); i++) {
 			Team team = new Team();
 			team = teams.get(i);
-			tm = tm + team.getTeam();
+			tm = tm + team.getTeamname();
 			if (i < teams.size() - 1) {
 				tm = tm + ",";
 			}
@@ -105,7 +107,7 @@ public class TourAsyncGetTours extends
 		// String teamParam=teamNames.toString();
 		// String teamParam=tm.toString();
 		params1.add(new BasicNameValuePair("teams", tm));
-		Log.d("Check params1: ", "teams: " + tm);
+		//Log.d("Check params1: ", "teams: " + tm);
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL, "GET",
 				params1);
@@ -117,11 +119,9 @@ public class TourAsyncGetTours extends
 				int success = json.getInt(TAG_GET_SUCCESFULL);
 				if (success == 1) {
 					//Log.d("success GetTours: ", json.toString());
-					JSONObject json_tour_list = json
-							.getJSONObject(TAG_TOUR_INFO_RESULT);
+					JSONObject json_tour_list = json.getJSONObject(TAG_TOUR_INFO_RESULT);
 					//Log.d("JSON tour_list: ", json_tour_list.toString());
-					JSONArray json_tours = json_tour_list
-							.getJSONArray(TAG_USER_TOURS);
+					JSONArray json_tours = json_tour_list.getJSONArray(TAG_USER_TOURS);
 					//Log.d("JSON tours: ", json_tours.toString());
 					ArrayList<Tour> tours = new ArrayList<Tour>();
 					for (int i = 0; i < json_tours.length(); i++) {
@@ -157,8 +157,45 @@ public class TourAsyncGetTours extends
 						}
 						tr.setSeats(seats);
 						tours.add(tr);
+					}			
+					//Log.d("Try Catch: ", "OK building Object tours");
+					JSONObject json_user_list = json.getJSONObject(TAG_USER_INFO_RESULT);
+					//Log.d("JSON tour_list: ", json_tour_list.toString());
+					JSONArray json_users = json_user_list.getJSONArray(TAG_USER_USERS);
+					//Log.d("JSON tours: ", json_tours.toString());
+					ArrayList<User> users = new ArrayList<User>();
+					for (int i = 0; i < json_users.length(); i++) {
+						JSONObject json_user = json_users.getJSONObject(i);
+						JSONObject json_user_detail = json_user.getJSONObject(TAG_USER);
+						User teamUser=JSONParser.getUserfromJson(json_user_detail);
+						//Log.d(tag, "teamUser from getUserfromJson: "+teamUser.getLastname());
+						users.add(i, teamUser);
 					}
-					Log.d("Try Catch: ", "OK building Object tours");
+					//Log.d(tag, "users.size(): "+users.size());
+					SchemaHelper sh = new SchemaHelper(context);
+					sh.createOrUpdateUser(users);
+					//Check if users are in SQLiteDB
+					ArrayList<User> sqLiteUsers = new ArrayList<User>();
+					sqLiteUsers = sh.getUsers();
+					//Check if users from a previous installation need to be removed
+					for (int i = 0; i < sqLiteUsers.size(); i++) {
+						int compareIndex=-1;
+						User sqLiteUser = sqLiteUsers.get(i);
+						for (int j = 0; j < users.size(); j++) {
+							User teamMember = users.get(j);
+							if (sqLiteUser.getUser_id()==teamMember.getUser_id()) {
+								compareIndex=i;
+							}
+						}
+						if (compareIndex==-1) {
+							//There wasn't found a match between the user received from json and the user in the database
+							//this user should be removed
+							sh.userDelete(sqLiteUser.getUser_id());
+							Log.d(tag, "User"+ sqLiteUser.getFirstname()+" "+ sqLiteUser.getLastname()+" was removed from the sqLite database: ");
+						}
+						//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
+					}
+					sh.close();
 					return tours;
 				} else {
 					Log.d("Try Catch: ", "NOK building Object tours");
@@ -223,7 +260,6 @@ public class TourAsyncGetTours extends
 	private User getUserFromJson(JSONObject json_user) throws JSONException {
 		User tourUser = new User();
 		tourUser.setUser_id(Integer.parseInt(json_user.getString(User.TAG_ID)));
-		tourUser.setUsername(json_user.getString(User.TAG_USERNAME));
 		Date activationDate = DateTime.getDateSQLiteString(json_user
 				.getString(User.TAG_ACTIVATION));
 		tourUser.setActivation(activationDate);
@@ -269,7 +305,7 @@ public class TourAsyncGetTours extends
 	protected void onPostExecute(ArrayList<Tour> tours) {
 		super.onPostExecute(tours);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(tours);
 	}
 

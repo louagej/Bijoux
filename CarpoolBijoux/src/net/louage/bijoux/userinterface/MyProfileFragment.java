@@ -52,10 +52,6 @@ public class MyProfileFragment extends ListFragment implements
 	EditText etxt_my_profile_phone;
 	EditText etxt_my_profile_info;
 	EditText etxt_my_profile_driverlicense;
-	// Example array until php script can return array of cars
-	// TODO get Array from MySQL
-	// String[] carListData = { "1-DGH-782, Audi, A3, BE",
-	// "1-SFG-125, Hyundai, i20, BE", "1-TSF-964, Mercedes, A, BE" };;
 	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 	TypedArray menuIcons;
 	CustomIconAdapter adapter;
@@ -128,8 +124,10 @@ public class MyProfileFragment extends ListFragment implements
 			appUser.setEmail(email);
 			String phone = etxt_my_profile_phone.getText().toString();
 			appUser.setPhone(phone);
-			String username = appUser.getUsername();
-			String password = appUser.getPassword();
+			//String username = appUser.getUsername();
+			String username = SharedPreferences.getUsername(ma);
+			//String password = appUser.getPassword();
+			String password = SharedPreferences.getPassword(ma);
 			String info = etxt_my_profile_info.getText().toString();
 			appUser.setInfo(info);
 			String driverlicense = etxt_my_profile_driverlicense.getText()

@@ -1,6 +1,12 @@
 package net.louage.bijoux.sqlite;
 
+import java.util.ArrayList;
+import java.util.Date;
+
+import net.louage.bijoux.constants.DateTime;
 import net.louage.bijoux.model.Country;
+import net.louage.bijoux.model.User;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -12,8 +18,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "SQLiteCarpoolBijoux";
 	private String path;
-	private SQLiteDatabase myDataBase; 
-	
+	private SQLiteDatabase myDataBase;
+
 	// TODO Create child class of SchemaHelper for each object
 	// TODO Interface for all crud methods to implement polymorphism
 	// E.g.: private tours, public tours, ... trough interfacing...
@@ -21,32 +27,45 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	// with multiple tables
 
 	// TOGGLE THIS NUMBER FOR UPDATING TABLES AND DATABASE
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 7;
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		//Log.v("Schemahelper constructor", "Step 1");
+		// Log.v("Schemahelper constructor", "Step 1");
 		path = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// Create User Table		
+		// Create Team Table
+		db.execSQL("CREATE TABLE IF NOT EXISTS " + TeamTable.TABLE_NAME + " ("
+				+ TeamTable.ID + " INTEGER  NOT NULL PRIMARY KEY,"
+				+ TeamTable.TEAMNAME + " TEXT NOT NULL);");
+		
+		/*// Create User_Team Table
+		db.execSQL("CREATE TABLE IF NOT EXISTS " + UserTeamTable.TABLE_NAME + " ("
+				+ UserTeamTable.USER_ID + " INTEGER  NOT NULL PRIMARY KEY,"
+				+ UserTeamTable.TEAM_ID + " TEXT NOT NULL,"
+				+"PRIMARY KEY ("+UserTeamTable.USER_ID+","+UserTeamTable.TEAM_ID+"));");*/
+		
+		// Create User Table
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + UserTable.TABLE_NAME + " ("
 				+ UserTable.ID + " INTEGER  NOT NULL PRIMARY KEY,"
-				+ UserTable.USERNAME + " TEXT NOT NULL," + UserTable.PASSWORD
-				+ " TEXT NOT NULL," + UserTable.ACTIVATION + " DATE,"
-				+ UserTable.LASTNAME + " TEXT NOT NULL," + UserTable.FIRSTNAME
-				+ " TEXT NOT NULL," + UserTable.EMAIL + " TEXT NOT NULL,"
-				+ UserTable.PHONE + " TEXT," + UserTable.INFO + " TEXT,"
-				+ " TEXT  NULL" + UserTable.UPDATE_AT
-				+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,"
-				+ UserTable.DRIVERLICENSE + " TEXT  NULL);"
-				+ " CREATE TRIGGER user_upd_datetime AFTER UPDATE ON "
+				+ UserTable.ACTIVATION + " DATE,"
+				+ UserTable.LASTNAME + " TEXT NOT NULL,"
+				+ UserTable.FIRSTNAME + " TEXT NOT NULL,"
+				+ UserTable.EMAIL + " TEXT NOT NULL,"
+				+ UserTable.PHONE + " TEXT,"
+				+ UserTable.INFO + " TEXT,"
+				+ UserTable.UPDATE_AT + " TIMESTAMP,"
+				//+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL,"
+				+ UserTable.DRIVERLICENSE + " TEXT  NULL,"
+				+ UserTable.APPROVED + " BOOLEAN);");
+				/*+ " CREATE TRIGGER user_upd_datetime AFTER UPDATE ON "
 				+ UserTable.TABLE_NAME + "  BEGIN UPDATE "
 				+ UserTable.TABLE_NAME + " SET " + UserTable.UPDATE_AT
 				+ " datetime('now') WHERE  " + UserTable.ID + "= new"
-				+ UserTable.ID + "; END;");
+				+ UserTable.ID + "; END;");*/
 		// Create Vehicle Table
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + VehicleTable.TABLE_NAME
 				+ " (" + VehicleTable.ID + " INTEGER  NOT NULL PRIMARY KEY,"
@@ -94,14 +113,21 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ TrackingTable.ID + "= new" + TrackingTable.ID + "; END;");
 
 		// Create Country Table
-		String countryQuery="CREATE TABLE IF NOT EXISTS " + CountryTable.TABLE_NAME
-				+ " (" + CountryTable.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+		String countryQuery = "CREATE TABLE IF NOT EXISTS "
+				+ CountryTable.TABLE_NAME + " (" + CountryTable.ID
+				+ " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
 				+ CountryTable.ISO + " TEXT NOT NULL, "
 				+ CountryTable.DESCRIPTION + " TEXT  NULL); ";
 		db.execSQL(countryQuery);
-		Log.d("countryQuery",countryQuery);
-		String countryInsertQuery="INSERT INTO " + CountryTable.TABLE_NAME
-				+ " SELECT 1 AS " + CountryTable.ID + ", 'AD' AS " + CountryTable.ISO + ", 'Andorra' AS "	+ CountryTable.DESCRIPTION
+		Log.d("countryQuery", countryQuery);
+		String countryInsertQuery = "INSERT INTO "
+				+ CountryTable.TABLE_NAME
+				+ " SELECT 1 AS "
+				+ CountryTable.ID
+				+ ", 'AD' AS "
+				+ CountryTable.ISO
+				+ ", 'Andorra' AS "
+				+ CountryTable.DESCRIPTION
 				+ " UNION SELECT  2, 'AE', 'United Arab Emirates'"
 				+ " UNION SELECT  3, 'AF', 'Afghanistan'"
 				+ " UNION SELECT  4, 'AG', 'Antigua and Barbuda'"
@@ -351,37 +377,36 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ " UNION SELECT  248, 'ZM', 'Zambia'"
 				+ " UNION SELECT  249, 'ZW', 'Zimbabwe'";
 		db.execSQL(countryInsertQuery);
-		Log.d("countryInsertQuery",countryInsertQuery);
+		Log.d("countryInsertQuery", countryInsertQuery);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w("LOG_TAG", "Upgrading database from version " + oldVersion
-				+ " to " + newVersion + ", which will destroy all old data");
+		Log.w("LOG_TAG", "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + UserTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + VehicleTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + TourTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + TrackingTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + CountryTable.TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + TeamTable.TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + UserTeamTable.TABLE_NAME);
 		onCreate(db);
 
 	}
-	
+
 	public boolean openDataBase() {
-		//String myPath = path + databaseName;
-		//Log.d(tag, "path = "+myPath);
+		// String myPath = path + databaseName;
+		// Log.d(tag, "path = "+myPath);
 		try {
-			myDataBase = 
-					SQLiteDatabase.openDatabase(
-							path, 
-							null, 
-							SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+			myDataBase = SQLiteDatabase.openDatabase(path, null,
+					SQLiteDatabase.OPEN_READONLY
+							| SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 		} catch (SQLException sqle) {
 			myDataBase = null;
-			//Log.d(tag, "exception in openDataBase()");
+			// Log.d(tag, "exception in openDataBase()");
 			return false;
 		}
-		//Log.d(tag, "returning true from openDataBase()");
+		// Log.d(tag, "returning true from openDataBase()");
 		return true;
 
 	}
@@ -389,54 +414,220 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	@Override
 	public synchronized void close() {
 
-		if(myDataBase != null)
+		if (myDataBase != null)
 			myDataBase.close();
 
 		super.close();
 
 	}
+
+	public Boolean createOrUpdateUser(ArrayList<User> usrs) {
+		SQLiteDatabase sd = getWritableDatabase();
+		String tag="SchemaHelper createOrUpdateUser";
+
+		for (int i = 0; i < usrs.size(); i++) {
+			User usr = usrs.get(i);
+			Boolean sqLiteUser = checkIfUserExists(usr.getUser_id());
+			Log.d(tag, "checkIfUserExists: "+sqLiteUser+" (for user "+usr.getLastname()+" "+usr.getFirstname()+")");
+			if (sqLiteUser == true) {
+				// update user
+				String sqLiteDate = DateTime.getStrSQLiteDateStamp(usr.getActivation());
+				ContentValues cv = new ContentValues();
+				cv.put(UserTable.ID, usr.getUser_id());
+				cv.put(UserTable.ACTIVATION, sqLiteDate);
+				cv.put(UserTable.LASTNAME, usr.getLastname());
+				cv.put(UserTable.FIRSTNAME, usr.getFirstname());
+				cv.put(UserTable.EMAIL, usr.getEmail());
+				cv.put(UserTable.PHONE, usr.getPhone());
+				cv.put(UserTable.INFO, usr.getInfo());
+				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateTimeStamp(usr.getUpdate_at());
+				cv.put(UserTable.UPDATE_AT, sqLiteUpdatedDate);
+				cv.put(UserTable.DRIVERLICENSE, usr.getDriverlicense());
+				Boolean approved = usr.getApproved();
+				if (approved==true) {
+					cv.put(UserTable.APPROVED, 1);
+				} else {
+					cv.put(UserTable.APPROVED, 0);
+				}
+				
+				String whereClause = UserTable.ID + "=?";
+				String[] whereArgs = { Integer.toString(usr.getUser_id()) };
+				sd.update(UserTable.TABLE_NAME, cv, whereClause, whereArgs);
+			} else {
+				// create user
+				String sqLiteDate = DateTime.getStrSQLiteDateStamp(usr.getActivation());
+				ContentValues cv = new ContentValues();
+				cv.put(UserTable.ID, usr.getUser_id());
+				cv.put(UserTable.ACTIVATION, sqLiteDate);
+				cv.put(UserTable.LASTNAME, usr.getLastname());
+				cv.put(UserTable.FIRSTNAME, usr.getFirstname());
+				cv.put(UserTable.EMAIL, usr.getEmail());
+				cv.put(UserTable.PHONE, usr.getPhone());
+				cv.put(UserTable.INFO, usr.getInfo());
+				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateTimeStamp(usr.getUpdate_at());
+				cv.put(UserTable.UPDATE_AT, sqLiteUpdatedDate);
+				cv.put(UserTable.DRIVERLICENSE, usr.getDriverlicense());
+				Boolean approved = usr.getApproved();
+				if (approved==true) {
+					cv.put(UserTable.APPROVED, 1);
+				} else {
+					cv.put(UserTable.APPROVED, 0);
+				}
+				sd.insert(UserTable.TABLE_NAME, null, cv);
+			}
+		}
+		return true;
+	}
 	
+	public ArrayList<User> getUsers() {
+		String tag="SchemaHelper getUsers";
+		SQLiteDatabase sd = getWritableDatabase();
+		ArrayList<User>users=new ArrayList<User>();
+		String selection = UserTable.APPROVED+"=?"; 
+		String[] selectionArgs = new String[] {Integer.toString(1)};
+		Cursor c = sd.query(UserTable.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+		while (c.moveToNext()) {
+			User usr = new User();
+			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
+			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			usr.setActivation(activationDate);
+			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
+			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
+			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
+			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
+			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
+			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			usr.setUpdate_at(updateDate);
+			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
+			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
+			if (approved==1) {
+				usr.setApproved(true);
+			} else {
+				usr.setApproved(false);
+			}
+			
+			users.add(usr);
+			Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
+		}
+		return users;
+	}
+	
+	public ArrayList<User> getUsersToApprove() {
+		String tag="SchemaHelper getUsers";
+		SQLiteDatabase sd = getWritableDatabase();
+		ArrayList<User>users=new ArrayList<User>();
+		String selection = UserTable.APPROVED+"=?";
+		String[] selectionArgs = new String[] {Integer.toString(0)};
+		Cursor c = sd.query(UserTable.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+		while (c.moveToNext()) {
+			User usr = new User();
+			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
+			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			usr.setActivation(activationDate);
+			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
+			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
+			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
+			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
+			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
+			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			usr.setUpdate_at(updateDate);
+			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
+			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
+			if (approved==1) {
+				usr.setApproved(true);
+			} else {
+				usr.setApproved(false);
+			}
+			
+			users.add(usr);
+			Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
+		}
+		return users;
+	}
+	
+	public int userDelete(int user_id){
+		SQLiteDatabase sd = getWritableDatabase();
+		//String tag="SchemaHelper userDelete";
+		String table = UserTable.TABLE_NAME;
+		String whereClause = "_id"+"=?";
+		String[]whereArgs = new String[] {String.valueOf(user_id)};
+		int noRowsAffected=sd.delete(table, whereClause , whereArgs);
+		if (noRowsAffected>0) {
+			return user_id;
+		} else {
+			return -1;
+		}
+	}
+
+	private Boolean checkIfUserExists(int user_id) {
+		String tag="SchemaHelper checkIfUserExists";
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] columns = new String[] { String.valueOf(user_id) };
+		Log.d(tag, "columns: "+ String.valueOf(user_id));
+		String selection = UserTable.ID+ "= ? ";
+		Log.d(tag, "selection: "+ selection);
+		String[] selectionArgs = new String[] { String.valueOf(user_id) };
+		Log.d(tag, "selectionArgs: "+ String.valueOf(user_id));
+		Cursor c = sd.query(UserTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		if (c.moveToFirst()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public Cursor getCountries() {
 		SQLiteDatabase sd = getWritableDatabase();
 		// Define the columns we want to get from SQLite
-		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO, CountryTable.DESCRIPTION};
+		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO,
+				CountryTable.DESCRIPTION };
 		// There are no selection arguments
-		//String[] selectionArgs = new String[] { };
-		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, null,	null, null, null, null);
+		// String[] selectionArgs = new String[] { };
+		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, null, null, null,
+				null, null);
 		return c;
 	}
 
 	public Cursor getCountryDescription(String iso3166) {
 		SQLiteDatabase sd = getWritableDatabase();
-		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO, CountryTable.DESCRIPTION };
+		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO,
+				CountryTable.DESCRIPTION };
 		String[] selectionArgs = new String[] { iso3166 };
-		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.ISO+ "= ? ", selectionArgs, null, null, null);
+		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.ISO
+				+ "= ? ", selectionArgs, null, null, null);
 		return c;
 	}
-	
+
 	public Country getCountry(String description) {
 		SQLiteDatabase sd = getWritableDatabase();
-		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO, CountryTable.DESCRIPTION };
+		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO,
+				CountryTable.DESCRIPTION };
 		String[] selectionArgs = new String[] { description };
-		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.DESCRIPTION + "= ? ", selectionArgs, null, null, null);
+		Cursor c = sd.query(CountryTable.TABLE_NAME, columns,
+				CountryTable.DESCRIPTION + "= ? ", selectionArgs, null, null,
+				null);
 		Country country = new Country();
-		while (c.moveToNext()) {			
+		while (c.moveToNext()) {
 			country.setId(c.getInt(c.getColumnIndex(CountryTable.ID)));
-			country.setDescription(c.getString(c.getColumnIndex(CountryTable.DESCRIPTION)));
+			country.setDescription(c.getString(c
+					.getColumnIndex(CountryTable.DESCRIPTION)));
 			country.setIso3166(c.getString(c.getColumnIndex(CountryTable.ISO)));
 		}
 		return country;
 	}
-	
+
 	public Country getCountryFromIso3166(String iso3166) {
 		SQLiteDatabase sd = getWritableDatabase();
-		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO, CountryTable.DESCRIPTION };
+		String[] columns = new String[] { CountryTable.ID, CountryTable.ISO,
+				CountryTable.DESCRIPTION };
 		String[] selectionArgs = new String[] { iso3166 };
-		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.ISO + "= ? ", selectionArgs, null, null, null);
+		Cursor c = sd.query(CountryTable.TABLE_NAME, columns, CountryTable.ISO
+				+ "= ? ", selectionArgs, null, null, null);
 		Country country = new Country();
-		while (c.moveToNext()) {			
+		while (c.moveToNext()) {
 			country.setId(c.getInt(c.getColumnIndex(CountryTable.ID)));
-			country.setDescription(c.getString(c.getColumnIndex(CountryTable.DESCRIPTION)));
+			country.setDescription(c.getString(c
+					.getColumnIndex(CountryTable.DESCRIPTION)));
 			country.setIso3166(c.getString(c.getColumnIndex(CountryTable.ISO)));
 		}
 		return country;

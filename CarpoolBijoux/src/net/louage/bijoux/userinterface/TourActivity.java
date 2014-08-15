@@ -32,11 +32,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.method.DateKeyListener;
-import android.text.method.DigitsKeyListener;
-import android.text.method.TextKeyListener;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -161,7 +156,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		for (int i = 0; i < teams.size(); i++) {
 			Team tm = new Team();
 			tm = teams.get(i);
-			listTeams.add("Team " + tm.getTeam());
+			listTeams.add("Team " + tm.getTeamname());
 			if (tm.getTeam_id() == tr.getTeam().getTeam_id()) {
 				spinnerSelectionTeam = i;
 			}
@@ -344,6 +339,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	private void setSeatList(ArrayList<Seat> sts) {
 		rowIconItems.clear();
 		seats = sts;
+		Boolean requestDone=false;
 		for (int i = 0; i < seats.size(); i++) {
 			Seat st = seats.get(i);
 			String payment;
@@ -351,6 +347,9 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 				payment = "Done";
 			} else {
 				payment = "Still open";
+			}
+			if (st.getUser_id()==appUser.getUser_id()) {
+				requestDone=true;
 			}
 			String stData = "User id: " + st.getUser_id() + "\nPayment: "
 					+ payment;
@@ -360,7 +359,12 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			RowIconItem items = new RowIconItem(stData, id);
 			rowIconItems.add(items);
 		}
-
+		
+		if (requestDone==true) {
+			btnActTourSeatRequest.setText(R.string.act_tour_btnActTourSeatCancel);
+		}else {
+			btnActTourSeatRequest.setText(R.string.act_tour_btnActTourSeatRequest);
+		}
 		adapter = new CustomIconAdapter(this, rowIconItems);
 		// adapter.notifyDataSetChanged();
 		Log.d("setListAdapter: ", "TourActivity Started");
@@ -422,7 +426,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 					.getUser(this));
 			tr.setVehicle(vehicles.get(0));
 			tr.setTeam(teams.get(0));
-			Log.d(tag, "Team: " + tr.getTeam().getTeam());
+			Log.d(tag, "Team: " + tr.getTeam().getTeamname());
 			Log.d(tag, "Team id: " + tr.getTeam().getTeam_id());
 			btnActTourSeatRequest.setVisibility(View.INVISIBLE);
 			btnActTourUpdate.setVisibility(View.VISIBLE);
@@ -493,8 +497,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		Seat st = tr.getSeats().get(info.position);
 		switch (item.getItemId()) {
 		case R.id.seat_status_approved:
@@ -519,12 +522,10 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			break;
 		case R.id.seat_status_delete:
 			// Change seat object
-			st.setStatus(getResources().getString(
-					R.string.act_tour_seat_choice_delete));
+			st.setStatus(getResources().getString(R.string.act_tour_seat_choice_delete));
 			// Change seat in mysql
 			String[] paramsDeclined = getSeatParams(st);
-			new SeatAsyncDelete(this, new DeleteSeatTaskCompleteListener(),
-					paramsDeclined).execute();
+			new SeatAsyncDelete(this, new DeleteSeatTaskCompleteListener(),	paramsDeclined).execute();
 			break;
 		case R.id.seat_status_pending:
 			// Change seat object
@@ -645,7 +646,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		String tourId = Integer.toString(tr.getTour_id());
 		String userId = Integer.toString(tr.getUser().getUser_id());
 		String vehicleId = Integer.toString(tr.getVehicle().getVehicle_id());
-		Log.d(tag, "Teamname: " + tr.getTeam().getTeam());
+		Log.d(tag, "Teamname: " + tr.getTeam().getTeamname());
 		Log.d(tag, "Team_id: " + tr.getTeam().getTeam_id());
 		String teamId = Integer.toString(tr.getTeam().getTeam_id());
 		String fromAddressLine0 = tr.getFromAddress().getAddressLine(0);
@@ -679,19 +680,43 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 					.execute();
 			break;
 		case R.id.btnActTourSeatRequest:
-			// appUser sends a seat request for this tour
-			Seat st = new Seat();
-			st.setSeat_id(0);
-			st.setCreated_by_user_id(appUser.getUser_id());
-			st.setDevice_id(Installation.getInstallationID(this));
-			st.setPaid(false);
-			st.setStatus("Pending");
-			st.setTour_id(tr.getTour_id());
-			st.setUser_id(appUser.getUser_id());
-			String[] paramsPaid = getSeatParams(st);
-			new SeatAsyncCreateUpdate(this,
-					new CreateOrUpdateSeatTaskCompleteListener(), paramsPaid)
-					.execute();
+			String btnSeatRequest=getResources().getString(R.string.act_tour_btnActTourSeatRequest);
+			if (btnActTourSeatRequest.getText().toString()==btnSeatRequest) {
+				// appUser sends a seat request for this tour
+				Seat st = new Seat();
+				st.setSeat_id(0);
+				st.setCreated_by_user_id(appUser.getUser_id());
+				st.setDevice_id(Installation.getInstallationID(this));
+				st.setPaid(false);
+				st.setStatus("Pending");
+				st.setTour_id(tr.getTour_id());
+				st.setUser_id(appUser.getUser_id());
+				String[] paramsPaid = getSeatParams(st);
+				new SeatAsyncCreateUpdate(this,	new CreateOrUpdateSeatTaskCompleteListener(), paramsPaid).execute();
+			} else {
+				//User wants to remove the seat request
+				int deleteSeatAtIndex=-1;
+				for (int i = 0; i < seats.size(); i++) {
+					Seat cancelSeat = seats.get(i);
+					if (appUser.getUser_id()==cancelSeat.getUser_id()) {
+						cancelSeat.setStatus(getResources().getString(R.string.act_tour_seat_choice_delete));
+						deleteSeatAtIndex=i;
+					}
+				}
+				/*Check if the deleteSeatAtIndex has been changed
+				 *This means the the object to be deleted was found in the ArrayList seats 
+				 */
+				if (deleteSeatAtIndex>=0) {
+					/*Get the Seat object from the ArrayList
+					 *and Start Async task for deleting record in MySQL database
+					 */
+					Seat st = seats.get(deleteSeatAtIndex);
+					// Change seat in mysql
+					String[] paramsDeclined = getSeatParams(st);
+					new SeatAsyncDelete(this, new DeleteSeatTaskCompleteListener(),	paramsDeclined).execute();
+				}
+			}
+
 			break;
 		default:
 			break;

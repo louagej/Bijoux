@@ -76,4 +76,10 @@
         android:layout_height="wrap_content"
         android:text="@string/frg_register_btn_register" />
 
+    <TextView
+        android:id="@+id/txtRegResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/frg_register_result" />
+
 </LinearLayout>

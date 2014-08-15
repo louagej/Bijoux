@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/approve_registration" android:title="@string/frg_approve_reg_menu_approve_member"></item>
+    <item android:id="@+id/decline_registration" android:title="@string/frg_approve_reg_menu_decline_member"></item>
+    
+
+</menu>

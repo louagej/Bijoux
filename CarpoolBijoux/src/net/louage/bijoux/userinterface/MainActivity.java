@@ -262,8 +262,7 @@ public class MainActivity extends Activity {
 			buildMyTours(position);
 			break;
 		case "My Seats":
-			// TODO Build listeners for My Seats
-			buildUnknowAccount(position);
+			buildMySeats(position);
 			break;
 		case "My Profile":
 			buildMyProfile(position);
@@ -275,12 +274,14 @@ public class MainActivity extends Activity {
 			buildRegister(position);
 			break;
 		case "My Team":
-			// TODO Build listeners for My Team
-			buildUnknowAccount(position);
+			buildMyTeam(position);
 			break;
 		case "Approve Member":
 			// TODO Build listeners for Approve Member
 			buildUnknowAccount(position);
+			break;
+		case "Approve Registration":
+			buildApproveRegistration(position);
 			break;
 		case "Admin":
 			// TODO Build listeners for Admin
@@ -297,6 +298,53 @@ public class MainActivity extends Activity {
 		mDrawerList.setItemChecked(position, true);
 		setTitle(getmNavDrawerTitles()[position]);
 		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+	
+	private void buildApproveRegistration(int position) {
+		// update the main content by replacing fragments
+		Fragment fragment = new ApproveRegFragment();
+		Bundle args = new Bundle();
+
+		// - Inserts an int value into the mapping of this Bundle,
+		// replacing any existing value for the given key.
+		args.putInt(ApproveRegFragment.ARG_NAVDRAWER_NUMBER, position);
+		fragment.setArguments(args);
+
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+		// update selected item and title, then close the drawer
+	}
+	
+	private void buildMyTeam(int position) {
+		// update the main content by replacing fragments
+		Fragment fragment = new MyTeamFragment();
+		Bundle args = new Bundle();
+
+		// - Inserts an int value into the mapping of this Bundle,
+		// replacing any existing value for the given key.
+		args.putInt(MainFragment.ARG_NAVDRAWER_NUMBER, position);
+		fragment.setArguments(args);
+
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
+		// update selected item and title, then close the drawer
+	}
+	
+	private void buildMySeats(int position) {
+		// update the main content by replacing fragments
+		Fragment fragment = new MySeatsFragment();
+		Bundle args = new Bundle();
+
+		// - Inserts an int value into the mapping of this Bundle,
+		// replacing any existing value for the given key.
+		args.putInt(MainFragment.ARG_NAVDRAWER_NUMBER, position);
+		fragment.setArguments(args);
+
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
+		// update selected item and title, then close the drawer
 	}
 
 	private void buildMyProfile(int position) {
@@ -380,14 +428,13 @@ public class MainActivity extends Activity {
 	}
 
 	private void buildMyTours(int position) {
-		// TODO Build listeners for My Tours
 		// update the main content by replacing fragments
-		Fragment fragment = new MainFragment();
+		Fragment fragment = new MyToursFragment();
 		Bundle args = new Bundle();
 
 		// - Inserts an int value into the mapping of this Bundle,
 		// replacing any existing value for the given key.
-		args.putInt(MainFragment.ARG_NAVDRAWER_NUMBER, position);
+		args.putInt(MyToursFragment.ARG_NAVDRAWER_NUMBER, position);
 		fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getFragmentManager();

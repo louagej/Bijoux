@@ -6,9 +6,6 @@ import java.util.Date;
 public class User {
 	private int user_id;
 	public static final String TAG_ID = "_id";
-	private String username;
-	public static final String TAG_USERNAME = "username";
-	private String password;
 	private Date activation;
 	public static final String TAG_ACTIVATION = "activation";
 	private String lastname;
@@ -33,6 +30,8 @@ public class User {
 	public static final String TAG_MANAGER_OF = "teams";
 	private ArrayList<Vehicle> vehicles;
 	public static final String TAG_VEHICLES = "vehicles";
+	private Boolean approved;
+	public static final String TAG_APPROVED = "approved";
 	
 	public User() {
 		super();
@@ -43,18 +42,7 @@ public class User {
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+
 	public Date getActivation() {
 		return activation;
 	}
@@ -126,6 +114,12 @@ public class User {
 	}
 	public void setManagerOf(ArrayList<Team> managerOf) {
 		this.managerOf = managerOf;
+	}
+	public Boolean getApproved() {
+		return approved;
+	}
+	public void setApproved(Boolean approved) {
+		this.approved = approved;
 	}
 	
 

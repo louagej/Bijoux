@@ -12,6 +12,7 @@ import net.louage.bijoux.R;
 import net.louage.bijoux.constants.DateTime;
 import net.louage.bijoux.constants.SharedPreferences;
 import net.louage.bijoux.model.Tour;
+import net.louage.bijoux.model.User;
 import net.louage.bijoux.server.AsTskArrayListCompleteListener;
 import net.louage.bijoux.server.TourAsyncGetTours;
 import android.app.Activity;
@@ -26,14 +27,14 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ComingToursFragment extends ListFragment implements
-		OnItemClickListener {
+public class MyToursFragment extends ListFragment implements OnItemClickListener {
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
 	CustomIconAdapter adapter;
 	private List<RowIconItem> rowIconItems;
 	private ArrayList<Tour> tours = new ArrayList<Tour>();
-	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating ComingToursFragment
-	public ComingToursFragment() {
+	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating MyToursFragment
+	private User appUser;
+	public MyToursFragment() {
 		// Empty constructor required for fragment subclasses
 	}
 
@@ -43,22 +44,21 @@ public class ComingToursFragment extends ListFragment implements
 		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
 		MainActivity ma = (MainActivity) getActivity();
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
-		View comingToursView = inflater.inflate(R.layout.fragment_coming_tours,
-				container, false);
+		View myToursView = inflater.inflate(R.layout.fragment_my_tours, container, false);
 		getActivity().setTitle(selNavDrawItem);
 		String[] params = getTourParams();
 		new TourAsyncGetTours(getActivity(),
 				new TourAsyncGetToursTaskCompleteListener(), params).execute();
 		rowIconItems = new ArrayList<RowIconItem>();
-		SharedPreferences.getUser(ma);
-		return comingToursView;
+		appUser=SharedPreferences.getUser(ma);
+		return myToursView;
 	}
 
 	class TourAsyncGetToursTaskCompleteListener implements
 			AsTskArrayListCompleteListener<Tour> {
 		@Override
 		public void onTaskComplete(ArrayList<Tour> tours) {
-			ComingToursFragment.this.onTaskComplete(tours);
+			MyToursFragment.this.onTaskComplete(tours);
 
 		}
 
@@ -71,11 +71,20 @@ public class ComingToursFragment extends ListFragment implements
 	}
 
 	public void onTaskComplete(ArrayList<Tour> trs) {
-		setTourList(trs);
+		ArrayList<Tour> tempTours = new ArrayList<Tour>();
+		for (int i = 0; i < trs.size(); i++) {
+			Tour tr = trs.get(i);
+			//Check if the tour will be executed by the appUser
+			if(appUser.getUser_id()==tr.getUser().getUser_id()){
+				//Add tour to temporary ArrayList tempTours
+				tempTours.add(tr);
+				}
+			}
+		setTourList(tempTours);
 	}
 
 	private void setTourList(ArrayList<Tour> trs) {
-		String tag="ComingToursFragment setTourList";
+		String tag="MyToursFragment setTourList";
 		//tours.clear();
 		Log.d(tag, "trs size: "+trs.size());
 		rowIconItems.clear();
@@ -106,7 +115,7 @@ public class ComingToursFragment extends ListFragment implements
 				RowIconItem items = new RowIconItem(trData, id);
 				rowIconItems.add(items);
 			}
-
+			
 			adapter = new CustomIconAdapter(getActivity(), rowIconItems);
 			setListAdapter(adapter);
 			getListView().setOnItemClickListener(this);
@@ -130,7 +139,7 @@ public class ComingToursFragment extends ListFragment implements
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		String tag = "ComingToursFragment onActivityResult";
+		String tag = "MyToursFragment onActivityResult";
 		if (data==null) {
 			Toast.makeText(getActivity(), "Intent data is null", Toast.LENGTH_SHORT).show();
 		}
