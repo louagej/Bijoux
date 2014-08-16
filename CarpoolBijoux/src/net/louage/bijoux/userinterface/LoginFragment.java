@@ -263,9 +263,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
 									JSONObject json_user_teamleder_of = json_user_info.getJSONObject(TAG_USER_TEAMLEADER_OF);
 									JSONArray json_teamleaderteams = json_user_teamleder_of.getJSONArray(User.TAG_MANAGER_OF);
+									Log.d(tag, "json_teamleaderteams.length(): "+json_teamleaderteams.length());
 									ArrayList<Team> managedTeams = new ArrayList<Team>();
 									for (int i = 0; i < json_teamleaderteams.length(); i++) {
-										JSONObject json_team = json_teams.getJSONObject(i);
+										JSONObject json_team = json_teamleaderteams.getJSONObject(i);
 										String teamname = json_team.getString(Team.TAG_USER_TEAMNAME);
 										int teamid = Integer.parseInt(json_team.getString(Team.TAG_ID));
 										Team team = new Team(teamname, teamid);

@@ -187,7 +187,9 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 		case R.id.decline_registration:
 			//Ask administrator what teams the registration is for must be removed from
 			approvalStatus=false;
-			showDialog(DIALOG_FRAGMENT);
+			teamnames=new String[]{};
+			String[] paramsApproveReg = getApproveRegParams(userToApprove);
+    		new UserApproveRegAsyncUpdate(ma, new UserRegistrationUpdateTaskCompleteListener(),paramsApproveReg).execute();
 			break;
 		default:
 			break;
@@ -217,7 +219,14 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 				if (userArrayListIndex>=0) {
 					tempApproveRegUsers.remove(userArrayListIndex);
 					setUserList(tempApproveRegUsers);
-					Toast.makeText(ma, "User was approved", Toast.LENGTH_LONG).show();
+					if (approvalStatus==false) {
+						Toast.makeText(ma, "Canceled registration: The user was removed from the userlist.", Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(ma, "User was approved", Toast.LENGTH_LONG).show();
+						approvalStatus=false;
+					}
+					userToApprove=null;
+					
 				} else {
 					Toast.makeText(ma, "User wasn't approved", Toast.LENGTH_LONG).show();
 				}
@@ -238,7 +247,11 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 		String user_id_to_remove = Integer.toString(usr.getUser_id());
 		String teams_to_approve_member = "";
 		for (int i = 0; i < teamnames.length; i++) {
-			teams_to_approve_member=teams_to_approve_member+","+teamnames[i];
+			teams_to_approve_member=teams_to_approve_member+teamnames[i];
+			if (i+1<teamnames.length) {
+				teams_to_approve_member=teams_to_approve_member+",";
+			}
+			
 		}
 		String as = Boolean.toString(approvalStatus);
 		String[] params = new String[] { user_id, user_id_to_remove,teams_to_approve_member, as};

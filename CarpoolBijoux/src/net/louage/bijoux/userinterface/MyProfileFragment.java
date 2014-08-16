@@ -46,6 +46,7 @@ public class MyProfileFragment extends ListFragment implements
 	public static final String RES_UPDATE_NOK = "Update was unsuccessfully";
 	public static final String RES_UPDATE_NULL = "Could not connect to the server";
 	Button btn_my_profile_update;
+	Button btn_create_new_vehicle;
 	EditText etxt_my_profile_lastname;
 	EditText etxt_my_profile_firstname;
 	EditText etxt_my_profile_email;
@@ -85,9 +86,12 @@ public class MyProfileFragment extends ListFragment implements
 		etxt_my_profile_driverlicense = (EditText) myProfileView
 				.findViewById(R.id.etxt_my_profile_driverlicense);
 
-		btn_my_profile_update = (Button) myProfileView
-				.findViewById(R.id.btn_my_profile_update);
+		btn_my_profile_update = (Button) myProfileView.findViewById(R.id.btn_my_profile_update);
 		btn_my_profile_update.setOnClickListener(this);
+		
+		btn_create_new_vehicle = (Button) myProfileView.findViewById(R.id.btn_create_new_vehicle);
+		btn_create_new_vehicle.setOnClickListener(this);
+		
 		appUser = SharedPreferences.getUser(ma);
 
 		String[] params = { Integer.toString(appUser.getUser_id()) };
@@ -138,6 +142,10 @@ public class MyProfileFragment extends ListFragment implements
 			UpdateMyProfile updateMyProfile = new UpdateMyProfile(
 					getActivity(), params);
 			updateMyProfile.execute(params);
+			break;
+		case R.id.btn_create_new_vehicle:
+			Intent intent = new Intent(ma, VehicleActivity.class);
+			startActivity(intent);
 			break;
 		default:
 			break;

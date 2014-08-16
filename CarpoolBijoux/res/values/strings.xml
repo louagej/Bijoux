@@ -115,6 +115,7 @@
     <string name="frg_my_profile_info">About me</string>
     <string name="frg_my_profile_driverlicense">Driverslicense</string>
     <string name="frg_my_profile_btn_update">Update Profile</string>
+    <string name="frg_my_profile_btn_create_vehicle">Create Vehicle</string>
     <string name="frg_my_profile_vehicles">My Vehicles</string>
     <string name="title_activity_vehicle">VehicleActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -452,6 +453,7 @@
         <item>Rolls Royce</item>
         <item>Rover</item>
         <item>Saab</item>
+        <item>Skoda</item>
         <item>SSangyong</item>
         <item>Subaru</item>
         <item>Suzuki</item>

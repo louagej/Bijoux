@@ -49,52 +49,46 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_vehicle);
-		sh = new SchemaHelper(this);
-
-		// Get Vehicle from intent
-		vh = (Vehicle) getIntent().getSerializableExtra("Vehicle");
 		txtActVehAutonumberId = (TextView) findViewById(R.id.txtActVehAutonumberId);
-		txtActVehAutonumberId.setText(getResources().getString(
-				R.string.act_vehicle_id)
-				+ ": " + vh.getVehicle_id());
 		eTxtActVehLicenseplate = (EditText) findViewById(R.id.eTxtActVehLicenseplate);
-		eTxtActVehLicenseplate.setText(vh.getLicenseplate());
 		autComplActVehCountry = (AutoCompleteTextView) findViewById(R.id.autComplActVehCountry);
-		// Build AutoCompleteTextView for selecting countries retrieved by
-		// string array
-		autComplActVehCountry.setText(getCountry(vh.getCountry().getIso3166())
-				.getDescription());
-		// buildCountriesArray();
 		// Link the String array with a new ArrayAdapter
 		String[] countries = getResources().getStringArray(R.array.country_array);
 		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, countries);
-		// adapter = new ArrayAdapter<String>(this,
-		// android.R.layout.simple_dropdown_item_1line, COUNTRIES);
 		// Link the adapter to the AutoCompleteTextView in the layout
 		autComplActVehCountry.setAdapter(adapter);
-
 		eTxtActVehNoOfPassengers = (EditText) findViewById(R.id.eTxtActVehNoOfPassengers);
-		eTxtActVehNoOfPassengers.setText(Integer.toString(vh
-				.getNumberOfPassengers()));
-
-		// Build AutoCompleteTextView for selecting vehicle brands retrieved by
-		// string array
+		// Build AutoCompleteTextView for selecting vehicle brands retrieved by string array
 		autComplActVehBrand = (AutoCompleteTextView) findViewById(R.id.autComplActVehBrand);
 		// Link the String array with a new ArrayAdapter
 		String[] brands = getResources().getStringArray(R.array.brand_array);
-		adapter2 = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, brands);
+		adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, brands);
 		autComplActVehBrand.setAdapter(adapter2);
-		autComplActVehBrand.setText(vh.getBrand());
-
 		eTxtActVehVehicleType = (EditText) findViewById(R.id.eTxtActVehVehicleType);
-		eTxtActVehVehicleType.setText(vh.getType().getType());
 		btnActVehUpdate = (Button) findViewById(R.id.btnActVehUpdate);
 		btnActVehUpdate.setOnClickListener(this);
 		btnActVehCreate = (Button) findViewById(R.id.btnActVehCreate);
 		btnActVehCreate.setOnClickListener(this);
-		btnActVehCreate.setVisibility(View.INVISIBLE);
-		sh.close();
+		
+		// Get Vehicle from intent
+		vh = (Vehicle) getIntent().getSerializableExtra("Vehicle");
+		if (vh!=null) {
+			btnActVehCreate.setVisibility(View.INVISIBLE);
+			btnActVehUpdate.setVisibility(View.VISIBLE);
+			txtActVehAutonumberId.setText(getResources().getString(R.string.act_vehicle_id)	+ ": " + vh.getVehicle_id());
+			eTxtActVehLicenseplate.setText(vh.getLicenseplate());
+			// Build AutoCompleteTextView for selecting countries retrieved by string array
+			autComplActVehCountry.setText(getCountry(vh.getCountry().getIso3166()).getDescription());
+			eTxtActVehNoOfPassengers.setText(Integer.toString(vh.getNumberOfPassengers()));
+			autComplActVehBrand.setText(vh.getBrand());
+			eTxtActVehVehicleType.setText(vh.getType().getType());
+		} else {
+			// Activity was started to create a new vehicle
+			prepareForNewVehicle();
+		}
+		
+		
+		
 	}
 
 	private Country getCountry(String iso3166) {
@@ -132,20 +126,7 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.create_new_vehicle:
-			// Blank out EditText fields and change caption of update button
-			// Create Vehicle
-			btnActVehUpdate.setVisibility(View.INVISIBLE);
-			btnActVehCreate.setVisibility(View.VISIBLE);
-			txtActVehAutonumberId.setText(getResources().getString(
-					R.string.act_vehicle_id)
-					+ ": *");
-			eTxtActVehLicenseplate.setText("");
-			autComplActVehCountry.setText("");
-			eTxtActVehNoOfPassengers.setText("");
-			autComplActVehBrand.setText("");
-			eTxtActVehVehicleType.setText("");
-			btnActVehUpdate.setText(CREATE);
-			vh = null;
+			prepareForNewVehicle();
 			break;
 		case R.id.delete_vehicle:
 			// Create an instance of the dialog fragment and show it
@@ -156,6 +137,20 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void prepareForNewVehicle() {
+		// Blank out EditText fields and change caption of update button Create Vehicle
+		btnActVehUpdate.setVisibility(View.INVISIBLE);
+		btnActVehCreate.setVisibility(View.VISIBLE);
+		txtActVehAutonumberId.setText(getResources().getString(R.string.act_vehicle_id) + ": *");
+		eTxtActVehLicenseplate.setText("");
+		autComplActVehCountry.setText("");
+		eTxtActVehNoOfPassengers.setText("");
+		autComplActVehBrand.setText("");
+		eTxtActVehVehicleType.setText("");
+		btnActVehUpdate.setText(CREATE);
+		vh = null;
 	}
 
 	@Override

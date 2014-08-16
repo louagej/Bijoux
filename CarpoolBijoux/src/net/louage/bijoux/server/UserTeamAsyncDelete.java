@@ -38,7 +38,7 @@ public class UserTeamAsyncDelete extends AsyncTask<String[], Integer, User> {
 		this.listener = listener;
 		parameters = params;
 		mProgressDialog = new ProgressDialog(context);
-		mProgressDialog.setMessage("Deleting user...");
+		mProgressDialog.setMessage("Removing user from team(s)" + params[2]);
 		mProgressDialog.setIndeterminate(false);
 		mProgressDialog.setMax(100);
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
