@@ -24,22 +24,17 @@
         <item>My Tours</item>
         <item>My Seats</item>
         <item>My Profile</item>
-        <item>Login</item>
-        <item>Register</item>
         <item>My Team</item>
-        <item>Approve Member</item>
         <item>Approve Registration</item>
-        <item>Admin</item>
+        <item>Login</item>
     </string-array>
     <string-array name="team_array">
         <item>Coming Tours</item>
         <item>My Tours</item>
         <item>My Seats</item>
         <item>My Profile</item>
-        <item>Login</item>
-        <item>Register</item>
         <item>My Team</item>
-        <item>Approve Member</item>
+        <item>Login</item>
     </string-array>
     <string-array name="member_array">
         <item>Coming Tours</item>
@@ -47,7 +42,6 @@
         <item>My Seats</item>
         <item>My Profile</item>
         <item>Login</item>
-        <item>Register</item>
     </string-array>
     <string-array name="unknown_array">
         <item>Unknown Account</item>

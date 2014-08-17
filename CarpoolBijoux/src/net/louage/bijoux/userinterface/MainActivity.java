@@ -77,7 +77,6 @@ public class MainActivity extends Activity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
-
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mNavDrawerTitles;
@@ -91,14 +90,12 @@ public class MainActivity extends Activity {
 
 		mTitle = mDrawerTitle = getTitle();
 
-		if (!net.louage.bijoux.constants.SharedPreferences
-				.checkConnectionData(this)) {
+		if (!net.louage.bijoux.constants.SharedPreferences.checkConnectionData(this)) {
 			setmNavDrawerTitles(getResources().getStringArray(
 					R.array.unknown_array));
 		} else {
 			net.louage.bijoux.constants.SharedPreferences.getUserId(this);
-			appUser = net.louage.bijoux.constants.SharedPreferences
-					.getUser(this);
+			appUser = net.louage.bijoux.constants.SharedPreferences.getUser(this);
 			Boolean member = false;
 			Boolean teamleader = false;
 			boolean admin = false;
@@ -141,24 +138,12 @@ public class MainActivity extends Activity {
 						R.array.unknown_array));
 			}
 
-			/*
-			 * switch (net.louage.bijoux.constants.SharedPreferences
-			 * .getroleName(this)) { case "admin": mNavDrawerTitles =
-			 * getResources().getStringArray( R.array.admin_array); break; case
-			 * "teamleader": mNavDrawerTitles = getResources().getStringArray(
-			 * R.array.team_array); break; case "member": mNavDrawerTitles =
-			 * getResources().getStringArray( R.array.member_array); break; case
-			 * "unknown": mNavDrawerTitles = getResources().getStringArray(
-			 * R.array.unknown_array); break; default: break; }
-			 */
 		}
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		// set a custom shadow that overlays the main content when the drawer
-		// opens
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
+		// set a custom shadow that overlays the main content when the drawer opens
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,	GravityCompat.START);
 		// set up the drawer's list view with items and click listener
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.drawer_list_item, getmNavDrawerTitles()));
@@ -276,16 +261,8 @@ public class MainActivity extends Activity {
 		case "My Team":
 			buildMyTeam(position);
 			break;
-		case "Approve Member":
-			// TODO Build listeners for Approve Member
-			buildUnknowAccount(position);
-			break;
 		case "Approve Registration":
 			buildApproveRegistration(position);
-			break;
-		case "Admin":
-			// TODO Build listeners for Admin
-			buildUnknowAccount(position);
 			break;
 		case "Unknown Account":
 			buildUnknowAccount(position);
@@ -322,12 +299,11 @@ public class MainActivity extends Activity {
 
 		// - Inserts an int value into the mapping of this Bundle,
 		// replacing any existing value for the given key.
-		args.putInt(MainFragment.ARG_NAVDRAWER_NUMBER, position);
+		args.putInt(MyTeamFragment.ARG_NAVDRAWER_NUMBER, position);
 		fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
+		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 		// update selected item and title, then close the drawer
 	}
 	
@@ -338,7 +314,7 @@ public class MainActivity extends Activity {
 
 		// - Inserts an int value into the mapping of this Bundle,
 		// replacing any existing value for the given key.
-		args.putInt(MainFragment.ARG_NAVDRAWER_NUMBER, position);
+		args.putInt(MySeatsFragment.ARG_NAVDRAWER_NUMBER, position);
 		fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getFragmentManager();

@@ -167,7 +167,7 @@ public class JSONParser {
 	
 	public static Address getFromAddress(JSONObject json_tour, Context context) throws JSONException {
 		Address fromAddress = new Address(null);
-		fromAddress.setAddressLine(1,
+		fromAddress.setAddressLine(0,
 				json_tour.getString(Tour.TAG_FROM_ADDRESS));
 		fromAddress.setPostalCode(json_tour.getString(Tour.TAG_FROM_POST_CODE));
 		fromAddress.setLocality(json_tour.getString(Tour.TAG_FROM_CITY));
@@ -181,7 +181,7 @@ public class JSONParser {
 	
 	public static Address getToAddress(JSONObject json_tour, Context context) throws JSONException {
 		Address toAddress = new Address(null);
-		toAddress.setAddressLine(1, json_tour.getString(Tour.TAG_TO_ADDRESS));
+		toAddress.setAddressLine(0, json_tour.getString(Tour.TAG_TO_ADDRESS));
 		toAddress.setPostalCode(json_tour.getString(Tour.TAG_TO_POST_CODE));
 		toAddress.setLocality(json_tour.getString(Tour.TAG_TO_CITY));
 		toAddress.setCountryCode(json_tour.getString(Tour.TAG_TO_COUNTRY));

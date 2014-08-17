@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import com.google.gson.Gson;
-
 import net.louage.bijoux.R;
 import net.louage.bijoux.constants.NoticeDialogFragmentMultiChoice;
 import net.louage.bijoux.constants.SharedPreferences;
@@ -15,6 +13,7 @@ import net.louage.bijoux.model.User;
 import net.louage.bijoux.server.AsTskObjectCompleteListener;
 import net.louage.bijoux.server.UserTeamAsyncDelete;
 import net.louage.bijoux.sqlite.SchemaHelper;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -89,6 +88,7 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	    outState.putInt("level", mStackLevel);
 	}
 	
+	@SuppressLint("CommitTransaction")
 	void showDialog(int type) {
 	    mStackLevel++;
 
@@ -115,7 +115,7 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 		String tag = "MyTeamFragment getTeamMembers";
 		SchemaHelper sh = new SchemaHelper(ma);
 		ArrayList<User> sqLiteUsers = new ArrayList<User>();
-		sqLiteUsers = sh.getUsers();
+		sqLiteUsers = sh.userSelectAll();
 		Log.d(tag, "tempUser.size()" + sqLiteUsers.size());
 		sh.close();
 		int removeIndex = -1;

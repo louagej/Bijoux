@@ -5,13 +5,17 @@ import java.util.Date;
 
 import net.louage.bijoux.constants.DateTime;
 import net.louage.bijoux.model.Country;
+import net.louage.bijoux.model.Team;
+import net.louage.bijoux.model.Tour;
 import net.louage.bijoux.model.User;
+import net.louage.bijoux.model.Vehicle;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Address;
 import android.util.Log;
 
 public class SchemaHelper extends SQLiteOpenHelper {
@@ -27,7 +31,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	// with multiple tables
 
 	// TOGGLE THIS NUMBER FOR UPDATING TABLES AND DATABASE
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 8;
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,24 +79,34 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ VehicleTable.BRAND + " TEXT  NULL,"
 				+ VehicleTable.VEHICLE_TYPE + " TEXT  NULL,"
 				+ VehicleTable.USER_ID + " INTEGER  NULL,"
-				+ VehicleTable.UPDATE_AT
-				+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL);"
-				+ " CREATE TRIGGER vehicle_upd_datetime AFTER UPDATE ON "
+				+ VehicleTable.UPDATE_AT + " TIMESTAMP);");
+				/*+ " CREATE TRIGGER vehicle_upd_datetime AFTER UPDATE ON "
 				+ VehicleTable.TABLE_NAME + "  BEGIN UPDATE "
 				+ VehicleTable.TABLE_NAME + " SET " + VehicleTable.UPDATE_AT
 				+ " datetime('now') WHERE  " + VehicleTable.ID + "= new"
-				+ VehicleTable.ID + "; END;");
+				+ VehicleTable.ID + "; END;");*/
 		// Create Tour Table
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + TourTable.TABLE_NAME + " ("
 				+ TourTable.ID + " INTEGER  PRIMARY KEY NOT NULL,"
-				+ TourTable.DATE + " DATE NULL," + TourTable.TIME
-				+ " TIME NULL," + TourTable.USER_ID + " INTEGER NULL,"
-				+ TourTable.VEHICLE_ID + " INTEGER NULL," + TourTable.UPDATE_AT
-				+ " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL);"
-				+ TourTable.TABLE_NAME + "  BEGIN UPDATE "
+				+ TourTable.DATE + " DATE NULL,"
+				+ TourTable.TIME + " TIME NULL,"
+				+ TourTable.USER_ID + " INTEGER NULL,"
+				+ TourTable.VEHICLE_ID + " INTEGER NULL,"
+				+ TourTable.SEAT_PRICE + " NUMERIC NULL,"
+				+ TourTable.TEAM_ID + " INTEGER NULL,"
+				+ TourTable.FROM_ADDRESS + " TEXT NULL,"
+				+ TourTable.FROM_POST_CODE + " TEXT NULL,"
+				+ TourTable.FROM_CITY + " TEXT NULL,"
+				+ TourTable.FROM_COUNTRY + " TEXT NULL,"
+				+ TourTable.TO_ADDRESS + " TEXT NULL,"
+				+ TourTable.TO_POST_CODE + " TEXT NULL,"
+				+ TourTable.TO_CITY + " TEXT NULL,"
+				+ TourTable.TO_COUNTRY + " TEXT NULL,"
+				+ TourTable.UPDATE_AT + " TIMESTAMP);");
+				/*+ TourTable.TABLE_NAME + "  BEGIN UPDATE "
 				+ TourTable.TABLE_NAME + " SET " + TourTable.UPDATE_AT
 				+ " datetime('now') WHERE  " + TourTable.ID + "= new"
-				+ TourTable.ID + "; END;");
+				+ TourTable.ID + "; END;");*/
 		// Create Tracking Table
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + TrackingTable.TABLE_NAME
 				+ " (" + TrackingTable.ID
@@ -427,7 +441,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 		for (int i = 0; i < usrs.size(); i++) {
 			User usr = usrs.get(i);
-			Boolean sqLiteUser = checkIfUserExists(usr.getUser_id());
+			Boolean sqLiteUser = userCheckIfExists(usr.getUser_id());
 			//Log.d(tag, "checkIfUserExists: "+sqLiteUser+" (for user "+usr.getLastname()+" "+usr.getFirstname()+")");
 			if (sqLiteUser == true) {
 				// update user
@@ -479,7 +493,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		return true;
 	}
 	
-	public ArrayList<User> getUsers() {
+	public ArrayList<User> userSelectAll() {
 		//String tag="SchemaHelper getUsers";
 		SQLiteDatabase sd = getWritableDatabase();
 		ArrayList<User>users=new ArrayList<User>();
@@ -510,6 +524,37 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			//Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
 		}
 		return users;
+	}
+	
+	public User userSelectId(int user_id) {
+		//String tag="SchemaHelper getUsers";
+		SQLiteDatabase sd = getWritableDatabase();
+		//ArrayList<User>users=new ArrayList<User>();
+		String selection = UserTable.ID+"=?"; 
+		String[] selectionArgs = new String[] {Integer.toString(user_id)};
+		Cursor c = sd.query(UserTable.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+		while (c.moveToFirst()) {
+			User usr = new User();
+			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
+			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			usr.setActivation(activationDate);
+			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
+			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
+			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
+			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
+			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
+			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			usr.setUpdate_at(updateDate);
+			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
+			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
+			if (approved==1) {
+				usr.setApproved(true);
+			} else {
+				usr.setApproved(false);
+			}	
+			return usr;
+		}
+		return null;
 	}
 	
 	public ArrayList<User> getUsersToApprove() {
@@ -559,10 +604,10 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	private Boolean checkIfUserExists(int user_id) {
+	private Boolean userCheckIfExists(int user_id) {
 		String tag="SchemaHelper checkIfUserExists";
 		SQLiteDatabase sd = getWritableDatabase();
-		String[] columns = new String[] { String.valueOf(user_id) };
+		String[] columns = new String[] { UserTable.ID };
 		Log.d(tag, "columns: "+ String.valueOf(user_id));
 		String selection = UserTable.ID+ "= ? ";
 		Log.d(tag, "selection: "+ selection);
@@ -632,5 +677,140 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		}
 		return country;
 	}
+	
+	public Boolean tourCreateOrUpdate(ArrayList<Tour> trs) {
+		SQLiteDatabase sd = getWritableDatabase();
+		//String tag="SchemaHelper createOrUpdateTour";
 
+		for (int i = 0; i < trs.size(); i++) {
+			Tour tr = trs.get(i);
+			Boolean sqLiteTour = tourCheckIfExists(tr.getTour_id());
+			//Log.d(tag, "checkIfTourExists: "+sqLiteTour+" (for user "+tr.getLastname()+" "+tr.getFirstname()+")");
+			if (sqLiteTour == true) {
+				// update tour
+				String sqLiteDate = DateTime.getStrSQLiteDateStamp(tr.getDate());
+				String sqLiteTime = DateTime.getStrSQLiteDateTimeStamp(tr.getDate());
+				ContentValues cv = new ContentValues();
+				cv.put(TourTable.ID, tr.getTour_id());
+				cv.put(TourTable.DATE, sqLiteDate);
+				cv.put(TourTable.TIME, sqLiteTime);
+				cv.put(TourTable.USER_ID, tr.getUser().getUser_id());
+				cv.put(TourTable.VEHICLE_ID, tr.getVehicle().getVehicle_id());
+				cv.put(TourTable.SEAT_PRICE, tr.getSeat_price());
+				cv.put(TourTable.TEAM_ID, tr.getTeam().getTeam_id());
+				cv.put(TourTable.FROM_ADDRESS, tr.getFromAddress().getAddressLine(0));
+				cv.put(TourTable.FROM_POST_CODE, tr.getFromAddress().getPostalCode());
+				cv.put(TourTable.FROM_CITY, tr.getFromAddress().getLocality());
+				cv.put(TourTable.FROM_COUNTRY, tr.getFromAddress().getCountryCode());
+				cv.put(TourTable.TO_ADDRESS, tr.getToAddress().getAddressLine(0));
+				cv.put(TourTable.TO_POST_CODE, tr.getToAddress().getPostalCode());
+				cv.put(TourTable.TO_CITY, tr.getToAddress().getLocality());
+				cv.put(TourTable.TO_COUNTRY, tr.getToAddress().getCountryCode());
+				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateStamp(new Date());
+				cv.put(TourTable.UPDATE_AT, sqLiteUpdatedDate);
+				String whereClause = TourTable.ID + "=?";
+				String[] whereArgs = { Integer.toString(tr.getTour_id()) };
+				sd.update(TourTable.TABLE_NAME, cv, whereClause, whereArgs);
+			} else {
+				// create tour
+				ContentValues cv = new ContentValues();
+				String sqLiteDate = DateTime.getStrSQLiteDateStamp(tr.getDate());
+				String sqLiteTime = DateTime.getStrSQLiteDateTimeStamp(tr.getDate());
+				cv.put(TourTable.ID, tr.getTour_id());
+				cv.put(TourTable.DATE, sqLiteDate);
+				cv.put(TourTable.TIME, sqLiteTime);
+				cv.put(TourTable.USER_ID, tr.getUser().getUser_id());
+				cv.put(TourTable.VEHICLE_ID, tr.getVehicle().getVehicle_id());
+				cv.put(TourTable.SEAT_PRICE, tr.getSeat_price());
+				cv.put(TourTable.TEAM_ID, tr.getTeam().getTeam_id());
+				cv.put(TourTable.FROM_ADDRESS, tr.getFromAddress().getAddressLine(0));
+				cv.put(TourTable.FROM_POST_CODE, tr.getFromAddress().getPostalCode());
+				cv.put(TourTable.FROM_CITY, tr.getFromAddress().getLocality());
+				cv.put(TourTable.FROM_COUNTRY, tr.getFromAddress().getCountryCode());
+				cv.put(TourTable.TO_ADDRESS, tr.getToAddress().getAddressLine(0));
+				cv.put(TourTable.TO_POST_CODE, tr.getToAddress().getPostalCode());
+				cv.put(TourTable.TO_CITY, tr.getToAddress().getLocality());
+				cv.put(TourTable.TO_COUNTRY, tr.getToAddress().getCountryCode());
+				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateStamp(new Date());
+				cv.put(TourTable.UPDATE_AT, sqLiteUpdatedDate);
+				sd.insert(TourTable.TABLE_NAME, null, cv);
+			}
+		}
+		return true;
+	}
+	
+	private Boolean tourCheckIfExists(int tour_id) {
+		String tag="SchemaHelper checkIfTourExists";
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] columns = new String[] { TourTable.ID };
+		String selection = TourTable.ID+ "= ? ";
+		String[] selectionArgs = new String[] { String.valueOf(tour_id) };
+		Log.d(tag, "selectionArgs: "+ String.valueOf(tour_id));
+		Cursor c = sd.query(TourTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+		if (c.moveToFirst()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public int tourDelete(int tour_id){
+		SQLiteDatabase sd = getWritableDatabase();
+		//String tag="SchemaHelper userDelete";
+		String table = TourTable.TABLE_NAME;
+		String whereClause = "_id"+"=?";
+		String[]whereArgs = new String[] {String.valueOf(tour_id)};
+		int noRowsAffected=sd.delete(table, whereClause , whereArgs);
+		if (noRowsAffected>0) {
+			return tour_id;
+		} else {
+			return -1;
+		}
+	}
+	
+	public ArrayList<Tour> tourSelectAll() {
+		String tag="SchemaHelper getUsers";
+		SQLiteDatabase sd = getWritableDatabase();
+		ArrayList<Tour>tours=new ArrayList<Tour>();
+		//String selection = UserTable.APPROVED+"=?"; 
+		//String[] selectionArgs = new String[] {Integer.toString(1)};
+		Cursor c = sd.query(TourTable.TABLE_NAME, null, null, null, null, null, null);
+		while (c.moveToNext()) {
+			Tour tr = new Tour();
+			tr.setTour_id(c.getInt(c.getColumnIndex(TourTable.ID)));
+			Log.d(tag, "Date tour from sqLite: "+c.getString(c.getColumnIndex(TourTable.DATE)));
+			Date tourDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(TourTable.DATE)));
+			tr.setDate(tourDate);
+			Date tourTime=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TourTable.TIME)));
+			tr.setTime(tourTime);
+			User user = new User();
+			user = userSelectId((c.getInt(c.getColumnIndex(TourTable.USER_ID))));
+			tr.setUser(user);
+			Vehicle vh = new Vehicle();
+			vh.setVehicle_id((c.getInt(c.getColumnIndex(TourTable.VEHICLE_ID))));
+			tr.setVehicle(vh);
+			tr.setSeat_price(c.getDouble(c.getColumnIndex(TourTable.SEAT_PRICE)));
+			Team tm = new Team();
+			tm.setTeam_id(c.getInt(c.getColumnIndex(TourTable.TEAM_ID)));
+			tr.setTeam(tm);
+			Address fromAddress = new Address(null);
+			fromAddress.setAddressLine(0, c.getString(c.getColumnIndex(TourTable.FROM_ADDRESS)));
+			fromAddress.setPostalCode(c.getString(c.getColumnIndex(TourTable.FROM_POST_CODE)));
+			fromAddress.setLocality(c.getString(c.getColumnIndex(TourTable.FROM_CITY)));
+			fromAddress.setCountryCode(c.getString(c.getColumnIndex(TourTable.FROM_COUNTRY)));
+			tr.setFromAddress(fromAddress);
+			
+			Address toAddress = new Address(null);
+			toAddress.setAddressLine(0, c.getString(c.getColumnIndex(TourTable.TO_ADDRESS)));
+			toAddress.setPostalCode(c.getString(c.getColumnIndex(TourTable.TO_POST_CODE)));
+			toAddress.setLocality(c.getString(c.getColumnIndex(TourTable.TO_CITY)));
+			toAddress.setCountryCode(c.getString(c.getColumnIndex(TourTable.TO_COUNTRY)));
+			tr.setToAddress(toAddress);
+			//Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TourTable.UPDATE_AT)));
+			tours.add(tr);
+			//Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
+		}
+		return tours;
+	}
+	
 }

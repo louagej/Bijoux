@@ -157,7 +157,9 @@ public class TourAsyncGetTours extends
 						}
 						tr.setSeats(seats);
 						tours.add(tr);
-					}			
+					}
+					syncToursSQLiteDatabase(tours);
+					
 					//Log.d("Try Catch: ", "OK building Object tours");
 					JSONObject json_user_list = json.getJSONObject(TAG_USER_INFO_RESULT);
 					//Log.d("JSON tour_list: ", json_tour_list.toString());
@@ -172,30 +174,7 @@ public class TourAsyncGetTours extends
 						users.add(i, teamUser);
 					}
 					//Log.d(tag, "users.size(): "+users.size());
-					SchemaHelper sh = new SchemaHelper(context);
-					sh.userCreateOrUpdate(users);
-					//Check if users are in SQLiteDB
-					ArrayList<User> sqLiteUsers = new ArrayList<User>();
-					sqLiteUsers = sh.getUsers();
-					//Check if users from a previous installation need to be removed
-					for (int i = 0; i < sqLiteUsers.size(); i++) {
-						int compareIndex=-1;
-						User sqLiteUser = sqLiteUsers.get(i);
-						for (int j = 0; j < users.size(); j++) {
-							User teamMember = users.get(j);
-							if (sqLiteUser.getUser_id()==teamMember.getUser_id()) {
-								compareIndex=i;
-							}
-						}
-						if (compareIndex==-1) {
-							//There wasn't found a match between the user received from json and the user in the database
-							//this user should be removed
-							sh.userDelete(sqLiteUser.getUser_id());
-							Log.d(tag, "User"+ sqLiteUser.getFirstname()+" "+ sqLiteUser.getLastname()+" was removed from the sqLite database: ");
-						}
-						//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
-					}
-					sh.close();
+					syncUsersSQLiteDatabase(users);
 					return tours;
 				} else {
 					Log.d("Try Catch: ", "NOK building Object tours");
@@ -209,6 +188,63 @@ public class TourAsyncGetTours extends
 		} else {
 			return null;
 		}
+	}
+
+	private void syncUsersSQLiteDatabase(ArrayList<User> users) {
+		String tag="TourAsyncGetTours syncUsersSQLiteDatabase";
+		SchemaHelper shUsers = new SchemaHelper(context);
+		shUsers.userCreateOrUpdate(users);
+		//Check if users are in SQLiteDB
+		ArrayList<User> sqLiteUsers = new ArrayList<User>();
+		sqLiteUsers = shUsers.userSelectAll();
+		//Check if users from a previous installation need to be removed
+		for (int i = 0; i < sqLiteUsers.size(); i++) {
+			int compareIndex=-1;
+			User sqLiteUser = sqLiteUsers.get(i);
+			for (int j = 0; j < users.size(); j++) {
+				User teamMember = users.get(j);
+				if (sqLiteUser.getUser_id()==teamMember.getUser_id()) {
+					compareIndex=i;
+				}
+			}
+			if (compareIndex==-1) {
+				//There wasn't found a match between the user received from json and the user in the database
+				//this user should be removed
+				shUsers.userDelete(sqLiteUser.getUser_id());
+				Log.d(tag, "User"+ sqLiteUser.getFirstname()+" "+ sqLiteUser.getLastname()+" was removed from the sqLite database: ");
+			}
+			//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
+		}
+		shUsers.close();
+	}
+
+	private void syncToursSQLiteDatabase(ArrayList<Tour> tours) {
+		String tag="TourAsyncGetTours syncToursSQLiteDatabase";
+		//Create or update tours in sqLite database
+		SchemaHelper shTours = new SchemaHelper(context);
+		shTours.tourCreateOrUpdate(tours);
+		
+		ArrayList<Tour> sqLiteTours = new ArrayList<Tour>();
+		sqLiteTours = shTours.tourSelectAll();
+		//Check if users from a previous installation need to be removed
+		for (int i = 0; i < sqLiteTours.size(); i++) {
+			int compareIndex=-1;
+			Tour sqLiteTour = sqLiteTours.get(i);
+			for (int j = 0; j < tours.size(); j++) {
+				Tour tr = tours.get(j);
+				if (sqLiteTour.getTour_id()==tr.getTour_id()) {
+					compareIndex=i;
+				}
+			}
+			if (compareIndex==-1) {
+				//There wasn't found a match between the user received from json and the user in the database
+				//this user should be removed
+				shTours.tourDelete(sqLiteTour.getTour_id());
+				Log.d(tag, "Tour "+ sqLiteTour.getTour_id()+" was removed from the sqLite database: ");
+			}
+			//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
+		}
+		shTours.close();
 	}
 
 	private Seat getSeat(JSONObject json_seat) throws JSONException {
@@ -230,8 +266,7 @@ public class TourAsyncGetTours extends
 
 	private Address getFromAddress(JSONObject json_tour) throws JSONException {
 		Address fromAddress = new Address(null);
-		fromAddress.setAddressLine(1,
-				json_tour.getString(Tour.TAG_FROM_ADDRESS));
+		fromAddress.setAddressLine(0,json_tour.getString(Tour.TAG_FROM_ADDRESS));
 		fromAddress.setPostalCode(json_tour.getString(Tour.TAG_FROM_POST_CODE));
 		fromAddress.setLocality(json_tour.getString(Tour.TAG_FROM_CITY));
 		fromAddress.setCountryCode(json_tour.getString(Tour.TAG_FROM_COUNTRY));
@@ -245,7 +280,7 @@ public class TourAsyncGetTours extends
 
 	private Address getToAddress(JSONObject json_tour) throws JSONException {
 		Address toAddress = new Address(null);
-		toAddress.setAddressLine(1, json_tour.getString(Tour.TAG_TO_ADDRESS));
+		toAddress.setAddressLine(0, json_tour.getString(Tour.TAG_TO_ADDRESS));
 		toAddress.setPostalCode(json_tour.getString(Tour.TAG_TO_POST_CODE));
 		toAddress.setLocality(json_tour.getString(Tour.TAG_TO_CITY));
 		toAddress.setCountryCode(json_tour.getString(Tour.TAG_TO_COUNTRY));
