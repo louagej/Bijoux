@@ -12,7 +12,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -505,18 +505,30 @@
     <string name="act_tour_actb_new_tour">New Tour</string>
     <string name="act_tour_actb_del_tour">Delete Tour</string>
     <string name="act_tour_actb_del_tour_canceled">Deletion was canceled</string>
-    
+
     <!-- Fragment MyTeamFragment -->
     <string name="frg_myteam_menu_delete_tm">No longer in my team</string>
     <string name="frg_myteam_menu_delete_canceled">Action canceled</string>
-    
+
     <!-- NoticeDialogFragmentMultiChoice -->
     <string name="dia_multi_listener_title">Select teams</string>
     <string name="dia_multi_listener_ok">OK</string>
     <string name="dia_multi_listener_cancel">Cancel</string>
-    
+
     <!-- ApproveRegFragment -->
     <string name="frg_approve_reg_menu_approve_member">Approve Member</string>
     <string name="frg_approve_reg_menu_decline_member">Decline Member</string>
+    <string name="title_activity_user">UserActivity</string>
+
+    <!-- Activity activity_user.xml -->
+    <string name="act_user_lastname">Lastname</string>
+    <string name="act_user_firstname">Firstname</string>
+    <string name="act_user_email">E-mail</string>
+    <string name="act_user_phone">Phone</string>
+    <string name="act_user_info">About me</string>
+    <string name="act_user_driverlicense">Driverslicense</string>
+    <string name="act_user_btn_update">Update Profile</string>
+    <string name="act_user_action_settings">Settings</string>
+    <string name="act_user_chb_approved">Approved user</string>
     
 </resources>

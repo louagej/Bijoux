@@ -421,14 +421,14 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 	}
 
-	public Boolean createOrUpdateUser(ArrayList<User> usrs) {
+	public Boolean userCreateOrUpdate(ArrayList<User> usrs) {
 		SQLiteDatabase sd = getWritableDatabase();
-		String tag="SchemaHelper createOrUpdateUser";
+		//String tag="SchemaHelper createOrUpdateUser";
 
 		for (int i = 0; i < usrs.size(); i++) {
 			User usr = usrs.get(i);
 			Boolean sqLiteUser = checkIfUserExists(usr.getUser_id());
-			Log.d(tag, "checkIfUserExists: "+sqLiteUser+" (for user "+usr.getLastname()+" "+usr.getFirstname()+")");
+			//Log.d(tag, "checkIfUserExists: "+sqLiteUser+" (for user "+usr.getLastname()+" "+usr.getFirstname()+")");
 			if (sqLiteUser == true) {
 				// update user
 				String sqLiteDate = DateTime.getStrSQLiteDateStamp(usr.getActivation());
@@ -480,7 +480,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	}
 	
 	public ArrayList<User> getUsers() {
-		String tag="SchemaHelper getUsers";
+		//String tag="SchemaHelper getUsers";
 		SQLiteDatabase sd = getWritableDatabase();
 		ArrayList<User>users=new ArrayList<User>();
 		String selection = UserTable.APPROVED+"=?"; 
@@ -507,13 +507,13 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			}
 			
 			users.add(usr);
-			Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
+			//Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
 		}
 		return users;
 	}
 	
 	public ArrayList<User> getUsersToApprove() {
-		String tag="SchemaHelper getUsers";
+		//String tag="SchemaHelper getUsers";
 		SQLiteDatabase sd = getWritableDatabase();
 		ArrayList<User>users=new ArrayList<User>();
 		String selection = UserTable.APPROVED+"=?";
@@ -540,7 +540,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			}
 			
 			users.add(usr);
-			Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
+			//Log.d(tag, "User: "+usr.getLastname()+" "+usr.getFirstname()+" was added to ArrayList users");
 		}
 		return users;
 	}

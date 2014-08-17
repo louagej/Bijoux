@@ -9,6 +9,10 @@ public class Role {
 		this.rolename = role;
 	}
 	
+	public Role() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getRoleName() {
 		return rolename;
 	}

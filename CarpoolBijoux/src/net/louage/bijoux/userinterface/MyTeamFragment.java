@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import net.louage.bijoux.R;
 import net.louage.bijoux.constants.NoticeDialogFragmentMultiChoice;
 import net.louage.bijoux.constants.SharedPreferences;
-import net.louage.bijoux.model.Tour;
+import net.louage.bijoux.model.Role;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.server.AsTskObjectCompleteListener;
 import net.louage.bijoux.server.UserTeamAsyncDelete;
@@ -18,7 +18,6 @@ import net.louage.bijoux.sqlite.SchemaHelper;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -43,9 +42,12 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	String[]teamnames;
 	private User appUser;
 	MainActivity ma;
+	Role admin;
 	User userToRemove;
+	User updatedUser;
 	int mStackLevel = 0;
-	public static final int DIALOG_FRAGMENT = 1;
+	private static final int DIALOG_FRAGMENT = 1;
+	public static final int GET_USER_INFO = 2;
 	
 	public MyTeamFragment() {
 		// Empty constructor required for fragment subclasses
@@ -59,6 +61,28 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	    }
 	}
 	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
+		ma = (MainActivity) getActivity();
+		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
+		View myTeamView = inflater.inflate(R.layout.fragment_my_tours, container, false);
+		getActivity().setTitle(selNavDrawItem);
+		rowIconItems = new ArrayList<RowIconItem>();
+		appUser = SharedPreferences.getUser(ma);
+		ArrayList<Role> roles = new ArrayList<Role>();
+		roles=appUser.getRoles();
+		for (int j = 0; j < roles.size(); j++) {
+			Role rl = new Role();
+			rl=roles.get(j);
+			if (rl.getRoleName().equals("admin")) {
+				admin=rl;
+			}
+		}
+		return myTeamView;
+	}
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 	    super.onSaveInstanceState(outState);
@@ -87,20 +111,6 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	    }
 	}
 	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
-		ma = (MainActivity) getActivity();
-		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
-		View myTeamView = inflater.inflate(R.layout.fragment_my_tours,
-				container, false);
-		getActivity().setTitle(selNavDrawItem);
-		rowIconItems = new ArrayList<RowIconItem>();
-		appUser = SharedPreferences.getUser(ma);
-		return myTeamView;
-	}
-
 	private ArrayList<User> getTeamMembers() {
 		String tag = "MyTeamFragment getTeamMembers";
 		SchemaHelper sh = new SchemaHelper(ma);
@@ -128,7 +138,7 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 		rowIconItems.clear();
 		users = usrs;
 		if (users != null) {
-			// Sort Arraylist before displaying it to the user
+			// Sort ArrayList before displaying it to the user
 			Collections.sort(users, new Comparator<User>() {
 				@Override
 				public int compare(User u1, User u2) {
@@ -157,17 +167,16 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		User usr = (User) users.get(position);
-		// TODO Start content menu to remove user from team
-		// String user = "From: "+usr.getFromAddress().getLocality() + "\nTo: "+
-		// usr.getToAddress().getLocality();
-		Toast.makeText(getActivity(), usr.getFirstname() + " was clicked",
-				Toast.LENGTH_SHORT).show();
-		// Intent intent = new Intent(getActivity(), TourActivity.class);
-		// Gson gson = new Gson();
-		// String jsonTour = gson.toJson(usr);
-		// intent.putExtra("jsonTour", jsonTour);
-		// startActivity(intent);
-		// startActivityForResult(intent, GET_TOUR_INFO);
+		if (admin!=null) {			
+			Intent intent = new Intent(getActivity(), UserActivity.class);
+			Gson gson = new Gson();
+			String jsonUser = gson.toJson(usr);
+			intent.putExtra("jsonUser", jsonUser);
+			// startActivity(intent);
+			startActivityForResult(intent, GET_USER_INFO);
+		}else{
+			Toast.makeText(getActivity(), usr.getFirstname() + " was clicked.", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -257,7 +266,7 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	                if (resultCode == Activity.RESULT_OK) {
 	                	Bundle b = data.getExtras();
 	    				if (b != null) {
-	    					//Retrieve tour from intent
+	    					//Retrieve team array from intent
 	    					String jsonResultSelection = data.getStringExtra("jsonResultSelection");
 	    					Gson gson = new Gson();
 	    					String[] resultSelection=gson.fromJson(jsonResultSelection, String[].class);
@@ -267,15 +276,60 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	    					}else{
 	    						Toast.makeText(ma, "Positive clicked Bundle was empty", Toast.LENGTH_LONG).show();
 	    					}
-	            		//userToRemove=null;
 	            		//Toast.makeText(ma, "Positive clicked", Toast.LENGTH_LONG).show();
 	                } else if (resultCode == Activity.RESULT_CANCELED){
 	                    // After Cancel code.
 	                	userToRemove=null;
 	            		Toast.makeText(ma, R.string.frg_myteam_menu_delete_canceled, Toast.LENGTH_LONG).show();
 	                }
-
 	                break;
+	                
+	            case GET_USER_INFO:
+	            	if (resultCode == Activity.RESULT_OK) {
+	                	Bundle b = data.getExtras();
+	    				if (b != null) {
+	    					//Retrieve user from intent
+	    					String jsonUser = data.getStringExtra("jsonUser");
+	    					Gson gson = new Gson();
+	    					User updatedUser=gson.fromJson(jsonUser, User.class);
+	    					//Update listview in User Interface
+	    					int userArrayListIndex=-1;
+	    					ArrayList<User> tempTeamMembers = new ArrayList<User>();
+	    					tempTeamMembers=users;
+	    					for (int i = 0; i < tempTeamMembers.size(); i++) {
+	    						User usr = new User();
+	    						usr=tempTeamMembers.get(i);
+	    						if (usr.getUser_id()==updatedUser.getUser_id()) {
+	    							userArrayListIndex=i;
+	    						}
+	    					}
+	    					if (userArrayListIndex>=0) {
+	    						if (updatedUser.getApproved()==true) {
+	    							tempTeamMembers.set(userArrayListIndex, updatedUser);
+		    						setUserList(tempTeamMembers);
+		    						updatedUser=null;
+								} else {
+									tempTeamMembers.remove(userArrayListIndex);
+		    						setUserList(tempTeamMembers);
+		    						updatedUser=null;
+								}
+	    						
+	    						Toast.makeText(ma, "User was updated.", Toast.LENGTH_LONG).show();
+	    					} else {
+	    						Toast.makeText(ma, "User wasn't updated.", Toast.LENGTH_LONG).show();
+	    					}
+	    					
+	    				}else{
+	    					Toast.makeText(ma, "User information to update wasn't found.", Toast.LENGTH_LONG).show();
+	    				}
+	                } else if (resultCode == Activity.RESULT_CANCELED){
+	                    // After Cancel code.
+	            		Toast.makeText(ma, R.string.frg_myteam_menu_delete_canceled, Toast.LENGTH_LONG).show();
+	                }
+	            	break;
+	            	
+	            default:
+	            	break;
 	        }
 	    }
 

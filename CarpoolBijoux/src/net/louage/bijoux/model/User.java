@@ -32,6 +32,8 @@ public class User {
 	public static final String TAG_VEHICLES = "vehicles";
 	private Boolean approved;
 	public static final String TAG_APPROVED = "approved";
+	//Tag user to catch user in JSON by web services
+	public static final String USER = "user";
 	
 	public User() {
 		super();

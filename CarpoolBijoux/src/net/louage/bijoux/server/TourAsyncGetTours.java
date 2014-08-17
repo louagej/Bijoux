@@ -173,7 +173,7 @@ public class TourAsyncGetTours extends
 					}
 					//Log.d(tag, "users.size(): "+users.size());
 					SchemaHelper sh = new SchemaHelper(context);
-					sh.createOrUpdateUser(users);
+					sh.userCreateOrUpdate(users);
 					//Check if users are in SQLiteDB
 					ArrayList<User> sqLiteUsers = new ArrayList<User>();
 					sqLiteUsers = sh.getUsers();

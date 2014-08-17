@@ -92,8 +92,7 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
 		ma = (MainActivity) getActivity();
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
-		View approveRegView = inflater.inflate(R.layout.fragment_my_tours,
-				container, false);
+		View approveRegView = inflater.inflate(R.layout.fragment_my_tours, container, false);
 		getActivity().setTitle(selNavDrawItem);
 		rowIconItems = new ArrayList<RowIconItem>();
 		appUser = SharedPreferences.getUser(ma);
@@ -202,42 +201,23 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 			AsTskObjectCompleteListener<User> {
 		@Override
 		public void onTaskComplete(User user) {
-			Log.d("DeleteUserTaskCompleteListener: ", "onTaskComplete(User user) Started");
+			Log.d("UserRegistrationUpdateTaskCompleteListener: ", "onTaskComplete(User user) Started");
 			SchemaHelper sh = new SchemaHelper(getActivity());
-			int userDeleted = sh.userDelete(userToApprove.getUser_id());
-			if (userDeleted>0) {
-				int userArrayListIndex=-1;
-				ArrayList<User> tempApproveRegUsers = new ArrayList<User>();
-				tempApproveRegUsers=approveRegUsers;
-				for (int i = 0; i < tempApproveRegUsers.size(); i++) {
-					User usr = new User();
-					usr=tempApproveRegUsers.get(i);
-					if (usr.getUser_id()==userDeleted) {
-						userArrayListIndex=i;
-					}
-				}
-				if (userArrayListIndex>=0) {
-					tempApproveRegUsers.remove(userArrayListIndex);
-					setUserList(tempApproveRegUsers);
-					if (approvalStatus==false) {
-						Toast.makeText(ma, "Canceled registration: The user was removed from the userlist.", Toast.LENGTH_LONG).show();
-					} else {
-						Toast.makeText(ma, "User was approved", Toast.LENGTH_LONG).show();
-						approvalStatus=false;
-					}
-					userToApprove=null;
-					
-				} else {
-					Toast.makeText(ma, "User wasn't approved", Toast.LENGTH_LONG).show();
-				}
+			if (approvalStatus==false) {
+				//Delete the user from sqLite db in case registration wasn't approved
+				sh.userDelete(userToApprove.getUser_id());	
 			} else {
-				//SQLite record wasn't deleted
-				Toast.makeText(ma, "SQLite user wasn't removed", Toast.LENGTH_LONG).show();
-				
-			}
-			
-			// Loop over list and remove user if he was deleted from all teams
-			//setUserList(tempUSers);
+				//Update user status in sqLite db in case registration was approved
+				ArrayList<User> users = new ArrayList<User>();
+				users.add(userToApprove);
+				sh.userCreateOrUpdate(users);
+			}	
+			sh.close();
+			//Update ListView in UI
+			ArrayList<User> tempApproveRegUsers = new ArrayList<User>();
+			tempApproveRegUsers=getMembersToApproveReg();
+			setUserList(tempApproveRegUsers);
+			userToApprove=null;
 		}
 	}
 	
@@ -265,6 +245,7 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 	                if (resultCode == Activity.RESULT_OK) {
 	                	Bundle b = data.getExtras();
 	    				if (b != null) {
+	    					userToApprove.setApproved(true);
 	    					//Retrieve tour from intent
 	    					String jsonResultSelection = data.getStringExtra("jsonResultSelection");
 	    					Gson gson = new Gson();
