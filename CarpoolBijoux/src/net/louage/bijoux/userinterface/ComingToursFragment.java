@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 
@@ -14,43 +15,56 @@ import net.louage.bijoux.constants.SharedPreferences;
 import net.louage.bijoux.model.Tour;
 import net.louage.bijoux.server.AsTskArrayListCompleteListener;
 import net.louage.bijoux.server.TourAsyncGetTours;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ComingToursFragment extends ListFragment implements
-		OnItemClickListener {
+		OnItemClickListener, TextWatcher {
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
 	CustomIconAdapter adapter;
+	EditText eTxtSearchTours;
 	private List<RowIconItem> rowIconItems;
-	private ArrayList<Tour> tours = new ArrayList<Tour>();
+	private ArrayList<Tour> tours = new ArrayList<Tour>(); //This is the current displayed tours in the UI
+	private ArrayList<Tour> jsonTours = new ArrayList<Tour>(); //These are the tours received on the last async call to the webservice
 	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating ComingToursFragment
+	ArrayList<Tour> filteredTours; //This ArrayList will be filled with the objects if a part of the search string was found in this object
+	MainActivity ma;
+	
 	public ComingToursFragment() {
 		// Empty constructor required for fragment subclasses
 	}
 
+
+
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		int i = getArguments().getInt(ARG_NAVDRAWER_NUMBER);
-		MainActivity ma = (MainActivity) getActivity();
+		ma = (MainActivity) getActivity();
 		String selNavDrawItem = ma.getmNavDrawerTitles()[i];
-		View comingToursView = inflater.inflate(R.layout.fragment_coming_tours,
-				container, false);
+		View comingToursView = inflater.inflate(R.layout.fragment_coming_tours,	container, false);
 		getActivity().setTitle(selNavDrawItem);
 		String[] params = getTourParams();
 		new TourAsyncGetTours(getActivity(),
 				new TourAsyncGetToursTaskCompleteListener(), params).execute();
 		rowIconItems = new ArrayList<RowIconItem>();
 		SharedPreferences.getUser(ma);
+		eTxtSearchTours=(EditText)comingToursView.findViewById(R.id.eTxtSearchTours);
+		eTxtSearchTours.addTextChangedListener(this);
 		return comingToursView;
 	}
 
@@ -71,13 +85,14 @@ public class ComingToursFragment extends ListFragment implements
 	}
 
 	public void onTaskComplete(ArrayList<Tour> trs) {
+		jsonTours=trs;
 		setTourList(trs);
 	}
 
 	private void setTourList(ArrayList<Tour> trs) {
-		String tag="ComingToursFragment setTourList";
+		//String tag="ComingToursFragment setTourList";
 		//tours.clear();
-		Log.d(tag, "trs size: "+trs.size());
+		//Log.d(tag, "trs size: "+trs.size());
 		rowIconItems.clear();
 		tours = trs;
 		if (tours != null) {
@@ -90,15 +105,15 @@ public class ComingToursFragment extends ListFragment implements
 			});
 			for (int i = 0; i < tours.size(); i++) {
 				Tour tr = tours.get(i);
-				Log.d(tag, "Tour: "+tr.getTour_id());
+				//Log.d(tag, "Tour: "+tr.getTour_id());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(tr.getDate());
 				int day = cal.get(Calendar.DAY_OF_MONTH);
 				String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
 				String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
 				//Log.d(tag, "tour date json: " + tr.getDate());
-				String trData = tourDate + " - " + tourtime + "\nFrom: "
-						+ tr.getFromAddress().getLocality() + "\nTo: "
+				String trData = tr.getUser().getFirstname()+" "+ tr.getUser().getLastname() +"\n"+ tourDate + " - " + tourtime + "\nFrom: "
+						+ tr.getFromAddress().getLocality() + " - To: "
 						+ tr.getToAddress().getLocality();
 				String logo = "calender" + day;
 				int id = getActivity().getResources().getIdentifier(logo,
@@ -130,15 +145,15 @@ public class ComingToursFragment extends ListFragment implements
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		String tag = "ComingToursFragment onActivityResult";
+		//String tag = "ComingToursFragment onActivityResult";
 		if (data==null) {
 			Toast.makeText(getActivity(), "Intent data is null", Toast.LENGTH_SHORT).show();
 		}
  		//Toast.makeText(getActivity(), "onActivityResult was started",
 		//		Toast.LENGTH_SHORT).show();
 		
-		Log.d(tag, "requestCode: " + requestCode);
-		Log.d(tag, "resultCode: " + resultCode);
+		//Log.d(tag, "requestCode: " + requestCode);
+		//Log.d(tag, "resultCode: " + resultCode);
 		if (requestCode == GET_TOUR_INFO) {
 			ArrayList<Tour> toursUpdate = new ArrayList<Tour>();
 			if (resultCode == Activity.RESULT_OK) {
@@ -149,7 +164,7 @@ public class ComingToursFragment extends ListFragment implements
 					Gson gson = new Gson();
 					Tour tr = gson.fromJson(jsonTour, Tour.class);
 					toursUpdate = tours;
-					Log.d(tag, "toursUpdate size(): " + toursUpdate.size());
+					//Log.d(tag, "toursUpdate size(): " + toursUpdate.size());
 					Boolean deleted = data.getBooleanExtra("tourDeleted", false);
 					Boolean newTour = data.getBooleanExtra("newTour", false);
 					
@@ -198,5 +213,51 @@ public class ComingToursFragment extends ListFragment implements
 		}
 
 	}
+
+
+
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		
+	}
+
+
+	@SuppressLint("DefaultLocale")
+	@Override
+	public void afterTextChanged(Editable s) {
+		filteredTours = new ArrayList<Tour>();
+		String searchString = s.toString().toLowerCase(Locale.getDefault());
+		for (int i = 0; i < jsonTours.size(); i++) {
+			Tour searchTour = new Tour();
+			searchTour=jsonTours.get(i);
+			if(searchTour.getFromAddress().getAddressLine(0) != null && searchTour.getFromAddress().getAddressLine(0).toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getFromAddress().getPostalCode() != null && searchTour.getFromAddress().getPostalCode().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getFromAddress().getLocality() != null && searchTour.getFromAddress().getLocality().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getFromAddress().getCountryCode() != null && searchTour.getFromAddress().getCountryCode().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getToAddress().getAddressLine(0) != null && searchTour.getToAddress().getAddressLine(0).toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getToAddress().getPostalCode() != null && searchTour.getToAddress().getPostalCode().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getToAddress().getLocality() != null && searchTour.getToAddress().getLocality().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}else if(searchTour.getToAddress().getCountryCode() != null && searchTour.getToAddress().getCountryCode().toLowerCase(Locale.getDefault()).contains(searchString)){
+				filteredTours.add(searchTour);
+			}
+		}
+		setTourList(filteredTours);
+	}
+
 
 }

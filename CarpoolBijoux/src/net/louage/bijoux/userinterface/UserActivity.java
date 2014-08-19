@@ -65,6 +65,8 @@ public class UserActivity extends Activity implements OnClickListener{
 		} else {
 			txt_user_lastname.setText("no user information was found");
 		}
+		
+		setTitle(R.string.act_user_title);
 	}
 
 	@Override

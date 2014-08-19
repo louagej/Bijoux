@@ -12,12 +12,13 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
     <!-- activity_main.xml -->
     <string name="app_name">Carpool-Bijoux</string>
+    <string name="search_hint">Search Tours</string>
 
     <string-array name="admin_array">
         <item>Coming Tours</item>
@@ -51,7 +52,7 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_websearch">Web search</string>
+    <string name="search_title">Carpool search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="frg_main_img">SelectedImage</string>
 
@@ -116,6 +117,7 @@
     <string name="action_settings">Settings</string>
 
     <!-- Activity activity_vehicle.xml -->
+    <string name="act_vehicle_title">Vehicle details</string>
     <string name="act_vehicle_id">Autonumbered ID</string>
     <string name="act_vehicle_licenseplate">Licenseplate</string>
     <string name="act_vehicle_country">Country of Registration</string>
@@ -466,6 +468,7 @@
     <string name="title_activity_tour">TourActivity</string>
 
     <!-- Activity activity_tour -->
+    <string name="act_tour_title">Tour details</string>
     <string name="act_tour_txtActTourDate">Date</string>
     <string name="act_tour_eTxtActTourDate">Date</string>
     <string name="act_tour_txtActTourTime">Time</string>
@@ -488,7 +491,11 @@
     <string name="act_tour_btnActTourUpdate">Update tour</string>
     <string name="act_tour_btnActTourCreate">Create tour</string>
     <string name="act_tour_btnActTourSeatRequest">Request Seat</string>
+    <string name="act_tour_btnActTourStartTracking">Start Tracking</string>
+    <string name="act_tour_btnActTourStopTracking">Stop Tracking</string>
     <string name="act_tour_btnActTourSeatCancel">Cancel Seat request</string>
+    <string name="act_tour_btnActFromAddress">From address</string>
+    <string name="act_tour_btnActToAddress">To address</string>
     <string name="act_tour_txtActTourPassengers">Passengers</string>
     <string name="act_tour_seat_choice_pending">Pending</string>
     <string name="act_tour_seat_choice_approved">Approved</string>
@@ -498,7 +505,12 @@
     <string name="act_tour_seat_payment_not_paid">Not paid</string>
     <string name="act_tour_actb_new_tour">New Tour</string>
     <string name="act_tour_actb_del_tour">Delete Tour</string>
+    <string name="act_tour_actb_track_tour">Start tracking</string>
     <string name="act_tour_actb_del_tour_canceled">Deletion was canceled</string>
+    <string name="act_tour_sms_text_body">Hi, I asked to ride along with you on</string>
+    <string name="act_tour_sms_text_body2">. This is no longer needed. So it\'s not necessary to pick my up. Kind regards</string>
+    <string name="act_tour_sms_text_cancel_tour_body">Hi, I\'m canceling the tour on</string>
+    <string name="act_tour_sms_text_cancel_tour_body2">. I hope you find a new tour to ride along. Kind regards</string>
 
     <!-- Fragment MyTeamFragment -->
     <string name="frg_myteam_menu_delete_tm">No longer in my team</string>
@@ -515,6 +527,7 @@
     <string name="title_activity_user">UserActivity</string>
 
     <!-- Activity activity_user.xml -->
+    <string name="act_user_title">User details</string>
     <string name="act_user_lastname">Lastname</string>
     <string name="act_user_firstname">Firstname</string>
     <string name="act_user_email">E-mail</string>
@@ -524,5 +537,100 @@
     <string name="act_user_btn_update">Update Profile</string>
     <string name="act_user_action_settings">Settings</string>
     <string name="act_user_chb_approved">Approved user</string>
+
+    <!-- Fragment fragment_coming_tours -->
+    <string name="frg_comingtours_search">Search tours</string>
+
+    <!-- LocalService -->
+    <string name="local_service_started">Local service has started</string>
+    <string name="local_service_stopped">Local service has stopped</string>
+    <string name="local_service_label">Sample Local Service</string>
+
+    <!-- Latitude, longitude format -->
+    <string name="latitude_longitude">%1$.8f, %2$.8f</string>
+
+    <!-- LocationServiceErrorMessages -->
+    <string name="canceled">The client canceled the connection by calling disconnect().</string>
+    <string name="date_invalid">The device date is likely set incorrectly.</string>
+    <string name="connection_error_code">Connection failure error code: %1$d</string>
+    <string name="connection_error_disabled">Google Play services is disabled</string>
+    <string name="connection_error_internal">An internal error occurred</string>
+    <string name="connection_error_invalid">The version of Google Play services on this device is not authentic</string>
+    <string name="connection_error_invalid_account">The specified account name is invalid</string>
+    <string name="connection_error_license_check_failed">The app is not licensed to the user</string>
+    <string name="connection_error_message">Connection failure error message: %1$s</string>
+    <string name="connection_error_misconfigured">The application is misconfigured</string>
+    <string name="connection_error_missing">Google Play services is missing</string>
+    <string name="connection_error_needs_resolution">Additional resolution is required</string>
+    <string name="connection_error_network">A network error occurred</string>
+    <string name="connection_error_outdated">Google Play services is out of date</string>
+    <string name="connection_error_sign_in_required">The user is not signed in</string>
+    <string name="connection_error_unknown">An unknown error occurred</string>
+    <string name="drive_external_storage_required">The Drive API requires external storage (such as an SD card), but no external storage is mounted.</string>
+    <string name="interuppted">An interrupt occurred while waiting for the connection complete.</string>
+    <string name="succes">The connection was successful.</string>
+    <string name="timeout">The connection takes too long for getting a resonse.</string>
+
+    <!-- Address format -->
+    <!-- <string name="address_output_string">%1$s %2$s %3$s %4$s %5$s</string> -->
+    <string name="address_output_string">%1$s %2$s %3$s</string>
+
+    <!-- Latitude, longitude format -->
+    <!-- <string name="latitude_longitude">%1$.8f, %2$.8f</string> -->
+
+
+    <!-- Menu title -->
+
+
+    <!-- Labels -->
+    <string name="latlng">Lat/Long:</string>
+    <string name="address">Address:</string>
+
+    <!-- Messages -->
+    <string name="no_resolution">Google Play services: unable to resolve connection error.</string>
+    <string name="connected">Client connected</string>
+    <string name="connection_error_code_unknown">Unknown connection error code:  %1$d</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="disconnected">Client disconnected</string>
+    <string name="get_address">Get Address</string>
+    <string name="get_address_in_process">Address is being retrieved&#8230;</string>
+    <string name="get_location">Get Location</string>
+    <string name="illegal_argument_exception">Illegal arguments: Latitude %1$.8f Longitude %2$.8f</string>
+    <string name="invalid_action">Invalid intent action %1$s</string>
+    <string name="invalid_integer_id">Invalid integer request ID: %1$s</string>
+    <string name="IO_Exception_getFromLocation">IO Exception in Geocoder.getFromLocation()</string>
+    <string name="location_requested">Periodic updates requested</string>
+    <string name="location_updated">Location updated</string>
+    <string name="location_update_error">Location update failed</string>
+    <string name="location_update_error_detail">Location update error. code %1$d message %2$s</string>
+    <string name="location_update_missing_update">Location update error. No incoming location.</string>
+    <string name="location_updates_stopped">Periodic updates stopped</string>
+    <string name="log_new_location">New location: %1$s</string>
+    <string name="no_address_found">No address found for location</string>
+    <string name="no_phone_found">No phone number found for location</string>
+    <string name="no_connection">No connection: Cannot request location</string>
+    <string name="no_geocoder_available">Cannot get address. No geocoder available.</string>
+    <string name="stop_location_updates">Location Updates are stopped.</string>
+    <string name="no_location_available">Location not available</string>
+    <string name="resolved">Error resolved. Please re-try operation.</string>
+    <!-- <string name="no_resolution">Google Play services: unable to resolve connection error.</string> -->
+    <string name="periodic_update_stop">Stopping periodic updates</string>
+    <string name="play_services_available">Google Play services is available</string>
+    <string name="request_location_updates_in_progress">Can\'t request location updates, previous request hasn\'t finished</string>
+    <string name="start_updates">Start Updates</string>
+    <string name="stop_updates">Stop Updates</string>
+    <string name="unknown">--Unknown--</string>
+    <string name="unknown_activity_request_code">Received an unknown activity request code %1$d in onActivityResult.</string>
+
+    <!-- Activity TrackingActivity -->
+    <string name="title_activity_tracking">Tracking Activity</string>
+    <string name="title_activity_maps">MapsActivity</string>
     
+    <!-- Strings for MapsActivity -->
+    <string name="act_maps_btn_normal">Maps</string>
+    <string name="act_maps_btn_satellite">Satellite</string>
+    <string name="act_maps_btn_hybrid">Hybrid</string>
+    <string name="act_maps_btn_terrain">Terrain</string>
+    <string name="act_maps_btn_start">Start</string>
+
 </resources>

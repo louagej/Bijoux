@@ -87,11 +87,12 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 			prepareForNewVehicle();
 		}
 		
-		
+		setTitle(R.string.act_vehicle_title);
 		
 	}
 
 	private Country getCountry(String iso3166) {
+		sh = new SchemaHelper(this);
 		sh.openDataBase();
 		Log.d("iso3166", iso3166);
 		Country ct = new Country();

@@ -8,6 +8,7 @@ public class Tracking implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String TRACKING = "tracking";
 	private int tracking_id;
 	private Date track_date_time;
 	private int tour_id;
@@ -16,6 +17,7 @@ public class Tracking implements Serializable {
 	private double accuracy;
 	private double altitude;
 	private double speed;
+	private int cloud_id;
 	
 	public Tracking() {
 		super();
@@ -67,5 +69,11 @@ public class Tracking implements Serializable {
 	}
 	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+	public int getCloud_id() {
+		return cloud_id;
+	}
+	public void setCloud_id(int cloud_id) {
+		this.cloud_id = cloud_id;
 	}
 }

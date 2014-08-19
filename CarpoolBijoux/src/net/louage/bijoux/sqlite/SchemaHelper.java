@@ -9,6 +9,7 @@ import net.louage.bijoux.model.Team;
 import net.louage.bijoux.model.Tour;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.model.Vehicle;
+import net.louage.bijoux.model.Tracking;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -31,7 +32,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	// with multiple tables
 
 	// TOGGLE THIS NUMBER FOR UPDATING TABLES AND DATABASE
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 9;
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -119,7 +120,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ TrackingTable.ACCURACY + " NUMERIC  NULL,"
 				+ TrackingTable.ALTITUDE + " NUMERIC  NULL,"
 				+ TrackingTable.SPEED + " NUMERIC  NULL,"
-				+ TrackingTable.CLOUD_ID + " NUMERIC  NULL);"
+				+ TrackingTable.CLOUD_ID + " INTEGER  NULL);"
 				+ " CREATE TRIGGER tracking_create_datetime AFTER INSERT ON "
 				+ TrackingTable.TABLE_NAME + "  BEGIN UPDATE "
 				+ TrackingTable.TABLE_NAME + " SET "
@@ -133,7 +134,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ CountryTable.ISO + " TEXT NOT NULL, "
 				+ CountryTable.DESCRIPTION + " TEXT  NULL); ";
 		db.execSQL(countryQuery);
-		Log.d("countryQuery", countryQuery);
+		//Log.d("countryQuery", countryQuery);
 		String countryInsertQuery = "INSERT INTO "
 				+ CountryTable.TABLE_NAME
 				+ " SELECT 1 AS "
@@ -391,12 +392,12 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ " UNION SELECT  248, 'ZM', 'Zambia'"
 				+ " UNION SELECT  249, 'ZW', 'Zimbabwe'";
 		db.execSQL(countryInsertQuery);
-		Log.d("countryInsertQuery", countryInsertQuery);
+		//Log.d("countryInsertQuery", countryInsertQuery);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w("LOG_TAG", "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+		//Log.w("LOG_TAG", "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + UserTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + VehicleTable.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + TourTable.TABLE_NAME);
@@ -608,11 +609,11 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		String tag="SchemaHelper checkIfUserExists";
 		SQLiteDatabase sd = getWritableDatabase();
 		String[] columns = new String[] { UserTable.ID };
-		Log.d(tag, "columns: "+ String.valueOf(user_id));
+		//Log.d(tag, "columns: "+ String.valueOf(user_id));
 		String selection = UserTable.ID+ "= ? ";
-		Log.d(tag, "selection: "+ selection);
+		//Log.d(tag, "selection: "+ selection);
 		String[] selectionArgs = new String[] { String.valueOf(user_id) };
-		Log.d(tag, "selectionArgs: "+ String.valueOf(user_id));
+		//Log.d(tag, "selectionArgs: "+ String.valueOf(user_id));
 		Cursor c = sd.query(UserTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
 		if (c.moveToFirst()) {
 			return true;
@@ -745,7 +746,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		String[] columns = new String[] { TourTable.ID };
 		String selection = TourTable.ID+ "= ? ";
 		String[] selectionArgs = new String[] { String.valueOf(tour_id) };
-		Log.d(tag, "selectionArgs: "+ String.valueOf(tour_id));
+		//Log.d(tag, "selectionArgs: "+ String.valueOf(tour_id));
 		Cursor c = sd.query(TourTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
 		if (c.moveToFirst()) {
 			return true;
@@ -778,7 +779,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		while (c.moveToNext()) {
 			Tour tr = new Tour();
 			tr.setTour_id(c.getInt(c.getColumnIndex(TourTable.ID)));
-			Log.d(tag, "Date tour from sqLite: "+c.getString(c.getColumnIndex(TourTable.DATE)));
+			//Log.d(tag, "Date tour from sqLite: "+c.getString(c.getColumnIndex(TourTable.DATE)));
 			Date tourDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(TourTable.DATE)));
 			tr.setDate(tourDate);
 			Date tourTime=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TourTable.TIME)));
@@ -812,5 +813,64 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		}
 		return tours;
 	}
+	
+	// CRUD operations for Tracking
+		public long addTracking(Tracking tracking) {
+			// CREATE A CONTENTVALUE OBJECT
+			ContentValues cv = new ContentValues();
+			cv.put(TrackingTable.TOUR_ID, tracking.getTour_id());
+			cv.put(TrackingTable.LATITUDE, tracking.getLatitude());
+			cv.put(TrackingTable.LONGITUDE, tracking.getLongitude());
+			cv.put(TrackingTable.ACCURACY, tracking.getAccuracy());
+			cv.put(TrackingTable.ALTITUDE, tracking.getAltitude());
+			cv.put(TrackingTable.SPEED, tracking.getSpeed());
+
+			// RETRIEVE WRITEABLE DATABASE AND INSERT
+			SQLiteDatabase sd = getWritableDatabase();
+			System.out.println("databank" + sd.getPath());
+			long result = sd.insert(TrackingTable.TABLE_NAME, null, cv);
+			return result;
+		}
+		
+		public ArrayList<Tracking> trackingSelectForCloud() {
+			SQLiteDatabase sd = getWritableDatabase();
+			ArrayList<Tracking>tracks=new ArrayList<Tracking>();
+			//String selection = TrackingTable.CLOUD_ID+"= ?";; 
+			//String[] selectionArgs = new String[] {"IS NULL"};
+			//Cursor c = sd.query(TrackingTable.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+			Cursor c = sd.rawQuery("SELECT * FROM "+TrackingTable.TABLE_NAME+" where "+TrackingTable.CLOUD_ID+" IS NULL", null);
+			while (c.moveToNext()) {
+				Tracking track = new Tracking();
+				track.setTracking_id(c.getInt(c.getColumnIndex(TrackingTable.ID)));
+				Date trackingDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TrackingTable.TRACK_DATE_TIME)));
+				track.setTrack_date_time(trackingDate);
+				track.setTour_id(c.getInt(c.getColumnIndex(TrackingTable.TOUR_ID)));
+				track.setLatitude(c.getDouble(c.getColumnIndex(TrackingTable.LATITUDE)));
+				track.setLongitude(c.getDouble(c.getColumnIndex(TrackingTable.LONGITUDE)));
+				track.setAccuracy(c.getDouble(c.getColumnIndex(TrackingTable.ACCURACY)));
+				track.setAltitude(c.getDouble(c.getColumnIndex(TrackingTable.ALTITUDE)));
+				track.setSpeed(c.getDouble(c.getColumnIndex(TrackingTable.SPEED)));
+				tracks.add(track);				
+			}
+			return tracks;
+		}
+		
+		public Boolean trackingUpdate(Tracking tr) {
+			SQLiteDatabase sd = getWritableDatabase();
+			ContentValues cv = new ContentValues();
+			String sqLiteDateTime = DateTime.getStrSQLiteDateTimeStamp(tr.getTrack_date_time());
+			cv.put(TrackingTable.TRACK_DATE_TIME, sqLiteDateTime);
+			cv.put(TrackingTable.TOUR_ID, tr.getTour_id());
+			cv.put(TrackingTable.LATITUDE, tr.getLatitude());
+			cv.put(TrackingTable.LONGITUDE, tr.getLongitude());
+			cv.put(TrackingTable.ACCURACY, tr.getAccuracy());
+			cv.put(TrackingTable.ALTITUDE, tr.getAltitude());
+			cv.put(TrackingTable.SPEED, tr.getSpeed());
+			cv.put(TrackingTable.CLOUD_ID, tr.getCloud_id());
+			String whereClause = TrackingTable.ID + "=?";
+			String[] whereArgs = { Integer.toString(tr.getTracking_id()) };
+			sd.update(TrackingTable.TABLE_NAME, cv, whereClause, whereArgs);
+			return true;
+		}
 	
 }

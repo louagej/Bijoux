@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="5dp"
+    android:contentDescription="@string/act_tour_btnActFromAddress"
     tools:context="net.louage.bijoux.userinterface.TourActivity"
     tools:ignore="MergeRootFrame" >
 
@@ -42,9 +43,9 @@
         android:id="@+id/txtActTourFromAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/eTxtActTourFromCountry"
+        android:layout_above="@+id/eTxtActTourFromPostCode"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/eTxtActTourFromPostCode"
+        android:layout_alignTop="@+id/eTxtActTourFromAddress"
         android:layout_toLeftOf="@+id/spnnActTourVehicle"
         android:text="@string/act_tour_txtActTourFromAddress" />
 
@@ -52,7 +53,7 @@
         android:id="@+id/txtActTourToAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/eTxtActTourToCountry"
+        android:layout_above="@+id/eTxtActTourToPostCode"
         android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/txtActTourFromAddress"
         android:layout_alignTop="@+id/eTxtActTourToAddress"
@@ -210,15 +211,6 @@
         android:layout_below="@+id/eTxtActTourToCountry"
         android:layout_toLeftOf="@+id/eTxtActTourToCity" />
 
-    <Button
-        android:id="@+id/btnActTourSeatRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/spnnActTourTeam"
-        android:text="@string/act_tour_btnActTourSeatRequest" />
-
     <TextView
         android:id="@+id/txtActTourPassengers"
         android:layout_width="wrap_content"
@@ -243,6 +235,48 @@
         android:layout_below="@+id/eTxtActTourToCountry"
         android:layout_toRightOf="@+id/spnnActTourTeam"
         android:text="@string/act_tour_btnActTourUpdate" />
+
+    <Button
+        android:id="@+id/btnActTourStartTracking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnActTourSeatRequest"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnActTourUpdate"
+        android:drawableLeft="@drawable/ic_action_location_found"
+        android:text="@string/act_tour_btnActTourStartTracking" />
+
+    <Button
+        android:id="@+id/btnActTourSeatRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnActTourUpdate"
+        android:text="@string/act_tour_btnActTourSeatRequest" />
+
+    <Button
+        android:id="@+id/btnFromAddress"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/eTxtActTourFromCountry"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/txtActTourVehicle"
+        android:layout_alignTop="@+id/eTxtActTourFromPostCode"
+        android:drawableTop="@drawable/ic_action_map" />
+
+    <Button
+        android:id="@+id/btnToAddress"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/btnFromAddress"
+        android:layout_alignTop="@+id/eTxtActTourToPostCode"
+        android:drawableTop="@drawable/ic_action_map"
+        android:minHeight="48dip" />
 
 </RelativeLayout>
 

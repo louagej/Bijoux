@@ -21,10 +21,14 @@ import java.util.ArrayList;
 import net.louage.bijoux.R;
 import net.louage.bijoux.model.Role;
 import net.louage.bijoux.model.User;
+import net.louage.bijoux.service.AlarmReceiver;
+import net.louage.bijoux.service.SyncTrackingDataService;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -32,7 +36,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -91,13 +94,12 @@ public class MainActivity extends Activity {
 		mTitle = mDrawerTitle = getTitle();
 
 		if (!net.louage.bijoux.constants.SharedPreferences.checkConnectionData(this)) {
-			setmNavDrawerTitles(getResources().getStringArray(
-					R.array.unknown_array));
+			setmNavDrawerTitles(getResources().getStringArray(R.array.unknown_array));
 		} else {
 			net.louage.bijoux.constants.SharedPreferences.getUserId(this);
 			appUser = net.louage.bijoux.constants.SharedPreferences.getUser(this);
-			Boolean member = false;
-			Boolean teamleader = false;
+			boolean member = false;
+			boolean teamleader = false;
 			boolean admin = false;
 			ArrayList<Role> appUserRoles = new ArrayList<Role>();
 			try {
@@ -125,28 +127,24 @@ public class MainActivity extends Activity {
 			}
 
 			if (admin) {
-				setmNavDrawerTitles(getResources().getStringArray(
-						R.array.admin_array));
+				setmNavDrawerTitles(getResources().getStringArray(R.array.admin_array));
 			} else if (teamleader) {
-				setmNavDrawerTitles(getResources().getStringArray(
-						R.array.team_array));
+				setmNavDrawerTitles(getResources().getStringArray(R.array.team_array));
 			} else if (member) {
-				setmNavDrawerTitles(getResources().getStringArray(
-						R.array.member_array));
+				setmNavDrawerTitles(getResources().getStringArray(R.array.member_array));
 			} else {
-				setmNavDrawerTitles(getResources().getStringArray(
-						R.array.unknown_array));
+				setmNavDrawerTitles(getResources().getStringArray(R.array.unknown_array));
 			}
 
 		}
+		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// set a custom shadow that overlays the main content when the drawer opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,	GravityCompat.START);
 		// set up the drawer's list view with items and click listener
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, getmNavDrawerTitles()));
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, getmNavDrawerTitles()));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -163,14 +161,12 @@ public class MainActivity extends Activity {
 		) {
 			public void onDrawerClosed(View view) {
 				getActionBar().setTitle(mTitle);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(mDrawerTitle);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -178,22 +174,25 @@ public class MainActivity extends Activity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+		startScheduleSync(mDrawerLayout);
+
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
-		return super.onCreateOptionsMenu(menu);
+		//MenuInflater inflater = getMenuInflater();
+		//inflater.inflate(R.menu.main, menu);
+	    
+	    return super.onCreateOptionsMenu(menu);
 	}
-
+	
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
+		// If the nav drawer is open, hide action items related to the content view
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+		//menu.findItem(R.id.search).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -206,7 +205,7 @@ public class MainActivity extends Activity {
 		}
 		// Handle action buttons
 		switch (item.getItemId()) {
-		case R.id.action_websearch:
+		/*case R.id.search:
 			// create intent to perform web search for this planet
 			Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 			intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
@@ -217,7 +216,7 @@ public class MainActivity extends Activity {
 				Toast.makeText(this, R.string.app_not_available,
 						Toast.LENGTH_LONG).show();
 			}
-			return true;
+			return true;*/
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -454,6 +453,36 @@ public class MainActivity extends Activity {
 
 	public void setmNavDrawerTitles(String[] mNavDrawerTitles) {
 		this.mNavDrawerTitles = mNavDrawerTitles;
+	}
+
+	public void startScheduleSync(View v) {
+		try {
+			AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+			Intent intent = new Intent(this, AlarmReceiver.class);
+			intent.putExtra(AlarmReceiver.ACTION_ALARM, AlarmReceiver.ACTION_ALARM);
+			final PendingIntent pIntent = PendingIntent.getBroadcast(this, 1234567, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			alarms.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pIntent);
+			Toast.makeText(this, "Alarm schedule started...", Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+		 
+	public void stopScheduleSync(View v) {
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		intent.putExtra(AlarmReceiver.ACTION_ALARM,	AlarmReceiver.ACTION_ALARM);
+		final PendingIntent pIntent = PendingIntent.getBroadcast(this, 1234567, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+		alarms.cancel(pIntent);
+		Toast.makeText(this, "Alarm schedule canceled...", Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		stopScheduleSync(mDrawerLayout);
+		super.onDestroy();
 	}
 
 }

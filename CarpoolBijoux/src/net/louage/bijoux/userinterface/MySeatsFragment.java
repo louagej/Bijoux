@@ -106,8 +106,8 @@ public class MySeatsFragment extends ListFragment implements OnItemClickListener
 				String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
 				String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
 				//Log.d(tag, "tour date json: " + tr.getDate());
-				String trData = tourDate + " - " + tourtime + "\nFrom: "
-						+ tr.getFromAddress().getLocality() + "\nTo: "
+				String trData = tr.getUser().getFirstname()+" "+ tr.getUser().getLastname() +"\n"+ tourDate + " - " + tourtime + "\nFrom: "
+						+ tr.getFromAddress().getLocality() + " - To: "
 						+ tr.getToAddress().getLocality();
 				String logo="unknown";
 				ArrayList<Seat>sts=new ArrayList<Seat>();

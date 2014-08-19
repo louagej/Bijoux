@@ -14,5 +14,11 @@
         android:title="@string/act_tour_actb_del_tour"
         android:icon="@drawable/ic_action_discard"
         android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/sync_tracking_data"
+        android:orderInCategory="50"
+        android:title="@string/act_tour_actb_track_tour"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="ifRoom|withText"></item>
 
 </menu>

@@ -13,10 +13,12 @@ import net.louage.bijoux.model.Country;
 import net.louage.bijoux.model.Seat;
 import net.louage.bijoux.model.Team;
 import net.louage.bijoux.model.Tour;
+import net.louage.bijoux.model.Tracking;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.model.Vehicle;
 import net.louage.bijoux.model.VehicleType;
 import net.louage.bijoux.sqlite.SchemaHelper;
+import net.louage.bijoux.sqlite.TrackingTable;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -71,6 +73,7 @@ public class JSONParser {
 
 			} else if (method == "GET") {
 				// request method is GET
+				//Log.d("JSONParser method GET params: ", params.toString());
 				DefaultHttpClient httpClient = new DefaultHttpClient();
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
@@ -207,5 +210,19 @@ public class JSONParser {
 			seat.setPaid(false);
 		}		
 		return seat;
+	}
+
+	public static Tracking getTrackingfromJson(JSONObject json_tracking) throws JSONException{
+		Tracking track = new Tracking();
+		track.setCloud_id(json_tracking.getInt(TrackingTable.ID));
+		Date trackDateTime = DateTime.getDateSQLiteString(json_tracking.getString(TrackingTable.TRACK_DATE_TIME));
+		track.setTrack_date_time(trackDateTime);
+		track.setTour_id(json_tracking.getInt(TrackingTable.TOUR_ID));
+		track.setLatitude(json_tracking.getDouble(TrackingTable.LATITUDE));
+		track.setLongitude(json_tracking.getDouble(TrackingTable.LONGITUDE));
+		track.setAccuracy(json_tracking.getDouble(TrackingTable.ACCURACY));
+		track.setAltitude(json_tracking.getDouble(TrackingTable.ALTITUDE));
+		track.setSpeed(json_tracking.getDouble(TrackingTable.SPEED));
+		return track;
 	}
 }

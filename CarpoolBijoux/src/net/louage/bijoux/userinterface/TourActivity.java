@@ -20,11 +20,15 @@ import net.louage.bijoux.model.Team;
 import net.louage.bijoux.model.Tour;
 import net.louage.bijoux.model.User;
 import net.louage.bijoux.model.Vehicle;
+import net.louage.bijoux.server.AddressAsyncGetCoordinates;
+import net.louage.bijoux.server.AsTskArrayListCompleteListener;
 import net.louage.bijoux.server.AsTskObjectCompleteListener;
 import net.louage.bijoux.server.SeatAsyncCreateUpdate;
 import net.louage.bijoux.server.SeatAsyncDelete;
 import net.louage.bijoux.server.TourAsyncCreateUpdate;
 import net.louage.bijoux.server.TourAsyncDelete;
+import net.louage.bijoux.service.SyncTrackingDataService;
+import net.louage.bijoux.service.TourTrackingDataService;
 import net.louage.bijoux.sqlite.SchemaHelper;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -32,6 +36,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -67,6 +72,9 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	private AutoCompleteTextView eTxtActTourToCountry;
 	private Button btnActTourUpdate;
 	private Button btnActTourSeatRequest;
+	private Button btnActTourStartTracking;
+	private Button btnFromAddress;
+	private Button btnToAddress;
 	private EditText eTxtActTourDate;
 	private ArrayAdapter<String> adapterCountries;
 	private Tour tr;
@@ -81,8 +89,11 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	int spinnerSelectionVehicle;
 	int spinnerSelectionTeam;
 	private static final String COMPLETED_TRANSACTION_SUCCESFULL = "Completed transaction succesfull";
+	private static final String COMPLETED_TRANSACTION_UNSUCCESFULL = "Transaction not completed";
 	Boolean deleted = false;
 	Boolean newTour = false;
+	private boolean syncStarted=false;
+	private boolean trackingStarted=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,20 +127,25 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		eTxtActTourToCountry = (AutoCompleteTextView) findViewById(R.id.eTxtActTourToCountry);
 		btnActTourUpdate = (Button) findViewById(R.id.btnActTourUpdate);
 		btnActTourSeatRequest = (Button) findViewById(R.id.btnActTourSeatRequest);
-
-		// When the Tour was initiated by the appUser, request seat button
-		// shouldn't be visible
-		// Only the update tour should be visible
+		btnActTourStartTracking = (Button) findViewById(R.id.btnActTourStartTracking);
+		btnFromAddress = (Button)findViewById(R.id.btnFromAddress);
+		btnToAddress = (Button)findViewById(R.id.btnToAddress);
+		btnFromAddress.setOnClickListener(this);
+		btnToAddress.setOnClickListener(this);
+		
+		// When the Tour was initiated by the appUser, request seat button shouldn't be visible
+		// Only the update tour should and tracking should be visible
 		if (appUser.getUser_id() == tr.getUser().getUser_id()) {
 			btnActTourSeatRequest.setVisibility(View.INVISIBLE);
+			btnActTourStartTracking.setOnClickListener(this);
 			btnActTourUpdate.setOnClickListener(this);
 			// If the appUser is the user that offers a tour, the vehicle
 			// spinner must be build from vehicles of the appUser
 			setArrayAdapterVehicleList();
 		} else {
-			// Remove update tour, delete option and put EditText fields not
-			// editable
+			// Remove update tour, delete option and put EditText fields not editable
 			btnActTourUpdate.setVisibility(View.INVISIBLE);
+			btnActTourStartTracking.setVisibility(View.INVISIBLE);
 			btnActTourSeatRequest.setOnClickListener(this);
 			setEditTextNotEditable();
 			// If the appUser isn't the user that offers a tour, the vehicle
@@ -140,7 +156,8 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			spinnerSelectionVehicle = 0;
 
 		}
-		// Set text of vehicles
+		
+		
 
 		// Link spinner Vehicle to adapter
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
@@ -180,12 +197,12 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		spnnActTourTeam.setSelection(spinnerSelectionTeam);
 		eTxtActTourSeatPrice.setText(Double.toString(tr.getSeat_price()));
 		// Show from-address in UI
-		eTxtActTourFromAddress.setText(tr.getFromAddress().getAddressLine(1));
+		eTxtActTourFromAddress.setText(tr.getFromAddress().getAddressLine(0));
 		eTxtActTourFromPostCode.setText(tr.getFromAddress().getPostalCode());
 		eTxtActTourFromCity.setText(tr.getFromAddress().getLocality());
 		eTxtActTourFromCountry.setText(tr.getFromAddress().getCountryName());
-		// Show to-address inUI
-		eTxtActTourToAddress.setText(tr.getToAddress().getAddressLine(1));
+		// Show to-address in UI
+		eTxtActTourToAddress.setText(tr.getToAddress().getAddressLine(0));
 		eTxtActTourToPostCode.setText(tr.getToAddress().getPostalCode());
 		eTxtActTourToCity.setText(tr.getToAddress().getLocality());
 		eTxtActTourToCountry.setText(tr.getToAddress().getCountryName());
@@ -205,6 +222,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		// Link the adapter to the AutoCompleteTextView in the layout
 		eTxtActTourFromCountry.setAdapter(adapterCountries);
 		eTxtActTourToCountry.setAdapter(adapterCountries);
+		setTitle(tr.getUser().getFirstname()+" "+tr.getUser().getLastname());
 	}
 
 	private void setArrayAdapterVehicleList() {
@@ -340,24 +358,46 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		rowIconItems.clear();
 		seats = sts;
 		Boolean requestDone=false;
+		int removeIndex=-1;
 		for (int i = 0; i < seats.size(); i++) {
 			Seat st = seats.get(i);
 			String payment;
-			if (st.isPaid()) {
-				payment = "Done";
-			} else {
-				payment = "Still open";
+			if (tr.getUser().getUser_id()==st.getUser_id()) {
+				removeIndex=i;
+			}else{
+				if (st.isPaid()) {
+					payment = "Done";
+				} else {
+					payment = "Still open";
+				}
+				if (st.getUser_id()==appUser.getUser_id()) {
+					requestDone=true;
+				}
+				User seatUser = new User();
+				SchemaHelper sh = new SchemaHelper(this);
+				seatUser=sh.userSelectId(st.getUser_id());
+				sh.close();
+				String stData = null;
+				if (seatUser!=null) {
+					stData = "User: " + seatUser.getFirstname() + " "+ seatUser.getLastname();
+				} else {
+					stData = "User id: " + st.getUser_id();
+				}
+				if (tr.getUser().getUser_id()==appUser.getUser_id()) {
+					stData = stData +"\nPayment: "+ payment;
+				} else {
+					stData = stData +"\nStatus: "+ st.getStatus();
+				}
+				String logo = st.getStatus().toLowerCase(Locale.getDefault());
+				int id = getResources().getIdentifier(logo, "drawable",
+						getPackageName());
+				RowIconItem items = new RowIconItem(stData, id);
+				rowIconItems.add(items);
 			}
-			if (st.getUser_id()==appUser.getUser_id()) {
-				requestDone=true;
-			}
-			String stData = "User id: " + st.getUser_id() + "\nPayment: "
-					+ payment;
-			String logo = st.getStatus().toLowerCase(Locale.getDefault());
-			int id = getResources().getIdentifier(logo, "drawable",
-					getPackageName());
-			RowIconItem items = new RowIconItem(stData, id);
-			rowIconItems.add(items);
+		}
+		
+		if (removeIndex>=0) {
+			seats.remove(removeIndex);
 		}
 		
 		if (requestDone==true) {
@@ -366,8 +406,6 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			btnActTourSeatRequest.setText(R.string.act_tour_btnActTourSeatRequest);
 		}
 		adapter = new CustomIconAdapter(this, rowIconItems);
-		// adapter.notifyDataSetChanged();
-		Log.d("setListAdapter: ", "TourActivity Started");
 		ListView list = (ListView) findViewById(android.R.id.list);
 		list.setAdapter(adapter);
 
@@ -388,6 +426,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		// shouldn't be able to delete this tour
 		if (appUser.getUser_id() != tr.getUser().getUser_id()) {
 			menu.removeItem(R.id.delete_tour);
+			menu.removeItem(R.id.sync_tracking_data);
 		}
 		return true;
 	}
@@ -443,6 +482,17 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			FragmentManager fragmentManager = getFragmentManager();
 			dialog.show(fragmentManager, "Delete Tour");
 		default:
+		case R.id.sync_tracking_data:
+			if (syncStarted) {
+				stopService(new Intent(this, SyncTrackingDataService.class));
+				syncStarted=false;
+				Log.d(tag, "tracking Stopped");
+			} else {
+				Intent intent = new Intent(this, SyncTrackingDataService.class);
+				startService(intent);
+				syncStarted=true;
+				Log.d(tag, "tracking Started");
+			}
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -604,10 +654,15 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			Boolean delete = false;
 			// TourActivity.this.onTaskCompleteCreateOrUpdate(st);
 			Log.d("onTaskComplete", "Seat id: " + st.getSeat_id());
+			User cancelSeatUser=new User();
 			for (int i = 0; i < seats.size(); i++) {
 				Seat seat = seats.get(i);
 				// Log.d("onTaskComplete", "Seat id: " + seat.getSeat_id());
 				if (st.getSeat_id() == seat.getSeat_id()) {
+					//Get User information about the canceled seat
+					SchemaHelper sh= new SchemaHelper(getApplicationContext());
+					cancelSeatUser=sh.userSelectId(seat.getUser_id());
+					sh.close();
 					// Replace the old seat object with the deleted object
 					seats.remove(i);
 					i--;
@@ -616,14 +671,56 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			}
 			// Check if the Seat is deleted
 			if (delete == false) {
-				Toast.makeText(getApplicationContext(),
-						COMPLETED_TRANSACTION_SUCCESFULL, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(getApplicationContext(),	COMPLETED_TRANSACTION_UNSUCCESFULL, Toast.LENGTH_LONG).show();
+			} else{
+				
+				informTourOperatorCancelSeat(cancelSeatUser);
 			}
 			setSeatList(seats);
 		}
-	}
 
+	}
+	
+	private void informTourOperatorCancelSeat(User cancelSeatUser) {
+		//Get user phone number for sending a text message about canceled seat
+		String phone=tr.getUser().getPhone();
+		String textBody=null;
+		if (cancelSeatUser!=null) {
+			textBody=getResources().getString(R.string.act_tour_sms_text_body)
+					+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+					+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
+					+") "+getResources().getString(R.string.act_tour_sms_text_body2)
+					+", "+cancelSeatUser.getFirstname();
+		} else {
+			textBody=getResources().getString(R.string.act_tour_sms_text_body)
+					+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+					+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
+					+") "+getResources().getString(R.string.act_tour_sms_text_body2);
+		}
+		sendSMS(phone, textBody);
+	}
+	
+	/**
+	 * @param phone
+	 * @param textMessage
+	 * Extracted from <a href="http://developer.android.com/reference/android/telephony/SmsManager.html">Android documentation</a><br>
+	 * The SmsManager manages SMS operations such as sending data to the given mobile device.<br>
+	 * You can create this object by calling the static method SmsManager.getDefault()
+	 */
+	private void sendSMS(String phone, String textMessage) {
+		//Log.d("sms message: ", message);
+		//Log.d("sms phone: ", phoneNumber);
+		SmsManager sms = SmsManager.getDefault();
+		/*Divide a message text into several fragments, none bigger than the maximum SMS message size.
+		 * the original message. Must not be null.
+		 */
+		ArrayList<String> parts=sms.divideMessage(textMessage);
+		/*Send a multi-part text based SMS.
+		 * The callee should have already divided the message into correctly sized parts by calling divideMessage.
+		 */
+		sms.sendMultipartTextMessage(phone, null, parts, null, null);
+	}
+	
 	private String[] getSeatParams(Seat st) {
 		String[] params = { Integer.toString(appUser.getUser_id()),
 				Integer.toString(st.getSeat_id()),
@@ -675,9 +772,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 				e.printStackTrace();
 			}
 			String[] paramsTour = getTourParams(tr);
-			new TourAsyncCreateUpdate(this,
-					new CreateOrUpdateTourTaskCompleteListener(), paramsTour)
-					.execute();
+			new TourAsyncCreateUpdate(this,	new CreateOrUpdateTourTaskCompleteListener(), paramsTour).execute();
 			break;
 		case R.id.btnActTourSeatRequest:
 			String btnSeatRequest=getResources().getString(R.string.act_tour_btnActTourSeatRequest);
@@ -718,9 +813,99 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			}
 
 			break;
+			
+		case R.id.btnActTourStartTracking:
+			if (trackingStarted) {
+				stopService(new Intent(this, TourTrackingDataService.class));
+				Toast.makeText(this, "Tracking stopped", Toast.LENGTH_LONG).show();
+				//Set Text on button back to initial text
+				btnActTourStartTracking.setText(getText(R.string.act_tour_btnActTourStartTracking));
+				trackingStarted=false;
+				Intent intentsync = new Intent(this, SyncTrackingDataService.class);
+				startService(intentsync);
+			} else {
+				Intent intent = new Intent(this, TourTrackingDataService.class);
+				Gson gson = new Gson();
+				String jsonTour = gson.toJson(tr);
+				intent.putExtra("jsonTour", jsonTour);
+				startService(intent);
+				Toast.makeText(this, "Tracking started", Toast.LENGTH_LONG).show();
+				//Set Text on button to stop text
+				btnActTourStartTracking.setText(getText(R.string.act_tour_btnActTourStopTracking));
+				trackingStarted=true;
+			}
+			
+			break;
+			
+		case R.id.btnFromAddress:
+			//Toast.makeText(this, "btnFromAddress was clicked", Toast.LENGTH_LONG).show();
+			String[] paramsAddressFrom = getMapsParams(tr.getFromAddress());
+			//Log.d("btnFromAddress Clicked with parameters", paramsAddressFrom.toString());
+			new AddressAsyncGetCoordinates(this, new GetCoordinatesTaskCompleteListener(), paramsAddressFrom).execute();
+			//Intent intentFrom = new Intent(this,MapsActivity.class);
+			//intentFrom.putExtra("type", 1);
+			//Gson gsonFrom = new Gson();
+			//String jsonFromAddress = gsonFrom.toJson(tr.getFromAddress());
+			//intentFrom.putExtra("jsonAddress", jsonFromAddress);
+			//startActivity(intentFrom);
+			break;
+			
+		case R.id.btnToAddress:
+			//Toast.makeText(this, "btnToAddress was clicked", Toast.LENGTH_LONG).show();
+			String[] paramsAddressTo = getMapsParams(tr.getToAddress());
+			//Log.d("btnFromAddress Clicked with parameters", paramsAddressTo.toString());
+			new AddressAsyncGetCoordinates(this, new GetCoordinatesTaskCompleteListener(), paramsAddressTo).execute();
+			//Intent intentTo = new Intent(this,MapsActivity.class);
+			//intentTo.putExtra("type", 1);
+			//Gson gsonTo = new Gson();
+			//String jsonToAddress = gsonTo.toJson(tr.getFromAddress());
+			//intentTo.putExtra("jsonAddress", jsonToAddress);
+			//startActivity(intentTo);
+			break;
+			
 		default:
+			
 			break;
 		}
+	}
+	
+	class GetCoordinatesTaskCompleteListener implements
+	AsTskArrayListCompleteListener<Address> {
+		@Override
+		public void onTaskComplete(ArrayList<Address> addresses) {
+			Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
+			if (addresses.size()>0) {
+				Address adr = new Address(null);
+				adr=addresses.get(0);
+				Log.d("onTaskComplete Address info:", adr.getAddressLine(0));
+				Log.d("onTaskComplete Coördinates info:", "lat: "+ String.valueOf(adr.getLatitude())+" - lng: "+String.valueOf(adr.getLongitude()));
+				Intent intentTo = new Intent(getApplicationContext(),MapsActivity.class);
+				intentTo.putExtra("type", 1);
+				Gson gsonTo = new Gson();
+				String jsonToAddress = gsonTo.toJson(adr);
+				intentTo.putExtra("jsonAddress", jsonToAddress);
+				startActivity(intentTo);
+			} else {
+				Toast.makeText(getApplicationContext(), "No map location could be found for this address, please enter a valid address", Toast.LENGTH_LONG).show();
+			}		
+		}
+	}
+
+	private String[] getMapsParams(Address address) {
+		String addressLine0 = address.getAddressLine(0);
+		String postalCode = address.getPostalCode();
+		String locality = address.getLocality();
+		String country=null;
+		String countryName = address.getCountryName();
+		if (countryName==null) {
+			country = address.getCountryCode();
+		} else {
+			country = countryName;
+		}
+		
+		String geoAdress = addressLine0+", "+postalCode+" "+locality+" "+country;
+		String[] params = { geoAdress };
+		return params;
 	}
 
 	private void buildTourObjectfromUI() throws ParseException {
@@ -805,10 +990,31 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		public void onTaskComplete(Tour tour) {
 			Log.d("DeleteTourTaskCompleteListener: ",
 					"onTaskComplete(Tour tour) Started");
+			for (int i = 0; i < seats.size(); i++) {
+				Seat st = new Seat();
+				st=seats.get(i);
+				User informSeatUser=new User();
+				SchemaHelper sh = new SchemaHelper(getApplicationContext());
+				informSeatUser=sh.userSelectId(st.getUser_id());
+				sh.close();
+				informSeatUserCancelTour(informSeatUser);
+			}
 			tr = tour;
 			deleted = true;
 			onBackPressed();
 		}
+	}
+
+	private void informSeatUserCancelTour(User informSeatUser) {
+		//Get user phone number for sending a text message about canceled seat
+		String phone=informSeatUser.getPhone();
+		String textBody=null;
+		textBody=getResources().getString(R.string.act_tour_sms_text_cancel_tour_body)
+				+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+				+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
+				+") "+getResources().getString(R.string.act_tour_sms_text_cancel_tour_body2)
+				+", "+tr.getUser().getFirstname();
+		sendSMS(phone, textBody);
 	}
 
 	@Override
