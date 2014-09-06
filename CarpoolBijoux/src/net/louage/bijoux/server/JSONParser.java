@@ -122,14 +122,14 @@ public class JSONParser {
 	public static User getUserfromJson(JSONObject json_user) throws JSONException {
 		User user = new User();
 		user.setUser_id(Integer.parseInt(json_user.getString(User.TAG_ID)));
-		Date activationDate = DateTime.getDateSQLiteString(json_user.getString(User.TAG_ACTIVATION));
+		Date activationDate = DateTime.getDateFormString(json_user.getString(User.TAG_ACTIVATION));
 		user.setActivation(activationDate);
 		user.setLastname(json_user.getString(User.TAG_LASTNAME));
 		user.setFirstname(json_user.getString(User.TAG_FIRSTNAME));
 		user.setEmail(json_user.getString(User.TAG_EMAIL));
 		user.setPhone(json_user.getString(User.TAG_PHONE));
 		user.setInfo(json_user.getString(User.TAG_INFO));
-		Date updateAtDate=DateTime.getDateTimeSQLiteString(json_user.getString(User.TAG_UPDATED_AT));
+		Date updateAtDate=DateTime.getDateTimeString(json_user.getString(User.TAG_UPDATED_AT));
 		user.setUpdate_at(updateAtDate);
 		user.setDriverlicense(json_user.getString(User.TAG_DRIVERLICENSE));
 		int approved = json_user.getInt(User.TAG_APPROVED);
@@ -156,7 +156,7 @@ public class JSONParser {
 		VehicleType vt = new VehicleType(json_vehicle.getString(Vehicle.TAG_VEHICLE_TYPE));
 		vh.setType(vt);
 		vh.setUser_id(json_vehicle.getInt(Vehicle.TAG_USER_ID));
-		Date vehicleUpdatedAt = DateTime.getDateTimeSQLiteString(json_vehicle.getString(Vehicle.TAG_UPDATED_AT));
+		Date vehicleUpdatedAt = DateTime.getDateTimeString(json_vehicle.getString(Vehicle.TAG_UPDATED_AT));
 		vh.setUpdate_at(vehicleUpdatedAt);
 		return vh;
 	}
@@ -208,14 +208,16 @@ public class JSONParser {
 			seat.setPaid(true);
 		} else {
 			seat.setPaid(false);
-		}		
+		}
+		seat.setPickupAddress(json_seat.getString(Seat.TAG_PICKUP));
+		seat.setDropoffAddress(json_seat.getString(Seat.TAG_DROPOFF));
 		return seat;
 	}
 
 	public static Tracking getTrackingfromJson(JSONObject json_tracking) throws JSONException{
 		Tracking track = new Tracking();
 		track.setCloud_id(json_tracking.getInt(TrackingTable.ID));
-		Date trackDateTime = DateTime.getDateSQLiteString(json_tracking.getString(TrackingTable.TRACK_DATE_TIME));
+		Date trackDateTime = DateTime.getDateFormString(json_tracking.getString(TrackingTable.TRACK_DATE_TIME));
 		track.setTrack_date_time(trackDateTime);
 		track.setTour_id(json_tracking.getInt(TrackingTable.TOUR_ID));
 		track.setLatitude(json_tracking.getDouble(TrackingTable.LATITUDE));

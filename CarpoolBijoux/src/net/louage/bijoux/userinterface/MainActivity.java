@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
-		startScheduleSync(mDrawerLayout);
+		//startScheduleSync(mDrawerLayout);
 
 	}
 	
@@ -462,7 +462,7 @@ public class MainActivity extends Activity {
 			intent.putExtra(AlarmReceiver.ACTION_ALARM, AlarmReceiver.ACTION_ALARM);
 			final PendingIntent pIntent = PendingIntent.getBroadcast(this, 1234567, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			alarms.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pIntent);
-			Toast.makeText(this, "Alarm schedule started...", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "Alarm schedule started...", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -476,12 +476,12 @@ public class MainActivity extends Activity {
 		final PendingIntent pIntent = PendingIntent.getBroadcast(this, 1234567, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 		alarms.cancel(pIntent);
-		Toast.makeText(this, "Alarm schedule canceled...", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "Alarm schedule canceled...", Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		stopScheduleSync(mDrawerLayout);
+		//stopScheduleSync(mDrawerLayout);
 		super.onDestroy();
 	}
 

@@ -111,7 +111,7 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 						VehicleType vt = new VehicleType(json_vehicle.getString(Vehicle.TAG_VEHICLE_TYPE));
 						vhc.setType(vt);
 						vhc.setUser_id(json_vehicle.getInt(Vehicle.TAG_USER_ID));
-						Date vehicleUpdatedAt = DateTime.getDateTimeSQLiteString(json_vehicle.getString(Vehicle.TAG_UPDATED_AT));
+						Date vehicleUpdatedAt = DateTime.getDateTimeString(json_vehicle.getString(Vehicle.TAG_UPDATED_AT));
 						vhc.setUpdate_at(vehicleUpdatedAt);
 						vehicles.add(vhc);
 					}

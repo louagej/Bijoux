@@ -100,13 +100,10 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	    ft.addToBackStack(null);
 
 	    switch (type) {
-
 	        case DIALOG_FRAGMENT:
-
 	            DialogFragment dialogFrag = NoticeDialogFragmentMultiChoice.newInstance(123);
 	            dialogFrag.setTargetFragment(this, DIALOG_FRAGMENT);
 	            dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
-
 	            break;
 	    }
 	}

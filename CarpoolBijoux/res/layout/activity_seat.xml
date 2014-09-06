@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    tools:context="net.louage.bijoux.userinterface.SeatActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:text="@string/act_seat_Status" />
+
+    <TextView
+        android:id="@+id/txt_seat_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView1"
+        android:hint="@string/act_seat_Status"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <CheckBox
+        android:id="@+id/chb_seat_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_seat_status"
+        android:layout_below="@+id/txt_seat_status"
+        android:text="@string/act_seat_paid" />
+
+    <EditText
+        android:id="@+id/etxt_seat_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/chb_seat_paid"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/chb_seat_paid"
+        android:ems="10"
+        android:hint="@string/act_seat_fromaddress"
+        android:inputType="textPostalAddress" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_seat_from"
+        android:layout_alignBottom="@+id/etxt_seat_from"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_seat_fromaddress" />
+
+    <EditText
+        android:id="@+id/etxt_seat_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etxt_seat_from"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_seat_from"
+        android:ems="10"
+        android:hint="@string/act_seat_toaddress"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etxt_seat_to"
+        android:layout_alignBottom="@+id/etxt_seat_to"
+        android:layout_alignParentLeft="true"
+        android:text="@string/act_seat_toaddress" />
+
+    <Button
+        android:id="@+id/btn_seat_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_seat_to"
+        android:text="@string/act_seat_btn_save" />
+
+</RelativeLayout>

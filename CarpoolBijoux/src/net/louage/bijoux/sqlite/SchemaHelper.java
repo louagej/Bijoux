@@ -446,7 +446,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			//Log.d(tag, "checkIfUserExists: "+sqLiteUser+" (for user "+usr.getLastname()+" "+usr.getFirstname()+")");
 			if (sqLiteUser == true) {
 				// update user
-				String sqLiteDate = DateTime.getStrSQLiteDateStamp(usr.getActivation());
+				String sqLiteDate = DateTime.getStrDateStamp(usr.getActivation());
 				ContentValues cv = new ContentValues();
 				cv.put(UserTable.ID, usr.getUser_id());
 				cv.put(UserTable.ACTIVATION, sqLiteDate);
@@ -455,7 +455,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				cv.put(UserTable.EMAIL, usr.getEmail());
 				cv.put(UserTable.PHONE, usr.getPhone());
 				cv.put(UserTable.INFO, usr.getInfo());
-				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateTimeStamp(usr.getUpdate_at());
+				String sqLiteUpdatedDate = DateTime.getStrDateTimeStamp(usr.getUpdate_at());
 				cv.put(UserTable.UPDATE_AT, sqLiteUpdatedDate);
 				cv.put(UserTable.DRIVERLICENSE, usr.getDriverlicense());
 				Boolean approved = usr.getApproved();
@@ -470,7 +470,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				sd.update(UserTable.TABLE_NAME, cv, whereClause, whereArgs);
 			} else {
 				// create user
-				String sqLiteDate = DateTime.getStrSQLiteDateStamp(usr.getActivation());
+				String sqLiteDate = DateTime.getStrDateStamp(usr.getActivation());
 				ContentValues cv = new ContentValues();
 				cv.put(UserTable.ID, usr.getUser_id());
 				cv.put(UserTable.ACTIVATION, sqLiteDate);
@@ -479,7 +479,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				cv.put(UserTable.EMAIL, usr.getEmail());
 				cv.put(UserTable.PHONE, usr.getPhone());
 				cv.put(UserTable.INFO, usr.getInfo());
-				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateTimeStamp(usr.getUpdate_at());
+				String sqLiteUpdatedDate = DateTime.getStrDateTimeStamp(usr.getUpdate_at());
 				cv.put(UserTable.UPDATE_AT, sqLiteUpdatedDate);
 				cv.put(UserTable.DRIVERLICENSE, usr.getDriverlicense());
 				Boolean approved = usr.getApproved();
@@ -504,14 +504,14 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		while (c.moveToNext()) {
 			User usr = new User();
 			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
-			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			Date activationDate=DateTime.getDateFormString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
 			usr.setActivation(activationDate);
 			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
 			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
 			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
 			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
 			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
-			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			Date updateDate=DateTime.getDateTimeString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
 			usr.setUpdate_at(updateDate);
 			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
 			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
@@ -537,14 +537,14 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		while (c.moveToFirst()) {
 			User usr = new User();
 			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
-			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			Date activationDate=DateTime.getDateFormString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
 			usr.setActivation(activationDate);
 			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
 			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
 			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
 			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
 			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
-			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			Date updateDate=DateTime.getDateTimeString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
 			usr.setUpdate_at(updateDate);
 			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
 			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
@@ -568,14 +568,14 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		while (c.moveToNext()) {
 			User usr = new User();
 			usr.setUser_id(c.getInt(c.getColumnIndex(UserTable.ID)));
-			Date activationDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
+			Date activationDate=DateTime.getDateFormString(c.getString(c.getColumnIndex(UserTable.ACTIVATION)));
 			usr.setActivation(activationDate);
 			usr.setLastname(c.getString(c.getColumnIndex(UserTable.LASTNAME)));
 			usr.setFirstname(c.getString(c.getColumnIndex(UserTable.FIRSTNAME)));
 			usr.setEmail(c.getString(c.getColumnIndex(UserTable.EMAIL)));
 			usr.setPhone(c.getString(c.getColumnIndex(UserTable.PHONE)));
 			usr.setInfo(c.getString(c.getColumnIndex(UserTable.INFO)));
-			Date updateDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
+			Date updateDate=DateTime.getDateTimeString(c.getString(c.getColumnIndex(UserTable.UPDATE_AT)));
 			usr.setUpdate_at(updateDate);
 			usr.setDriverlicense(c.getString(c.getColumnIndex(UserTable.DRIVERLICENSE)));
 			int approved = c.getInt(c.getColumnIndex(UserTable.APPROVED));
@@ -689,8 +689,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			//Log.d(tag, "checkIfTourExists: "+sqLiteTour+" (for user "+tr.getLastname()+" "+tr.getFirstname()+")");
 			if (sqLiteTour == true) {
 				// update tour
-				String sqLiteDate = DateTime.getStrSQLiteDateStamp(tr.getDate());
-				String sqLiteTime = DateTime.getStrSQLiteDateTimeStamp(tr.getDate());
+				String sqLiteDate = DateTime.getStrDateStamp(tr.getDate());
+				String sqLiteTime = DateTime.getStrDateTimeStamp(tr.getDate());
 				ContentValues cv = new ContentValues();
 				cv.put(TourTable.ID, tr.getTour_id());
 				cv.put(TourTable.DATE, sqLiteDate);
@@ -707,7 +707,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				cv.put(TourTable.TO_POST_CODE, tr.getToAddress().getPostalCode());
 				cv.put(TourTable.TO_CITY, tr.getToAddress().getLocality());
 				cv.put(TourTable.TO_COUNTRY, tr.getToAddress().getCountryCode());
-				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateStamp(new Date());
+				String sqLiteUpdatedDate = DateTime.getStrDateTimeStamp(new Date());
 				cv.put(TourTable.UPDATE_AT, sqLiteUpdatedDate);
 				String whereClause = TourTable.ID + "=?";
 				String[] whereArgs = { Integer.toString(tr.getTour_id()) };
@@ -715,8 +715,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			} else {
 				// create tour
 				ContentValues cv = new ContentValues();
-				String sqLiteDate = DateTime.getStrSQLiteDateStamp(tr.getDate());
-				String sqLiteTime = DateTime.getStrSQLiteDateTimeStamp(tr.getDate());
+				String sqLiteDate = DateTime.getStrDateStamp(tr.getDate());
+				String sqLiteTime = DateTime.getStrDateTimeStamp(tr.getDate());
 				cv.put(TourTable.ID, tr.getTour_id());
 				cv.put(TourTable.DATE, sqLiteDate);
 				cv.put(TourTable.TIME, sqLiteTime);
@@ -732,7 +732,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				cv.put(TourTable.TO_POST_CODE, tr.getToAddress().getPostalCode());
 				cv.put(TourTable.TO_CITY, tr.getToAddress().getLocality());
 				cv.put(TourTable.TO_COUNTRY, tr.getToAddress().getCountryCode());
-				String sqLiteUpdatedDate = DateTime.getStrSQLiteDateStamp(new Date());
+				String sqLiteUpdatedDate = DateTime.getStrDateTimeStamp(new Date());
 				cv.put(TourTable.UPDATE_AT, sqLiteUpdatedDate);
 				sd.insert(TourTable.TABLE_NAME, null, cv);
 			}
@@ -780,9 +780,9 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			Tour tr = new Tour();
 			tr.setTour_id(c.getInt(c.getColumnIndex(TourTable.ID)));
 			//Log.d(tag, "Date tour from sqLite: "+c.getString(c.getColumnIndex(TourTable.DATE)));
-			Date tourDate=DateTime.getDateSQLiteString(c.getString(c.getColumnIndex(TourTable.DATE)));
+			Date tourDate=DateTime.getDateFormString(c.getString(c.getColumnIndex(TourTable.DATE)));
 			tr.setDate(tourDate);
-			Date tourTime=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TourTable.TIME)));
+			Date tourTime=DateTime.getDateTimeString(c.getString(c.getColumnIndex(TourTable.TIME)));
 			tr.setTime(tourTime);
 			User user = new User();
 			user = userSelectId((c.getInt(c.getColumnIndex(TourTable.USER_ID))));
@@ -842,7 +842,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			while (c.moveToNext()) {
 				Tracking track = new Tracking();
 				track.setTracking_id(c.getInt(c.getColumnIndex(TrackingTable.ID)));
-				Date trackingDate=DateTime.getDateTimeSQLiteString(c.getString(c.getColumnIndex(TrackingTable.TRACK_DATE_TIME)));
+				Date trackingDate=DateTime.getDateTimeString(c.getString(c.getColumnIndex(TrackingTable.TRACK_DATE_TIME)));
 				track.setTrack_date_time(trackingDate);
 				track.setTour_id(c.getInt(c.getColumnIndex(TrackingTable.TOUR_ID)));
 				track.setLatitude(c.getDouble(c.getColumnIndex(TrackingTable.LATITUDE)));
@@ -858,7 +858,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		public Boolean trackingUpdate(Tracking tr) {
 			SQLiteDatabase sd = getWritableDatabase();
 			ContentValues cv = new ContentValues();
-			String sqLiteDateTime = DateTime.getStrSQLiteDateTimeStamp(tr.getTrack_date_time());
+			String sqLiteDateTime = DateTime.getStrDateTimeStamp(tr.getTrack_date_time());
 			cv.put(TrackingTable.TRACK_DATE_TIME, sqLiteDateTime);
 			cv.put(TrackingTable.TOUR_ID, tr.getTour_id());
 			cv.put(TrackingTable.LATITUDE, tr.getLatitude());

@@ -118,6 +118,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 		private static final String NO_OF_ROLES = "no_of_roles";
 		public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 		private static final String TAG_LOGIN_SUCCESFULL = "result";
+		private static final String TAG_RESULT_MESSAGE = "result_message";
 		private static final String TAG_USER_INFO_RESULT = "user_info";
 		private static final String TAG_USER_APPROVED = "approved";
 		private static final String TAG_USER = "user";
@@ -198,7 +199,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 							Log.d("success login: ", json_user.toString());
 							User user = new User();
 							user.setUser_id(json_user.getInt(User.TAG_ID));
-							Date date = DateTime.getDateSQLiteString(json_user.getString(User.TAG_ACTIVATION));
+							Date date = DateTime.getDateFormString(json_user.getString(User.TAG_ACTIVATION));
 							user.setActivation(date);
 							user.setDriverlicense(json_user.getString(User.TAG_DRIVERLICENSE));
 							user.setEmail(json_user.getString(User.TAG_EMAIL));
@@ -206,7 +207,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 							user.setInfo(json_user.getString(User.TAG_INFO));
 							user.setLastname(json_user.getString(User.TAG_LASTNAME));
 							user.setPhone(json_user.getString(User.TAG_PHONE));
-							Date updatedDate = DateTime.getDateTimeSQLiteString(json_user.getString(User.TAG_UPDATED_AT));
+							Date updatedDate = DateTime.getDateTimeString(json_user.getString(User.TAG_UPDATED_AT));
 							user.setUpdate_at(updatedDate);
 							JSONObject json_user_roles = json_user_info.getJSONObject(TAG_USER_ROLES);
 							int noOfRoles=json_user_roles.getInt(NO_OF_ROLES);
@@ -239,7 +240,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 									VehicleType vt = new VehicleType( json_vehicle.getString(Vehicle.TAG_VEHICLE_TYPE));
 									vhc.setType(vt);
 									vhc.setUser_id(json_vehicle.getInt(Vehicle.TAG_USER_ID));
-									Date vehicleUpdatedAt = DateTime.getDateTimeSQLiteString(json_user.getString(Vehicle.TAG_UPDATED_AT));
+									Date vehicleUpdatedAt = DateTime.getDateTimeString(json_user.getString(Vehicle.TAG_UPDATED_AT));
 									vhc.setUpdate_at(vehicleUpdatedAt);
 									vehicles.add(vhc);
 								}
@@ -287,7 +288,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 						return serverResult;
 					} else {
 						Log.d("failure login: ", json.toString());
-						serverResult=RES_LOGIN_NOK;
+						serverResult=json.getString(TAG_RESULT_MESSAGE);
 						return serverResult;
 					}
 				} catch (JSONException e) {

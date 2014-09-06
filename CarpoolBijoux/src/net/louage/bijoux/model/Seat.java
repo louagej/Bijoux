@@ -8,6 +8,8 @@ public class Seat {
 	private int user_id;
 	private String status;
 	private boolean paid;
+	private String pickupAddress;
+	private String dropoffAddress;
 	
 	public static final String TAG_ID = "_id";
 	public static final String TAG_CREATED_BY_USER_ID = "created_by_user_id";
@@ -16,6 +18,8 @@ public class Seat {
 	public static final String TAG_USER_ID = "user_id";
 	public static final String TAG_STATUS = "status";
 	public static final String TAG_PAID = "paid";
+	public static final String TAG_PICKUP = "pickupAddress";
+	public static final String TAG_DROPOFF = "dropoffAddress";
 	
 	public int getSeat_id() {
 		return seat_id;
@@ -58,6 +62,18 @@ public class Seat {
 	}
 	public void setPaid(boolean paid) {
 		this.paid = paid;
+	}
+	public String getPickupAddress() {
+		return pickupAddress;
+	}
+	public void setPickupAddress(String pickupAddress) {
+		this.pickupAddress = pickupAddress;
+	}
+	public String getDropoffAddress() {
+		return dropoffAddress;
+	}
+	public void setDropoffAddress(String dropoffAddress) {
+		this.dropoffAddress = dropoffAddress;
 	}
 	
 }

@@ -82,6 +82,8 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 		params1.add(new BasicNameValuePair("passenger_id", parameters[5]));
 		params1.add(new BasicNameValuePair("status", parameters[6]));
 		params1.add(new BasicNameValuePair("paid", parameters[7]));
+		params1.add(new BasicNameValuePair("pickupAddress", parameters[8]));
+		params1.add(new BasicNameValuePair("dropoffAddress", parameters[9]));
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL, "GET",	params1);
 		// Check your log cat for JSON response
@@ -91,24 +93,11 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 				// Check if getMySeats was successfully
 				int success = json.getInt(TAG_CALL_SUCCESFULL);
 				if (success == 1) {
-					//boolean deleted = json.getBoolean(TAG_UPD_SUCCESFULL);
-					//int result = json.getInt(TAG_UPD_SUCCESFULL);
 					JSONObject json_seat = json.getJSONObject(TAG_UPD_SUCCESFULL);
 					if (json_seat!=null) {
 						Log.d("Try Catch: ", RES_UPD_OK);
 						Seat st = new Seat();
-						st.setSeat_id(json_seat.getInt(Seat.TAG_ID));
-						st.setCreated_by_user_id(json_seat.getInt(Seat.TAG_CREATED_BY_USER_ID));
-						st.setDevice_id(json_seat.getString(Seat.TAG_DEVICE_ID));
-						st.setTour_id(json_seat.getInt(Seat.TAG_TOUR_ID));
-						st.setUser_id(json_seat.getInt(Seat.TAG_USER_ID));
-						st.setStatus(json_seat.getString(Seat.TAG_STATUS));
-						int paid = json_seat.getInt(Seat.TAG_PAID);
-						if (paid==1) {
-							st.setPaid(true);
-						} else {
-							st.setPaid(false);
-						}
+						st=JSONParser.getSeat(json_seat);
 						return st;
 					} else {
 						Log.d("Try Catch: ", RES_UPD_NOK);

@@ -68,7 +68,7 @@ public class MySeatsFragment extends ListFragment implements OnItemClickListener
 			sts=tr.getSeats();
 			for (int j = 0; j < sts.size(); j++) {
 				Seat st = sts.get(j);
-				if(appUser.getUser_id()==st.getUser_id()){
+				if(appUser.getUser_id()==st.getUser_id()&&appUser.getUser_id()!=tr.getUser().getUser_id()){
 					//Add tour to temporary ArrayList tempTours
 					tempTours.add(tr);
 					}
@@ -103,8 +103,8 @@ public class MySeatsFragment extends ListFragment implements OnItemClickListener
 				Log.d(tag, "Tour: "+tr.getTour_id());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(tr.getDate());
-				String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
-				String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
+				String tourDate = DateTime.getStrDateStamp(tr.getDate());
+				String tourtime = DateTime.getStrTimeStampShort(tr.getTime());
 				//Log.d(tag, "tour date json: " + tr.getDate());
 				String trData = tr.getUser().getFirstname()+" "+ tr.getUser().getLastname() +"\n"+ tourDate + " - " + tourtime + "\nFrom: "
 						+ tr.getFromAddress().getLocality() + " - To: "

@@ -128,9 +128,10 @@ public class TourAsyncGetTours extends
 						JSONObject json_tour = json_tours.getJSONObject(i);
 						Tour tr = new Tour();
 						tr.setTour_id(json_tour.getInt(Tour.TAG_ID));
-						Date tourDate = DateTime.getDateSQLiteString(json_tour.getString(Tour.TAG_DATE));
+						Date tourDate = DateTime.getDateFormString(json_tour.getString(Tour.TAG_DATE));
 						tr.setDate(tourDate);
-						Date tourTime = DateTime.getTimeSQLiteString(json_tour.getString(Tour.TAG_TIME));
+						Date tourTime = DateTime.getTimeFormString(json_tour.getString(Tour.TAG_TIME));
+						Log.d(tag, "Tour: "+ tourTime.toString());
 						tr.setTime(tourTime);
 						JSONObject json_user = json_tour.getJSONObject(TAG_USER);
 						User tourUser = getUserFromJson(json_user);
@@ -152,7 +153,8 @@ public class TourAsyncGetTours extends
 						ArrayList<Seat>seats=new ArrayList<Seat>();
 						for (int j = 0; j < json_seats.length(); j++) {
 							JSONObject json_seat = json_seats.getJSONObject(j);
-							Seat seat = getSeat(json_seat);
+							//Seat seat = getSeat(json_seat);
+							Seat seat = JSONParser.getSeat(json_seat);
 							seats.add(seat);
 						}
 						tr.setSeats(seats);
@@ -247,23 +249,6 @@ public class TourAsyncGetTours extends
 		shTours.close();
 	}
 
-	private Seat getSeat(JSONObject json_seat) throws JSONException {
-		Seat seat = new Seat();
-		seat.setSeat_id(json_seat.getInt(Seat.TAG_ID));
-		seat.setCreated_by_user_id(json_seat.getInt(Seat.TAG_CREATED_BY_USER_ID));
-		seat.setDevice_id(json_seat.getString(Seat.TAG_DEVICE_ID));
-		seat.setTour_id(json_seat.getInt(Seat.TAG_TOUR_ID));
-		seat.setUser_id(json_seat.getInt(Seat.TAG_USER_ID));
-		seat.setStatus(json_seat.getString(Seat.TAG_STATUS));
-		int paid = json_seat.getInt(Seat.TAG_PAID);
-		if (paid==1) {
-			seat.setPaid(true);
-		} else {
-			seat.setPaid(false);
-		}		
-		return seat;
-	}
-
 	private Address getFromAddress(JSONObject json_tour) throws JSONException {
 		Address fromAddress = new Address(null);
 		fromAddress.setAddressLine(0,json_tour.getString(Tour.TAG_FROM_ADDRESS));
@@ -295,8 +280,7 @@ public class TourAsyncGetTours extends
 	private User getUserFromJson(JSONObject json_user) throws JSONException {
 		User tourUser = new User();
 		tourUser.setUser_id(Integer.parseInt(json_user.getString(User.TAG_ID)));
-		Date activationDate = DateTime.getDateSQLiteString(json_user
-				.getString(User.TAG_ACTIVATION));
+		Date activationDate = DateTime.getDateFormString(json_user.getString(User.TAG_ACTIVATION));
 		tourUser.setActivation(activationDate);
 		tourUser.setLastname(json_user.getString(User.TAG_LASTNAME));
 		tourUser.setFirstname(json_user.getString(User.TAG_FIRSTNAME));
@@ -325,8 +309,7 @@ public class TourAsyncGetTours extends
 				json_vehicle.getString(Vehicle.TAG_VEHICLE_TYPE));
 		vh.setType(vt);
 		vh.setUser_id(json_vehicle.getInt(Vehicle.TAG_USER_ID));
-		Date vehicleUpdatedAt = DateTime.getDateTimeSQLiteString(json_vehicle
-				.getString(Vehicle.TAG_UPDATED_AT));
+		Date vehicleUpdatedAt = DateTime.getDateTimeString(json_vehicle.getString(Vehicle.TAG_UPDATED_AT));
 		vh.setUpdate_at(vehicleUpdatedAt);
 		return vh;
 	}

@@ -43,39 +43,18 @@ public class TourTrackingDataService extends Service{
 	// Create Runnable object
 	private Runnable mTask = new Runnable() {
 		public void run() {
-			//Intent intent = new Intent(getApplicationContext(), TrackingActivity.class);
-			//Gson gson = new Gson();
-			//String jsonTour = gson.toJson(tr);
-			//intent.putExtra("jsonTour", jsonTour);
-			//intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			//startActivity(intent);
-			//TODO Start tracking Activity
 		}
 	};
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d(tag, "onBind was called");
-		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		return mBinder;
 	}
 
 	@Override
 	public void onCreate() {
-		/*super.onCreate();
-		Log.d(tag, "onCreate was called");
-		/// Start up the thread running the service. Note that we create a
-		/// separate thread because the service normally runs in the process's
-		/// main thread, which we don't want to block.
-		Thread notifyingThread = new Thread(
-				null, 					// Thread group
-				mTask, 					// Runnable object
-				"NotifyingService");	// Thread name
-		mCondition = new ConditionVariable(false);
-		Log.d(tag, "condition: " + mCondition);
-		notifyingThread.start();
-		Log.d(tag, "notifyingThread was started");
-		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();*/
 	    Log.d(tag, "onCreate");
 	    initializeLocationManager();
 	    try {
@@ -102,7 +81,7 @@ public class TourTrackingDataService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(tag, "onStartCommand was called");
-		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		this.intent=intent;
 		// Get Tour from intent 
 		String jsonTour = (String) intent.getExtras().get("jsonTour");

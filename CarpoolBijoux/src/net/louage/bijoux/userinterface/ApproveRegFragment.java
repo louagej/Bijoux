@@ -203,21 +203,26 @@ public class ApproveRegFragment extends ListFragment implements OnItemClickListe
 		public void onTaskComplete(User user) {
 			Log.d("UserRegistrationUpdateTaskCompleteListener: ", "onTaskComplete(User user) Started");
 			SchemaHelper sh = new SchemaHelper(getActivity());
-			if (approvalStatus==false) {
-				//Delete the user from sqLite db in case registration wasn't approved
-				sh.userDelete(userToApprove.getUser_id());	
+			if (user!=null) {
+				if (approvalStatus==false) {
+					//Delete the user from sqLite db in case registration wasn't approved
+					sh.userDelete(userToApprove.getUser_id());	
+				} else {
+					//Update user status in sqLite db in case registration was approved
+					ArrayList<User> users = new ArrayList<User>();
+					users.add(userToApprove);
+					sh.userCreateOrUpdate(users);
+				}	
+				sh.close();
+				//Update ListView in UI
+				ArrayList<User> tempApproveRegUsers = new ArrayList<User>();
+				tempApproveRegUsers=getMembersToApproveReg();
+				setUserList(tempApproveRegUsers);
+				userToApprove=null;
 			} else {
-				//Update user status in sqLite db in case registration was approved
-				ArrayList<User> users = new ArrayList<User>();
-				users.add(userToApprove);
-				sh.userCreateOrUpdate(users);
-			}	
-			sh.close();
-			//Update ListView in UI
-			ArrayList<User> tempApproveRegUsers = new ArrayList<User>();
-			tempApproveRegUsers=getMembersToApproveReg();
-			setUserList(tempApproveRegUsers);
-			userToApprove=null;
+				Toast.makeText(ma, "Somthing went wrong, please try the registration over again!", Toast.LENGTH_LONG).show();
+			}
+			
 		}
 	}
 	

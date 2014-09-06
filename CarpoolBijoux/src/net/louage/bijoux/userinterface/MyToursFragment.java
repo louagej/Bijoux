@@ -21,6 +21,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -29,7 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MyToursFragment extends ListFragment implements OnItemClickListener {
 	public static final String ARG_NAVDRAWER_NUMBER = "number";
-	CustomIconAdapter adapter;
+	private CustomIconAdapter adapter;
 	private List<RowIconItem> rowIconItems;
 	private ArrayList<Tour> tours = new ArrayList<Tour>();
 	static final int GET_TOUR_INFO = 1; // The request code for getting info after TourActivity and updating MyToursFragment
@@ -51,6 +54,7 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 				new TourAsyncGetToursTaskCompleteListener(), params).execute();
 		rowIconItems = new ArrayList<RowIconItem>();
 		appUser=SharedPreferences.getUser(ma);
+		setHasOptionsMenu(true);
 		return myToursView;
 	}
 
@@ -103,8 +107,8 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(tr.getDate());
 				int day = cal.get(Calendar.DAY_OF_MONTH);
-				String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
-				String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
+				String tourDate = DateTime.getStrDateStamp(tr.getDate());
+				String tourtime = DateTime.getStrTimeStampShort(tr.getTime());
 				//Log.d(tag, "tour date json: " + tr.getDate());
 				String trData = tr.getUser().getFirstname()+" "+ tr.getUser().getLastname() +"\n"+ tourDate + " - " + tourtime + "\nFrom: "
 						+ tr.getFromAddress().getLocality() + " - To: "
@@ -206,6 +210,31 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 			}
 		}
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.create_new_tour_from_list:
+			Tour tr = new Tour();
+			tr.setTour_id(0);
+			Intent intent = new Intent(getActivity(), TourActivity.class);
+			Gson gson = new Gson();
+			String jsonTour = gson.toJson(tr);
+			intent.putExtra("jsonTour", jsonTour);
+			startActivityForResult(intent, GET_TOUR_INFO);
+			break;
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		// Inflate the menu; this adds items to the action bar if it is present.
+		inflater.inflate(R.menu.menu_mytours, menu);
 	}
 
 }

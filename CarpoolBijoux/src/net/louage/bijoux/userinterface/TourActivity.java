@@ -2,6 +2,7 @@ package net.louage.bijoux.userinterface;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -31,11 +32,15 @@ import net.louage.bijoux.service.SyncTrackingDataService;
 import net.louage.bijoux.service.TourTrackingDataService;
 import net.louage.bijoux.sqlite.SchemaHelper;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -51,12 +56,14 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class TourActivity extends Activity implements OnItemSelectedListener,
+public class TourActivity extends FragmentActivity implements OnItemSelectedListener,
 		OnItemClickListener, OnClickListener, NoticeDialogListener {
 	private EditText eTxtActTourTime;
 	private Spinner spnnActTourVehicle;
@@ -90,6 +97,9 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	int spinnerSelectionTeam;
 	private static final String COMPLETED_TRANSACTION_SUCCESFULL = "Completed transaction succesfull";
 	private static final String COMPLETED_TRANSACTION_UNSUCCESFULL = "Transaction not completed";
+	private static final int GET_SEAT_INFO = 1;
+	private static final int DATE_DIALOG_ID = 100;
+	private static final int TIME_DIALOG_ID = 200;
 	Boolean deleted = false;
 	Boolean newTour = false;
 	private boolean syncStarted=false;
@@ -113,6 +123,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		teams = new ArrayList<Team>();
 		teams = appUser.getMemberOf();
 		eTxtActTourDate = (EditText) findViewById(R.id.eTxtActTourDate);
+		
 		eTxtActTourTime = (EditText) findViewById(R.id.eTxtActTourTime);
 		spnnActTourVehicle = (Spinner) findViewById(R.id.spnnActTourVehicle);
 		spnnActTourTeam = (Spinner) findViewById(R.id.spnnActTourTeam);
@@ -133,6 +144,10 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		btnFromAddress.setOnClickListener(this);
 		btnToAddress.setOnClickListener(this);
 		
+		if (tr.getTour_id()==0) {
+			prepareNewTour();
+		}
+		
 		// When the Tour was initiated by the appUser, request seat button shouldn't be visible
 		// Only the update tour should and tracking should be visible
 		if (appUser.getUser_id() == tr.getUser().getUser_id()) {
@@ -142,6 +157,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			// If the appUser is the user that offers a tour, the vehicle
 			// spinner must be build from vehicles of the appUser
 			setArrayAdapterVehicleList();
+			setEditTextEditable();
 		} else {
 			// Remove update tour, delete option and put EditText fields not editable
 			btnActTourUpdate.setVisibility(View.INVISIBLE);
@@ -167,7 +183,6 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		spnnActTourVehicle.setAdapter(dataAdapter);
 		// Spinner item selection Listener
 		spnnActTourVehicle.setOnItemSelectedListener(this);
-
 		// Set text of Teams
 		listTeams = new ArrayList<String>();
 		for (int i = 0; i < teams.size(); i++) {
@@ -179,47 +194,44 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			}
 		}
 		// Link spinner Team to adapter
-		ArrayAdapter<String> dataAdapterTeam = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, listTeams);
-		dataAdapterTeam
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<String> dataAdapterTeam = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listTeams);
+		dataAdapterTeam.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spnnActTourTeam.setAdapter(dataAdapterTeam);
 		// Spinner item selection Listener
 		spnnActTourTeam.setOnItemSelectedListener(this);
-
-		String tourDate = DateTime.dateToStringMediumFormat(tr.getDate());
-		String tourtime = DateTime.getLocaleTimeDefaultFormat(tr.getTime());
-		eTxtActTourDate.setText(tourDate);
-		eTxtActTourTime.setText(tourtime);
-
-		// Set current vehicle for the tour as selected spinner item
-		spnnActTourVehicle.setSelection(spinnerSelectionVehicle);
-		spnnActTourTeam.setSelection(spinnerSelectionTeam);
-		eTxtActTourSeatPrice.setText(Double.toString(tr.getSeat_price()));
-		// Show from-address in UI
-		eTxtActTourFromAddress.setText(tr.getFromAddress().getAddressLine(0));
-		eTxtActTourFromPostCode.setText(tr.getFromAddress().getPostalCode());
-		eTxtActTourFromCity.setText(tr.getFromAddress().getLocality());
-		eTxtActTourFromCountry.setText(tr.getFromAddress().getCountryName());
-		// Show to-address in UI
-		eTxtActTourToAddress.setText(tr.getToAddress().getAddressLine(0));
-		eTxtActTourToPostCode.setText(tr.getToAddress().getPostalCode());
-		eTxtActTourToCity.setText(tr.getToAddress().getLocality());
-		eTxtActTourToCountry.setText(tr.getToAddress().getCountryName());
-
 		seats = new ArrayList<Seat>();
 		rowIconItems = new ArrayList<RowIconItem>();
-		setSeatList(tr.getSeats());
+		
+		if (tr.getTour_id()>0) {
+			String tourDate = DateTime.getStrDateStamp(tr.getDate());
+			String tourtime = DateTime.getStrTimeStampShort(tr.getTime());
+			eTxtActTourDate.setText(tourDate);
+			eTxtActTourTime.setText(tourtime);
+
+			// Set current vehicle for the tour as selected spinner item
+			spnnActTourVehicle.setSelection(spinnerSelectionVehicle);
+			spnnActTourTeam.setSelection(spinnerSelectionTeam);
+			eTxtActTourSeatPrice.setText(Double.toString(tr.getSeat_price()));
+			// Show from-address in UI
+			eTxtActTourFromAddress.setText(tr.getFromAddress().getAddressLine(0));
+			eTxtActTourFromPostCode.setText(tr.getFromAddress().getPostalCode());
+			eTxtActTourFromCity.setText(tr.getFromAddress().getLocality());
+			eTxtActTourFromCountry.setText(tr.getFromAddress().getCountryName());
+			// Show to-address in UI
+			eTxtActTourToAddress.setText(tr.getToAddress().getAddressLine(0));
+			eTxtActTourToPostCode.setText(tr.getToAddress().getPostalCode());
+			eTxtActTourToCity.setText(tr.getToAddress().getLocality());
+			eTxtActTourToCountry.setText(tr.getToAddress().getCountryName());
+			setSeatList(tr.getSeats());
+			
+		}
 
 		// buildCountriesArray();
-		// Link the String array with a new ArrayAdapter
-		String[] countries = getResources().getStringArray(
-				R.array.country_array);
-		adapterCountries = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, countries);
-		// adapter = new ArrayAdapter<String>(this,
-		// android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-		// Link the adapter to the AutoCompleteTextView in the layout
+		// 1. Get the array from the Android String Resources
+		String[] countries = getResources().getStringArray(R.array.country_array);
+		// 2. Link the String array with a new ArrayAdapter
+		adapterCountries = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, countries);
+		// 3. Link the adapter to the AutoCompleteTextView in the layout
 		eTxtActTourFromCountry.setAdapter(adapterCountries);
 		eTxtActTourToCountry.setAdapter(adapterCountries);
 		setTitle(tr.getUser().getFirstname()+" "+tr.getUser().getLastname());
@@ -238,6 +250,8 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void setEditTextNotEditable() {
+		eTxtActTourDate.setOnClickListener(null);
+		eTxtActTourTime.setOnClickListener(null);
 		eTxtActTourDate.setFocusable(false);
 		// user touches widget on phone with touch screen
 		eTxtActTourDate.setFocusableInTouchMode(false);
@@ -294,18 +308,20 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void setEditTextEditable() {
-		eTxtActTourDate.setFocusable(true);
-		// user touches widget on phone with touch screen
-		eTxtActTourDate.setFocusableInTouchMode(true);
-		// user navigates with wheel and selects widget
-		eTxtActTourDate.setClickable(true);
+		//Date and Time are default not editable because they will be changed by a Date- and TimePicker
+		eTxtActTourDate.setFocusable(false);
+		eTxtActTourDate.setFocusableInTouchMode(false);
+		eTxtActTourDate.setClickable(false);
+		eTxtActTourTime.setFocusable(false);
+		eTxtActTourTime.setFocusableInTouchMode(false);
+		eTxtActTourTime.setClickable(false);
+		eTxtActTourDate.setOnClickListener(this);
+		eTxtActTourTime.setOnClickListener(this);
 		
-		eTxtActTourTime.setFocusable(true);
-		eTxtActTourTime.setFocusableInTouchMode(true);
-		eTxtActTourTime.setClickable(true);
-
 		spnnActTourVehicle.setActivated(true);
+		// user touches widget on phone with touch screen
 		spnnActTourVehicle.setFocusableInTouchMode(true);
+		// user navigates with wheel and selects widget
 		spnnActTourVehicle.setClickable(true);
 		
 		spnnActTourTeam.setActivated(true);
@@ -361,14 +377,11 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		int removeIndex=-1;
 		for (int i = 0; i < seats.size(); i++) {
 			Seat st = seats.get(i);
-			String payment;
 			if (tr.getUser().getUser_id()==st.getUser_id()) {
 				removeIndex=i;
 			}else{
 				if (st.isPaid()) {
-					payment = "Done";
 				} else {
-					payment = "Still open";
 				}
 				if (st.getUser_id()==appUser.getUser_id()) {
 					requestDone=true;
@@ -379,14 +392,18 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 				sh.close();
 				String stData = null;
 				if (seatUser!=null) {
-					stData = "User: " + seatUser.getFirstname() + " "+ seatUser.getLastname();
+					stData = seatUser.getFirstname() + " "+ seatUser.getLastname();
 				} else {
 					stData = "User id: " + st.getUser_id();
 				}
 				if (tr.getUser().getUser_id()==appUser.getUser_id()) {
-					stData = stData +"\nPayment: "+ payment;
+					//stData = stData +"\nPayment: "+ payment;
+					stData = stData +"\nFrom: "+ st.getPickupAddress();
+					stData = stData +"\nTo: "+ st.getDropoffAddress();
 				} else {
-					stData = stData +"\nStatus: "+ st.getStatus();
+					//stData = stData +"\nStatus: "+ st.getStatus();
+					stData = stData +"\nFrom: "+ st.getPickupAddress();
+					stData = stData +"\nTo: "+ st.getDropoffAddress();
 				}
 				String logo = st.getStatus().toLowerCase(Locale.getDefault());
 				int id = getResources().getIdentifier(logo, "drawable",
@@ -442,46 +459,16 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		case R.id.create_new_tour:
 			// Blank out EditText fields and change caption of update button
 			// Change caption of update button to create_new_tour
-			eTxtActTourDate.setText(DateTime.getDateMediumFormat(new Date()));
-			eTxtActTourTime.setText(DateTime
-					.getLocaleTimeDefaultFormat(new Date()));
-			spnnActTourVehicle.setSelection(0);
-			spnnActTourTeam.setSelection(0);
-			eTxtActTourSeatPrice.setText("0.00");
-			eTxtActTourFromAddress.setText("");
-			eTxtActTourFromPostCode.setText("");
-			eTxtActTourFromCity.setText("");
-			eTxtActTourFromCountry.setText("");
-			eTxtActTourToAddress.setText("");
-			eTxtActTourToPostCode.setText("");
-			eTxtActTourToCity.setText("");
-			eTxtActTourToCountry.setText("");
-			// blank out tour object
-			tr = null;
-			// Build a new tour object with id=0
-			tr = new Tour();
-			tr.setTour_id(0);
-			tr.setUser(net.louage.bijoux.constants.SharedPreferences
-					.getUser(this));
-			tr.setVehicle(vehicles.get(0));
-			tr.setTeam(teams.get(0));
-			Log.d(tag, "Team: " + tr.getTeam().getTeamname());
-			Log.d(tag, "Team id: " + tr.getTeam().getTeam_id());
-			btnActTourSeatRequest.setVisibility(View.INVISIBLE);
-			btnActTourUpdate.setVisibility(View.VISIBLE);
-			btnActTourUpdate.setText(R.string.act_tour_btnActTourCreate);
-			btnActTourUpdate.setOnClickListener(this);
-			seats.clear();
-			setSeatList(seats);
-			setArrayAdapterVehicleList();
-			setEditTextEditable();
+			prepareNewTour();
 			break;
+		
 		case R.id.delete_tour:
 			// Create an instance of the dialog fragment and show it
 			DialogFragment dialog = new NoticeDialogFragment();
 			FragmentManager fragmentManager = getFragmentManager();
 			dialog.show(fragmentManager, "Delete Tour");
-		default:
+			break;
+		
 		case R.id.sync_tracking_data:
 			if (syncStarted) {
 				stopService(new Intent(this, SyncTrackingDataService.class));
@@ -494,8 +481,51 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 				Log.d(tag, "tracking Started");
 			}
 			break;
+		
+		default:
+			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void prepareNewTour() {
+		String tag = "TourActivity prepareNewTour";
+		eTxtActTourDate.setText(DateTime.getStrDateStamp(new Date()));
+		eTxtActTourTime.setText(DateTime.getStrTimeStampShort(new Date()));
+		spnnActTourVehicle.setSelection(0);
+		spnnActTourTeam.setSelection(0);
+		eTxtActTourSeatPrice.setText("0.00");
+		eTxtActTourFromAddress.setText("");
+		eTxtActTourFromPostCode.setText("");
+		eTxtActTourFromCity.setText("");
+		eTxtActTourFromCountry.setText("");
+		eTxtActTourToAddress.setText("");
+		eTxtActTourToPostCode.setText("");
+		eTxtActTourToCity.setText("");
+		eTxtActTourToCountry.setText("");
+		// blank out tour object
+		tr = null;
+		// Build a new tour object with id=0
+		tr = new Tour();
+		tr.setTour_id(0);
+		tr.setUser(net.louage.bijoux.constants.SharedPreferences
+				.getUser(this));
+		tr.setVehicle(vehicles.get(0));
+		tr.setTeam(teams.get(0));
+		Log.d(tag, "Team: " + tr.getTeam().getTeamname());
+		Log.d(tag, "Team id: " + tr.getTeam().getTeam_id());
+		btnActTourSeatRequest.setVisibility(View.INVISIBLE);
+		btnActTourUpdate.setVisibility(View.VISIBLE);
+		btnActTourUpdate.setText(R.string.act_tour_btnActTourCreate);
+		btnActTourUpdate.setOnClickListener(this);
+		if (seats!=null) {
+			seats.clear();
+			setSeatList(seats);
+		}
+		
+		setArrayAdapterVehicleList();
+		setEditTextEditable();
+		setTitle(getResources().getString(R.string.act_tour_new)+" "+appUser.getFirstname());
 	}
 
 	@Override
@@ -524,13 +554,23 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-
+		
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-
+		//Toast.makeText(this, "Item in List was clicked", Toast.LENGTH_SHORT).show();
+		Seat st = new Seat();
+		st=seats.get(position);
+		if (appUser.getUser_id()==st.getUser_id()) {
+			Intent intent = new Intent(this, SeatActivity.class);
+			Gson gson = new Gson();
+			String jsonSeat = gson.toJson(st);
+			intent.putExtra("jsonSeat", jsonSeat);
+			//startActivity(intent);
+			startActivityForResult(intent, GET_SEAT_INFO);
+		}
 	}
 
 	@Override
@@ -601,8 +641,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			st.setPaid(true);
 			// Change seat in mysql
 			String[] paramsPaid = getSeatParams(st);
-			new SeatAsyncCreateUpdate(this,
-					new CreateOrUpdateSeatTaskCompleteListener(), paramsPaid)
+			new SeatAsyncCreateUpdate(this,	new CreateOrUpdateSeatTaskCompleteListener(), paramsPaid)
 					.execute();
 			break;
 		default:
@@ -687,13 +726,13 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		String textBody=null;
 		if (cancelSeatUser!=null) {
 			textBody=getResources().getString(R.string.act_tour_sms_text_body)
-					+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+					+" "+DateTime.getStrDateTimeStamp(tr.getDate())
 					+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
 					+") "+getResources().getString(R.string.act_tour_sms_text_body2)
 					+", "+cancelSeatUser.getFirstname();
 		} else {
 			textBody=getResources().getString(R.string.act_tour_sms_text_body)
-					+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+					+" "+DateTime.getStrDateTimeStamp(tr.getDate())
 					+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
 					+") "+getResources().getString(R.string.act_tour_sms_text_body2);
 		}
@@ -727,7 +766,8 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 				Integer.toString(st.getCreated_by_user_id()),
 				st.getDevice_id(), Integer.toString(st.getTour_id()),
 				Integer.toString(st.getUser_id()), st.getStatus(),
-				Boolean.toString(st.isPaid()) };
+				Boolean.toString(st.isPaid()),
+				st.getPickupAddress(),st.getDropoffAddress()};
 		return params;
 	}
 
@@ -739,7 +779,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		Log.d(tag, "Started");
 		String appUserId = Integer.toString(appUser.getUser_id());
 		String tourDate = DateTime.getStrDateStamp(tour.getDate());
-		String tourTime = DateTime.getUTCTimeDefaultFormat(tour.getTime());
+		String tourTime = DateTime.getStrTimeStampShort(tour.getTime());
 		String tourId = Integer.toString(tr.getTour_id());
 		String userId = Integer.toString(tr.getUser().getUser_id());
 		String vehicleId = Integer.toString(tr.getVehicle().getVehicle_id());
@@ -762,6 +802,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		return params;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -862,12 +903,19 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			//intentTo.putExtra("jsonAddress", jsonToAddress);
 			//startActivity(intentTo);
 			break;
-			
+		case R.id.eTxtActTourDate:
+			showDialog(DATE_DIALOG_ID);
+			break;
+		case R.id.eTxtActTourTime:
+			showDialog(TIME_DIALOG_ID);
+			break;
 		default:
 			
 			break;
 		}
 	}
+	
+	
 	
 	class GetCoordinatesTaskCompleteListener implements
 	AsTskArrayListCompleteListener<Address> {
@@ -909,10 +957,10 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void buildTourObjectfromUI() throws ParseException {
-		Date tourDate = DateTime.stringToDateMediumFormat(eTxtActTourDate
-				.getText().toString());
+		//Date tourDate = DateTime.stringToDateMediumFormat(eTxtActTourDate.getText().toString());
+		Date tourDate = DateTime.getDateFormString(eTxtActTourDate.getText().toString());
 		tr.setDate(tourDate);
-		Date tourTime = DateTime.getTimeFormString(eTxtActTourTime.getText()
+		Date tourTime = DateTime.getTimeFormStringShort(eTxtActTourTime.getText()
 				.toString());
 		tr.setTime(tourTime);
 		// The spinner immediate sets the right vehicle in the tour object, so
@@ -961,7 +1009,9 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 			Log.d("CreateOrUpdateTourTaskCompleteListener: ",
 					"onTaskComplete(Tour tour) Started");
 			tr = tour;
-			setSeatList(tr.getSeats());
+			if (tr.getSeats()!=null) {
+				setSeatList(tr.getSeats());
+			}
 			btnActTourUpdate.setText(R.string.act_tour_btnActTourUpdate);
 			onBackPressed();
 		}
@@ -1010,7 +1060,7 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		String phone=informSeatUser.getPhone();
 		String textBody=null;
 		textBody=getResources().getString(R.string.act_tour_sms_text_cancel_tour_body)
-				+" "+DateTime.dateToStringMediumFormat(tr.getDate())
+				+" "+DateTime.getStrDateTimeStamp(tr.getDate())
 				+" ("+tr.getFromAddress().getLocality()+" - "+tr.getToAddress().getLocality()
 				+") "+getResources().getString(R.string.act_tour_sms_text_cancel_tour_body2)
 				+", "+tr.getUser().getFirstname();
@@ -1041,4 +1091,108 @@ public class TourActivity extends Activity implements OnItemSelectedListener,
 		finish();
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data==null) {
+			Toast.makeText(this, "Intent data is null", Toast.LENGTH_SHORT).show();
+		}
+		if (requestCode == GET_SEAT_INFO) {
+			ArrayList<Seat> seatsUpdate = new ArrayList<Seat>();
+			if (resultCode == Activity.RESULT_OK) {
+				Bundle b = data.getExtras();
+				if (b != null) {
+					//Retrieve seat from intent
+					String jsonSeat = data.getStringExtra("jsonSeat");
+					Gson gson = new Gson();
+					Seat st = gson.fromJson(jsonSeat, Seat.class);
+					seatsUpdate = seats;
+					//Log.d(tag, "seatsUpdate size(): " + seatsUpdate.size());
+					//Update the existing ArrayList seats with returned Seat tr
+					for (int i = 0; i < seatsUpdate.size(); i++) {
+						Seat seat = seats.get(i);							
+						if (st.getSeat_id() == seat.getSeat_id()) {
+							// Replace the old seat object with the updated object in the original ArrayList seats
+							seatsUpdate.set(i, st);
+							//Toast.makeText(getActivity(), "seat "+tr.getSeat_id()+" is updated.",Toast.LENGTH_SHORT).show();
+							Log.d("onTaskComplete", "Updated seat: " + st.getSeat_id());
+						}
+					}
+				} else {
+					//Toast.makeText(getActivity(), "Bundle b was = null",
+					//		Toast.LENGTH_SHORT).show();
+				}
+				//Log.d("onTaskComplete", "seats size(): " + seatsUpdate.size());
+				setSeatList(seatsUpdate);
+			}
+		}
+
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		
+		switch (id) {
+		case DATE_DIALOG_ID:
+			Calendar c = Calendar.getInstance();
+			if (tr.getDate()!=null) {
+				c.setTime(tr.getDate());
+			} else {
+				int weekday = c.get(Calendar.DAY_OF_WEEK);  
+				if (weekday != Calendar.SATURDAY){
+					// calculate how days to add for next Saturday  
+				    int days = (Calendar.SATURDAY - weekday);  
+				    c.add(Calendar.DAY_OF_YEAR, days);
+				}
+			}
+			
+			int cyear = c.get(Calendar.YEAR);
+			int cmonth = c.get(Calendar.MONTH);
+			int cday = c.get(Calendar.DAY_OF_MONTH);
+			return new DatePickerDialog(this,  mDateSetListener,  cyear, cmonth, cday);
+		case TIME_DIALOG_ID:
+			Calendar cTime = Calendar.getInstance();
+			if (tr.getTime()!=null) {
+				cTime.setTime(tr.getTime());
+			} else {
+				cTime.set(1970, 1, 1, 18, 0, 0);
+			}
+			
+			int mHour = cTime.get(Calendar.HOUR_OF_DAY);
+			int mMin = cTime.get(Calendar.MINUTE);
+			return new TimePickerDialog(this,  TimePickerDialog.THEME_TRADITIONAL, mTimeSetListener,  mHour, mMin, true);
+			
+		}
+		return null;
+		}
+
+		private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+			// onDateSet method
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				Calendar cSelected = Calendar.getInstance();
+				cSelected.set(year, monthOfYear, dayOfMonth);
+				Date selectedDate=new Date();
+				selectedDate=cSelected.getTime();
+				//Toast.makeText(TourActivity.this, "Selected Date is ="+DateTime.getStrDateStamp(selectedDate), Toast.LENGTH_SHORT).show();
+				TourActivity.this.tr.setDate(selectedDate);
+				TourActivity.this.eTxtActTourDate.setText(DateTime.getStrDateStamp(selectedDate));
+						
+			}
+		};
+		
+		private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+			// onTimeSet method
+			@Override
+			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+				Calendar cSelected = Calendar.getInstance();
+				cSelected.set(1970, 1, 1, hourOfDay, minute, 0);
+				Date selectedTime=new Date();
+				selectedTime=cSelected.getTime();
+				//Toast.makeText(TourActivity.this, "Selected Time is ="+DateTime.getStrTimeStamp(selectedTime), Toast.LENGTH_SHORT).show();
+				TourActivity.this.tr.setTime(selectedTime);
+				TourActivity.this.eTxtActTourTime.setText(DateTime.getStrTimeStampShort(selectedTime));
+			}
+		};
+
+		
 }
+

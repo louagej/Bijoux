@@ -97,10 +97,10 @@ public class TourAsyncCreateUpdate extends AsyncTask<String[], Integer, Tour>{
 						//Log.d(tag, "true");
 						Tour tr = new Tour();
 						tr.setTour_id(json_tour.getInt(Tour.TAG_ID));
-						Date tourDate = DateTime.getDateSQLiteString(json_tour.getString(Tour.TAG_DATE));
+						Date tourDate = DateTime.getDateFormString(json_tour.getString(Tour.TAG_DATE));
 						tr.setDate(tourDate);
 						//Log.d(tag, "tourDate: "+tourDate);
-						Date tourTime = DateTime.getTimeSQLiteString(json_tour.getString(Tour.TAG_TIME));
+						Date tourTime = DateTime.getTimeFormString(json_tour.getString(Tour.TAG_TIME));
 						tr.setTime(tourTime);
 						//Log.d(tag, "tourTime: "+tourTime);
 						//Build user

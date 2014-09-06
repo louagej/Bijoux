@@ -12,7 +12,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -469,6 +469,7 @@
 
     <!-- Activity activity_tour -->
     <string name="act_tour_title">Tour details</string>
+    <string name="act_tour_new">New Tour</string>
     <string name="act_tour_txtActTourDate">Date</string>
     <string name="act_tour_eTxtActTourDate">Date</string>
     <string name="act_tour_txtActTourTime">Time</string>
@@ -625,12 +626,21 @@
     <!-- Activity TrackingActivity -->
     <string name="title_activity_tracking">Tracking Activity</string>
     <string name="title_activity_maps">MapsActivity</string>
-    
+
     <!-- Strings for MapsActivity -->
     <string name="act_maps_btn_normal">Maps</string>
     <string name="act_maps_btn_satellite">Satellite</string>
     <string name="act_maps_btn_hybrid">Hybrid</string>
     <string name="act_maps_btn_terrain">Terrain</string>
     <string name="act_maps_btn_start">Start</string>
-
+    
+    <!-- Strings for SeatActivity -->
+    <string name="act_seat_Status">Status</string>
+    <string name="act_seat_paid">Paid</string>
+    <string name="act_seat_fromaddress">From</string>
+    <string name="act_seat_toaddress">To</string>
+    <string name="act_seat_btn_save">Save</string>
+    <string name="title_activity_seat">Seat For Tour</string>
+    
+    
 </resources>

@@ -14,7 +14,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.location.GpsStatus.NmeaListener;
 import android.os.Binder;
 import android.os.ConditionVariable;
 import android.os.IBinder;
@@ -70,7 +69,7 @@ public class SyncTrackingDataService extends Service {
 			//The tracking_id must be zero to create a new tracking record online
 			//The return _id from the MySQL will be save in the field 'cloud_id'
 			String virtual_id = String.valueOf(0);
-			String track_date_time = DateTime.getStrSQLiteDateTimeStamp(tr.getTrack_date_time());
+			String track_date_time = DateTime.getStrDateTimeStamp(tr.getTrack_date_time());
 			String tour_id = String.valueOf(tr.getTour_id());
 			String latitude = String.valueOf(tr.getLatitude());
 			String longitude = String.valueOf(tr.getLongitude());
