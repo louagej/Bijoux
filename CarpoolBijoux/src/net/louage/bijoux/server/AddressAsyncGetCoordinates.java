@@ -15,7 +15,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Address;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class AddressAsyncGetCoordinates extends AsyncTask<String[], Integer, ArrayList<Address>> {
 	private static final String TAG_ADDRESS_COMPONENTS = "address_components";
@@ -59,7 +59,7 @@ public class AddressAsyncGetCoordinates extends AsyncTask<String[], Integer, Arr
 		List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 		params1.add(new BasicNameValuePair("address", parameters[0]));
 		params1.add(new BasicNameValuePair("sensor", "false"));
-		Log.d("Check params1: ", params1.toString());
+		//Log.d("Check params1: ", params1.toString());
 		ArrayList<Address> addresses = new ArrayList<Address>();
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.GEOCODING_URL, "GET", params1);
@@ -155,7 +155,7 @@ public class AddressAsyncGetCoordinates extends AsyncTask<String[], Integer, Arr
 								adr.setPostalCode(jsonComponent.getString(TAG_LONG_NAME));
 								break;								
 							default:
-								Log.d(tag, "unknown address_component type");
+								//Log.d(tag, "unknown address_component type");
 								break;
 							}
 							if (componentRoute==null) {
@@ -207,40 +207,40 @@ public class AddressAsyncGetCoordinates extends AsyncTask<String[], Integer, Arr
 							double lat = jsonLocation.getDouble("lat");
 							adr.setLongitude(lng);
 							adr.setLatitude(lat);
-							Log.d("latitude", "" + lat);
-							Log.d("longitude", "" + lng);
+							//Log.d("latitude", "" + lat);
+							//Log.d("longitude", "" + lng);
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
 						// formatted_address is now completed and can be added to the ArrayList Addresses
 						addresses.add(adr);
 					}
-					Log.d("Try Catch: ", "OK building ArrayList<Address> addresses");
+					//Log.d("Try Catch: ", "OK building ArrayList<Address> addresses");
 				} else {
-					Log.d("Try Catch: ", "Address formation wasn't successfully");
+					//Log.d("Try Catch: ", "Address formation wasn't successfully");
 				}
 				return addresses;
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", "Address formation wasn't successfully");
+				//Log.d("Try Catch: ", "Address formation wasn't successfully");
 				e.printStackTrace();
 				return addresses;
 			}
 		} else {
-			Log.d("JSON Null: ", "No connection to server could be made");
+			//Log.d("JSON Null: ", "No connection to server could be made");
 			return addresses;
 		}
 
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 
 	protected void onPostExecute(ArrayList<Address> addresses) {
 		super.onPostExecute(addresses);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(addresses);
 	}
 

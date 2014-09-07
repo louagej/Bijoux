@@ -42,7 +42,7 @@ import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
-import android.util.Log;
+//import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -453,7 +453,7 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		String tag = "TourActivity onOptionsItemSelected";
+		//String tag = "TourActivity onOptionsItemSelected";
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.create_new_tour:
@@ -473,12 +473,12 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 			if (syncStarted) {
 				stopService(new Intent(this, SyncTrackingDataService.class));
 				syncStarted=false;
-				Log.d(tag, "tracking Stopped");
+				//Log.d(tag, "tracking Stopped");
 			} else {
 				Intent intent = new Intent(this, SyncTrackingDataService.class);
 				startService(intent);
 				syncStarted=true;
-				Log.d(tag, "tracking Started");
+				//Log.d(tag, "tracking Started");
 			}
 			break;
 		
@@ -489,7 +489,7 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 	}
 
 	private void prepareNewTour() {
-		String tag = "TourActivity prepareNewTour";
+		//String tag = "TourActivity prepareNewTour";
 		eTxtActTourDate.setText(DateTime.getStrDateStamp(new Date()));
 		eTxtActTourTime.setText(DateTime.getStrTimeStampShort(new Date()));
 		spnnActTourVehicle.setSelection(0);
@@ -512,8 +512,8 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 				.getUser(this));
 		tr.setVehicle(vehicles.get(0));
 		tr.setTeam(teams.get(0));
-		Log.d(tag, "Team: " + tr.getTeam().getTeamname());
-		Log.d(tag, "Team id: " + tr.getTeam().getTeam_id());
+		//Log.d(tag, "Team: " + tr.getTeam().getTeamname());
+		//Log.d(tag, "Team id: " + tr.getTeam().getTeam_id());
 		btnActTourSeatRequest.setVisibility(View.INVISIBLE);
 		btnActTourUpdate.setVisibility(View.VISIBLE);
 		btnActTourUpdate.setText(R.string.act_tour_btnActTourCreate);
@@ -654,15 +654,15 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 			AsTskObjectCompleteListener<Seat> {
 		@Override
 		public void onTaskComplete(Seat st) {
-			Log.d("CreateOrUpdateSeatTaskCompleteListener: ",
-					"onTaskComplete(Seat st) Started");
+			//Log.d("CreateOrUpdateSeatTaskCompleteListener: ",
+			//		"onTaskComplete(Seat st) Started");
 			ArrayList<Seat> seatsUpdate = new ArrayList<Seat>();
 			seatsUpdate = seats;
 			Boolean update = false;
 			// TourActivity.this.onTaskCompleteCreateOrUpdate(st);
 			for (int i = 0; i < seatsUpdate.size(); i++) {
 				Seat seat = seats.get(i);
-				Log.d("onTaskComplete", "Seat id: " + seat.getSeat_id());
+				//Log.d("onTaskComplete", "Seat id: " + seat.getSeat_id());
 				if (st.getSeat_id() == seat.getSeat_id()) {
 					// Replace the old seat object with the updated object
 					seatsUpdate.set(i, st);
@@ -686,13 +686,13 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 			AsTskObjectCompleteListener<Seat> {
 		@Override
 		public void onTaskComplete(Seat st) {
-			Log.d("DeleteSeatTaskCompleteListener: ",
-					"onTaskComplete(Seat st) Started");
+			//Log.d("DeleteSeatTaskCompleteListener: ",
+			//		"onTaskComplete(Seat st) Started");
 			// ArrayList<Seat> seatsAfterDelete = new ArrayList<Seat>();
 			// seatsAfterDelete = seats;
 			Boolean delete = false;
 			// TourActivity.this.onTaskCompleteCreateOrUpdate(st);
-			Log.d("onTaskComplete", "Seat id: " + st.getSeat_id());
+			//Log.d("onTaskComplete", "Seat id: " + st.getSeat_id());
 			User cancelSeatUser=new User();
 			for (int i = 0; i < seats.size(); i++) {
 				Seat seat = seats.get(i);
@@ -775,16 +775,16 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 		if (tour.getTour_id() == 0) {
 			newTour = true;
 		}
-		String tag = "TourActivity getTourParams";
-		Log.d(tag, "Started");
+		//String tag = "TourActivity getTourParams";
+		//Log.d(tag, "Started");
 		String appUserId = Integer.toString(appUser.getUser_id());
 		String tourDate = DateTime.getStrDateStamp(tour.getDate());
 		String tourTime = DateTime.getStrTimeStampShort(tour.getTime());
 		String tourId = Integer.toString(tr.getTour_id());
 		String userId = Integer.toString(tr.getUser().getUser_id());
 		String vehicleId = Integer.toString(tr.getVehicle().getVehicle_id());
-		Log.d(tag, "Teamname: " + tr.getTeam().getTeamname());
-		Log.d(tag, "Team_id: " + tr.getTeam().getTeam_id());
+		//Log.d(tag, "Teamname: " + tr.getTeam().getTeamname());
+		//Log.d(tag, "Team_id: " + tr.getTeam().getTeam_id());
 		String teamId = Integer.toString(tr.getTeam().getTeam_id());
 		String fromAddressLine0 = tr.getFromAddress().getAddressLine(0);
 		String fromPostalCode = tr.getFromAddress().getPostalCode();
@@ -921,12 +921,12 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 	AsTskArrayListCompleteListener<Address> {
 		@Override
 		public void onTaskComplete(ArrayList<Address> addresses) {
-			Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
+			//Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
 			if (addresses.size()>0) {
 				Address adr = new Address(null);
 				adr=addresses.get(0);
-				Log.d("onTaskComplete Address info:", adr.getAddressLine(0));
-				Log.d("onTaskComplete Coördinates info:", "lat: "+ String.valueOf(adr.getLatitude())+" - lng: "+String.valueOf(adr.getLongitude()));
+				//Log.d("onTaskComplete Address info:", adr.getAddressLine(0));
+				//Log.d("onTaskComplete Coördinates info:", "lat: "+ String.valueOf(adr.getLatitude())+" - lng: "+String.valueOf(adr.getLongitude()));
 				Intent intentTo = new Intent(getApplicationContext(),MapsActivity.class);
 				intentTo.putExtra("type", 1);
 				Gson gsonTo = new Gson();
@@ -1006,8 +1006,8 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 			AsTskObjectCompleteListener<Tour> {
 		@Override
 		public void onTaskComplete(Tour tour) {
-			Log.d("CreateOrUpdateTourTaskCompleteListener: ",
-					"onTaskComplete(Tour tour) Started");
+			//Log.d("CreateOrUpdateTourTaskCompleteListener: ",
+			//		"onTaskComplete(Tour tour) Started");
 			tr = tour;
 			if (tr.getSeats()!=null) {
 				setSeatList(tr.getSeats());
@@ -1038,8 +1038,8 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 			AsTskObjectCompleteListener<Tour> {
 		@Override
 		public void onTaskComplete(Tour tour) {
-			Log.d("DeleteTourTaskCompleteListener: ",
-					"onTaskComplete(Tour tour) Started");
+			//Log.d("DeleteTourTaskCompleteListener: ",
+			//		"onTaskComplete(Tour tour) Started");
 			for (int i = 0; i < seats.size(); i++) {
 				Seat st = new Seat();
 				st=seats.get(i);
@@ -1069,13 +1069,13 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 
 	@Override
 	public void onBackPressed() {
-		String tag = "TourActivity onBackPressed";
+		//String tag = "TourActivity onBackPressed";
 		// super.onBackPressed();
 		// String tag="TourActivity onBackPressed()";
 		Intent intent = new Intent();
 		Gson gson = new Gson();
 		String jsonTour = gson.toJson(tr);
-		Log.d(tag + " jsonTour:", jsonTour);
+		//Log.d(tag + " jsonTour:", jsonTour);
 
 		intent.putExtra("jsonTour", jsonTour);
 		intent.putExtra("tourDeleted", deleted);
@@ -1114,7 +1114,7 @@ public class TourActivity extends FragmentActivity implements OnItemSelectedList
 							// Replace the old seat object with the updated object in the original ArrayList seats
 							seatsUpdate.set(i, st);
 							//Toast.makeText(getActivity(), "seat "+tr.getSeat_id()+" is updated.",Toast.LENGTH_SHORT).show();
-							Log.d("onTaskComplete", "Updated seat: " + st.getSeat_id());
+							//Log.d("onTaskComplete", "Updated seat: " + st.getSeat_id());
 						}
 					}
 				} else {

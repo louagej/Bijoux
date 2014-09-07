@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, ArrayList<Vehicle>> {
 	public static final String RES_GET_OK = "Get was successfully";
@@ -58,7 +58,7 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 
 	@Override
 	protected ArrayList<Vehicle> doInBackground(String[]... params) {
-		String tag = "GetMyVehicles doInBackground";
+		//String tag = "GetMyVehicles doInBackground";
 		// Building Parameters
 		List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 		// Set the method name
@@ -69,15 +69,15 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 		// Check if installation was already done by getting Universally
 		// unique identifier
 		String instalId = Installation.id(context);
-		Log.d(tag + " Installation.id uuid: ", instalId);
+		//Log.d(tag + " Installation.id uuid: ", instalId);
 		UUID uid = UUID.fromString(instalId);
 		Long lng = uid.getMostSignificantBits();
-		Log.d(tag, "getMostSignificantBits(): " + lng);
+		//Log.d(tag, "getMostSignificantBits(): " + lng);
 		instalId = Long.toString(lng);
-		Log.d(tag, "Long.toString(lng): " + instalId);
+		//Log.d(tag, "Long.toString(lng): " + instalId);
 		params1.add(new BasicNameValuePair("uuid", instalId));
 
-		Log.d("Check params1: ", params1.toString());
+		//Log.d("Check params1: ", params1.toString());
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL,
 				"GET", params1);
@@ -88,11 +88,11 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 				// Check if getMyVehicles was successfully
 				int success = json.getInt(TAG_GET_SUCCESFULL);
 				if (success == 1) {
-					Log.d("success getMyVehicles: ", json.toString());
+					//Log.d("success getMyVehicles: ", json.toString());
 					JSONObject json_vehicle_list = json.getJSONObject(TAG_VEHICLE_INFO_RESULT);
-					Log.d("JSON vehicle_list: ", json_vehicle_list.toString());
+					//Log.d("JSON vehicle_list: ", json_vehicle_list.toString());
 					JSONArray json_vehicles = json_vehicle_list.getJSONArray(TAG_USER_VEHICLES);
-					Log.d("JSON vehicles: ", json_vehicles.toString());
+					//Log.d("JSON vehicles: ", json_vehicles.toString());
 					ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 					for (int i = 0; i < json_vehicles.length(); i++) {
 						JSONObject json_vehicle = json_vehicles.getJSONObject(i);
@@ -115,14 +115,14 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 						vhc.setUpdate_at(vehicleUpdatedAt);
 						vehicles.add(vhc);
 					}
-					Log.d("Try Catch: ", "OK building Object vehciles");
+					//Log.d("Try Catch: ", "OK building Object vehciles");
 					return vehicles;
 				} else {
-					Log.d("Try Catch: ", "NOK building Object vehciles");
+					//Log.d("Try Catch: ", "NOK building Object vehciles");
 					return null;
 				}
 			} catch (JSONException e) {
-				Log.d("JSON Null: ", "No connection to server could be made");
+				//Log.d("JSON Null: ", "No connection to server could be made");
 				e.printStackTrace();
 				return null;
 			}
@@ -133,14 +133,14 @@ public class VehiclesAsyncGetMyVehicles extends AsyncTask<String[], Integer, Arr
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 
 	protected void onPostExecute(ArrayList<Vehicle> vehicles) {
 		super.onPostExecute(vehicles);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(vehicles);
 	}
 

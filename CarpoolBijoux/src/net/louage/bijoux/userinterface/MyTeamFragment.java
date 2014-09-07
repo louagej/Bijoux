@@ -21,7 +21,7 @@ import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -109,11 +109,11 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	}
 	
 	private ArrayList<User> getTeamMembers() {
-		String tag = "MyTeamFragment getTeamMembers";
+		//String tag = "MyTeamFragment getTeamMembers";
 		SchemaHelper sh = new SchemaHelper(ma);
 		ArrayList<User> sqLiteUsers = new ArrayList<User>();
 		sqLiteUsers = sh.userSelectAll();
-		Log.d(tag, "tempUser.size()" + sqLiteUsers.size());
+		//Log.d(tag, "tempUser.size()" + sqLiteUsers.size());
 		sh.close();
 		int removeIndex = -1;
 		for (int i = 0; i < sqLiteUsers.size(); i++) {
@@ -130,8 +130,8 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 	}
 
 	private void setUserList(ArrayList<User> usrs) {
-		String tag = "MyTeamFragment setUserList";
-		Log.d(tag, "usrs size: " + usrs.size());
+		//String tag = "MyTeamFragment setUserList";
+		//Log.d(tag, "usrs size: " + usrs.size());
 		rowIconItems.clear();
 		users = usrs;
 		if (users != null) {
@@ -211,7 +211,7 @@ public class MyTeamFragment extends ListFragment implements OnItemClickListener 
 			AsTskObjectCompleteListener<User> {
 		@Override
 		public void onTaskComplete(User user) {
-			Log.d("DeleteUserTaskCompleteListener: ", "onTaskComplete(User user) Started");
+			//Log.d("DeleteUserTaskCompleteListener: ", "onTaskComplete(User user) Started");
 			SchemaHelper sh = new SchemaHelper(getActivity());
 			int userDeleted = sh.userDelete(userToRemove.getUser_id());
 			if (userDeleted>0) {

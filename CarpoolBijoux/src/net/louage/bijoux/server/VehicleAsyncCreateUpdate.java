@@ -15,7 +15,7 @@ import net.louage.bijoux.model.Vehicle;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class VehicleAsyncCreateUpdate extends AsyncTask<String[], Integer, Vehicle> {
 
@@ -54,7 +54,7 @@ public class VehicleAsyncCreateUpdate extends AsyncTask<String[], Integer, Vehic
 
 	@Override
 	protected Vehicle doInBackground(String[]... params) {
-		String tag = "UpdateVehicles doInBackground";
+		//String tag = "UpdateVehicles doInBackground";
 		// Building Parameters
 		List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 		// Set the method name
@@ -65,12 +65,12 @@ public class VehicleAsyncCreateUpdate extends AsyncTask<String[], Integer, Vehic
 		// Check if installation was already done by getting Universally
 		// unique identifier
 		String instalId = Installation.id(context);
-		Log.d(tag + " Installation.id uuid: ", instalId);
+		//Log.d(tag + " Installation.id uuid: ", instalId);
 		UUID uid = UUID.fromString(instalId);
 		Long lng = uid.getMostSignificantBits();
-		Log.d(tag, "getMostSignificantBits(): " + lng);
+		//Log.d(tag, "getMostSignificantBits(): " + lng);
 		instalId = Long.toString(lng);
-		Log.d(tag, "Long.toString(lng): " + instalId);
+		//Log.d(tag, "Long.toString(lng): " + instalId);
 		params1.add(new BasicNameValuePair("uuid", instalId));
 		params1.add(new BasicNameValuePair("vehicle_id", parameters[1]));
 		params1.add(new BasicNameValuePair("licenseplate", parameters[2]));
@@ -90,22 +90,22 @@ public class VehicleAsyncCreateUpdate extends AsyncTask<String[], Integer, Vehic
 					//boolean deleted = json.getBoolean(TAG_UPD_SUCCESFULL);
 					int result = json.getInt(TAG_UPD_SUCCESFULL);
 					if (result!=0) {
-						Log.d("Try Catch: ", RES_UPD_OK);
+						//Log.d("Try Catch: ", RES_UPD_OK);
 						Vehicle vh = new Vehicle();
 						vh.setVehicle_id(Integer.parseInt(parameters[1]));
 						return vh;
 					} else {
-						Log.d("Try Catch: ", RES_UPD_NOK);
+						//Log.d("Try Catch: ", RES_UPD_NOK);
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				return null;
 			}
 		} else {
-			Log.d("json is null", RES_UPD_NULL);
+			//Log.d("json is null", RES_UPD_NULL);
 			return null;
 		}
 
@@ -116,12 +116,12 @@ public class VehicleAsyncCreateUpdate extends AsyncTask<String[], Integer, Vehic
 	protected void onPostExecute(Vehicle vehicle) {
 		super.onPostExecute(vehicle);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(vehicle);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 

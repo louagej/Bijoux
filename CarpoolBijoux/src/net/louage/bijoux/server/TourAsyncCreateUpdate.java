@@ -17,7 +17,7 @@ import net.louage.bijoux.model.Tour;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 import android.widget.Toast;
 
 public class TourAsyncCreateUpdate extends AsyncTask<String[], Integer, Tour>{
@@ -132,21 +132,21 @@ public class TourAsyncCreateUpdate extends AsyncTask<String[], Integer, Tour>{
 						resultmessage=RES_UPD_OK;
 						return tr;
 					} else {
-						Log.d("if (json_tour!=null): ", "json_tour=null");
+						//Log.d("if (json_tour!=null): ", "json_tour=null");
 						resultmessage=RES_UPD_NOK;
 						return null;
 					}
 				} else {
-					Log.d("if (json succes tag: ", "0");
+					//Log.d("if (json succes tag: ", "0");
 					resultmessage=RES_UPD_NOK;
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				resultmessage=RES_UPD_NOK;
 				return null;
 			}
 		} else {
-			Log.d("json is null", RES_UPD_NULL);
+			//Log.d("json is null", RES_UPD_NULL);
 			resultmessage=RES_UPD_NOK;
 			return null;
 		}
@@ -165,7 +165,7 @@ public class TourAsyncCreateUpdate extends AsyncTask<String[], Integer, Tour>{
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 }

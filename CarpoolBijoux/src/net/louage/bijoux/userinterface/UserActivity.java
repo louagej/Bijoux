@@ -13,7 +13,7 @@ import net.louage.bijoux.sqlite.SchemaHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,7 +90,7 @@ public class UserActivity extends Activity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		String tag = "UserActivity onClick";
+		//String tag = "UserActivity onClick";
 		switch (v.getId()) {
 		case R.id.btn_user_update:
 			String[] paramsupdateOrCreateUser = getUserParams();
@@ -98,7 +98,7 @@ public class UserActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.chb_user_approved:
 			user.setApproved(chb_user_approved.isChecked());
-			Log.d(tag, "user is "+ Boolean.toString(user.getApproved()));
+			//Log.d(tag, "user is "+ Boolean.toString(user.getApproved()));
 		break;
 		default:
 			break;
@@ -110,7 +110,7 @@ public class UserActivity extends Activity implements OnClickListener{
 	AsTskObjectCompleteListener<User> {
 		@Override
 		public void onTaskComplete(User usr) {
-			Log.d("onTaskComplete: ",	"UserCreateUpdateTaskCompleteListener Started");
+			//Log.d("onTaskComplete: ",	"UserCreateUpdateTaskCompleteListener Started");
 			ArrayList<User> users = new ArrayList<User>();
 			if (usr!=null) {
 				user=usr;
@@ -142,11 +142,11 @@ public class UserActivity extends Activity implements OnClickListener{
 
 	@Override
 	public void onBackPressed() {
-		String tag = "UserActivity onBackPressed";
+		//String tag = "UserActivity onBackPressed";
 		Intent intent = new Intent();
 		Gson gson = new Gson();
 		String jsonUser = gson.toJson(user);
-		Log.d(tag + " jsonUser:", jsonUser);
+		//Log.d(tag + " jsonUser:", jsonUser);
 		intent.putExtra("jsonUser", jsonUser);
 		// Log.d(tag + " intent.getStringExtra:",
 		setResult(RESULT_OK, intent);

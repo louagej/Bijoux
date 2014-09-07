@@ -19,7 +19,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,7 +131,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
 		@Override
 		protected String doInBackground(String[]... params) {
-			String tag = "RegisterLogin doInBackground";
+			//String tag = "RegisterLogin doInBackground";
 			// Building Parameters
 			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 			// Set the method name
@@ -149,17 +149,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 			// Check if installation was already done by getting Universally
 			// unique identifier
 			String instalId = Installation.id(context);
-			Log.d(tag + " Installation.id uuid: ", instalId);
+			//Log.d(tag + " Installation.id uuid: ", instalId);
 			// instalId = instalId.replace("-", "");
 			// Long lng = Long.parseLong(instalId, 16);
 			UUID uid = UUID.fromString(instalId);
 			Long lng = uid.getMostSignificantBits();
-			Log.d(tag, "getMostSignificantBits(): " + lng);
+			//Log.d(tag, "getMostSignificantBits(): " + lng);
 			instalId = Long.toString(lng);
-			Log.d(tag, "Long.toString(lng): " + instalId);
+			//Log.d(tag, "Long.toString(lng): " + instalId);
 			params1.add(new BasicNameValuePair("uuid", instalId));
 
-			Log.d("Check params1: ", params1.toString());
+			//Log.d("Check params1: ", params1.toString());
 			// getting JSON string from URL
 			JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL, "GET", params1);
 			// Check your log cat for JSON reponse
@@ -196,7 +196,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 		}
 
 		protected void onProgressUpdate(String... progress) {
-			Log.d("ANDRO_ASYNC", progress[0]);
+			//Log.d("ANDRO_ASYNC", progress[0]);
 			mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 		}
 

@@ -19,7 +19,7 @@ import android.os.ConditionVariable;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.util.Log;
+//import android.util.Log;
 import android.widget.Toast;
 
 public class SyncTrackingDataService extends Service {
@@ -40,17 +40,17 @@ public class SyncTrackingDataService extends Service {
 	// Create Runnable object
 	private Runnable mTask = new Runnable() {
 		public void run() {
-			Log.d("SyncTrackingDataService Runnable: ", "Runnable() Started");
+			//Log.d("SyncTrackingDataService Runnable: ", "Runnable() Started");
 			try {
 				ArrayList<Tracking> trackings = new ArrayList<Tracking>();
 				SchemaHelper sh = new SchemaHelper(getBaseContext());
 				trackings=sh.trackingSelectForCloud();
 				sh.close();			
-				Log.d("SyncTrackingDataService trackings: ", "trackings.size()"+trackings.size());				
+				//Log.d("SyncTrackingDataService trackings: ", "trackings.size()"+trackings.size());				
 				for (int i = 0; i < trackings.size(); i++) {
 					Tracking tr = new Tracking();
 					tr=trackings.get(i);
-					Log.d("SyncTrackingDataService trackingSelectForCloud: ", tr.getTracking_id()+" - lat: "+tr.getLatitude());
+					//Log.d("SyncTrackingDataService trackingSelectForCloud: ", tr.getTracking_id()+" - lat: "+tr.getLatitude());
 					String[] paramsTracking = getMapsParamsTrack(tr);
 					new TrackingAsyncCreateUpdate(getBaseContext(), new TrackingAsyncCreateUpdateCompleteListener(), paramsTracking).execute();
 				}
@@ -94,18 +94,18 @@ public class SyncTrackingDataService extends Service {
 		AsTskObjectCompleteListener<Tracking> {
 			@Override
 			public void onTaskComplete(Tracking track) {
-				Log.d("TrackingAsyncCreateUpdateCompleteListener: ", "onTaskComplete(Tracking track) Started");
+				//Log.d("TrackingAsyncCreateUpdateCompleteListener: ", "onTaskComplete(Tracking track) Started");
 				Tracking tr = new Tracking();
 				tr = track;
-				Log.d("onTaskComplete (Tracking track): ", "Tracking_id: "+tr.getTracking_id());
-				Log.d("onTaskComplete (Tracking track): ", "Accuracy: "+tr.getAccuracy());
-				Log.d("onTaskComplete (Tracking track): ", "Altitude: "+tr.getAltitude());
-				Log.d("onTaskComplete (Tracking track): ", "Cloud_id: "+tr.getCloud_id());
-				Log.d("onTaskComplete (Tracking track): ", "Latitude: "+tr.getLatitude());
-				Log.d("onTaskComplete (Tracking track): ", "Longitude: "+tr.getLongitude());
-				Log.d("onTaskComplete (Tracking track): ", "Speed: "+tr.getSpeed());
-				Log.d("onTaskComplete (Tracking track): ", "Tour_id: "+tr.getTour_id());
-				Log.d("onTaskComplete (Tracking track): ", "Track_date_time(): "+tr.getTrack_date_time());
+				//Log.d("onTaskComplete (Tracking track): ", "Tracking_id: "+tr.getTracking_id());
+				//Log.d("onTaskComplete (Tracking track): ", "Accuracy: "+tr.getAccuracy());
+				//Log.d("onTaskComplete (Tracking track): ", "Altitude: "+tr.getAltitude());
+				//Log.d("onTaskComplete (Tracking track): ", "Cloud_id: "+tr.getCloud_id());
+				//Log.d("onTaskComplete (Tracking track): ", "Latitude: "+tr.getLatitude());
+				//Log.d("onTaskComplete (Tracking track): ", "Longitude: "+tr.getLongitude());
+				//Log.d("onTaskComplete (Tracking track): ", "Speed: "+tr.getSpeed());
+				//Log.d("onTaskComplete (Tracking track): ", "Tour_id: "+tr.getTour_id());
+				//Log.d("onTaskComplete (Tracking track): ", "Track_date_time(): "+tr.getTrack_date_time());
 				SchemaHelper sh = new SchemaHelper(getBaseContext());
 				sh.trackingUpdate(tr);				
 				sh.close();
@@ -115,7 +115,7 @@ public class SyncTrackingDataService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(tag, "onBind was called");
+		//Log.d(tag, "onBind was called");
 		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		
 		//TODO sync tracking data from sqLite to MysQL online
@@ -125,7 +125,7 @@ public class SyncTrackingDataService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d(tag, "onCreate was called");
+		//Log.d(tag, "onCreate was called");
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		/// Start up the thread running the service. Note that we create a
 		/// separate thread because the service normally runs in the process's
@@ -135,9 +135,9 @@ public class SyncTrackingDataService extends Service {
 				mTask, 					// Runnable object
 				"NotifyingService");	// Thread name
 		mCondition = new ConditionVariable(false);
-		Log.d(tag, "condition: " + mCondition);
+		//Log.d(tag, "condition: " + mCondition);
 		notifyingThread.start();
-		Log.d(tag, "notifyingThread was started");
+		//Log.d(tag, "notifyingThread was started");
 		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 	}
 	
@@ -145,7 +145,7 @@ public class SyncTrackingDataService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(tag, "onStartCommand was called");
+		//Log.d(tag, "onStartCommand was called");
 		Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		return START_NOT_STICKY;
 	}

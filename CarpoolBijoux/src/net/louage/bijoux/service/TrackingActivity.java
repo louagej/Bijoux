@@ -38,13 +38,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class TrackingActivity extends FragmentActivity implements OnClickListener,
@@ -211,7 +209,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 			case Activity.RESULT_OK:
 
 				// Log the result
-				Log.d(LocationUtils.APPTAG, getString(R.string.resolved));
+				//Log.d(LocationUtils.APPTAG, getString(R.string.resolved));
 
 				// Display the result
 				Toast.makeText(this,
@@ -222,7 +220,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 				// If any other result was returned by Google Play services
 			default:
 				// Log the result
-				Log.d(LocationUtils.APPTAG, getString(R.string.no_resolution));
+				//Log.d(LocationUtils.APPTAG, getString(R.string.no_resolution));
 
 				// Display the result
 				Toast.makeText(this,
@@ -236,9 +234,9 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 			// If any other request code was received
 		default:
 			// Report that this Activity received an unknown requestCode
-			Log.d(LocationUtils.APPTAG,
-					getString(R.string.unknown_activity_request_code,
-							requestCode));
+			//Log.d(LocationUtils.APPTAG,
+			//		getString(R.string.unknown_activity_request_code,
+			//				requestCode));
 			Toast.makeText(this, R.string.unknown_activity_request_code,
 					Toast.LENGTH_SHORT).show();
 
@@ -257,7 +255,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 		// If Google Play services is available
 		if (ConnectionResult.SUCCESS == resultCode) {
 			// In debug mode, log the status
-			Log.d(LocationUtils.APPTAG, getString(R.string.play_services_available));
+			//Log.d(LocationUtils.APPTAG, getString(R.string.play_services_available));
 			// Continue
 			return true;
 			// Google Play services was not available for some reason
@@ -372,7 +370,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
-		String tag = "TrackingActivity onLocationChanged";
+		//String tag = "TrackingActivity onLocationChanged";
 		if (tour != null) {
 			getAddress(this.findViewById(android.R.id.content));
 
@@ -387,7 +385,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 			SchemaHelper sh = new SchemaHelper(this);
 			int _id = (int) sh.addTracking(tracking);
 			sh.close();
-			Log.d(tag, "Tracking" + tracking.getLatitude() + " "+tracking.getLongitude());
+			//Log.d(tag, "Tracking" + tracking.getLatitude() + " "+tracking.getLongitude());
 		}
 
 	}
@@ -453,7 +451,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 			} catch (IOException exception1) {
 
 				// Log an error and return an error message
-				Log.e(LocationUtils.APPTAG,	getString(R.string.IO_Exception_getFromLocation));
+				//Log.e(LocationUtils.APPTAG,	getString(R.string.IO_Exception_getFromLocation));
 
 				// print the stack trace
 				exception1.printStackTrace();
@@ -468,8 +466,8 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 				String errorString = getString(
 						R.string.illegal_argument_exception,
 						location.getLatitude(), location.getLongitude());
-				// Log the error and print the stack trace
-				Log.e(LocationUtils.APPTAG, errorString);
+				// //Log the error and print the stack trace
+				//Log.e(LocationUtils.APPTAG, errorString);
 				exception2.printStackTrace();
 
 				//
@@ -587,7 +585,7 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 
 	@Override
 	public void onClick(View v) {
-		String tag = "TrackingActivity onclick()";
+		//String tag = "TrackingActivity onclick()";
 		/*switch (v.getId()) {
 		case R.id.btnStartStop:
 			if (tourStarted) {
@@ -603,7 +601,6 @@ public class TrackingActivity extends FragmentActivity implements OnClickListene
 				Log.d(tag, "Changed Button text to Start");
 
 			} else {
-				//TODO Think of putting tour on pause and resume after a while...
 				mUpdatesRequested = true;
 
 				if (servicesConnected()) {

@@ -13,7 +13,7 @@ import net.louage.bijoux.model.Tour;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class TourAsyncDelete extends AsyncTask<String[], Integer, Tour> {
 
@@ -70,25 +70,25 @@ public class TourAsyncDelete extends AsyncTask<String[], Integer, Tour> {
 				if (success == 1) {
 					boolean deleted = json.getBoolean(TAG_DEL_SUCCESFULL);
 					if (deleted) {
-						Log.d("Try Catch: ", RES_DEL_OK);
+						//Log.d("Try Catch: ", RES_DEL_OK);
 						resultAsyncTask = RES_DEL_OK;
 						Tour tr = new Tour();
 						tr.setTour_id(Integer.parseInt(parameters[1]));
 						return tr;
 					} else {
-						Log.d("boolean deleted = false: ", RES_DEL_NOK);
+						//Log.d("boolean deleted = false: ", RES_DEL_NOK);
 						resultAsyncTask = RES_DEL_NOK;
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_DEL_NOK);
+				//Log.d("Try Catch: ", RES_DEL_NOK);
 				resultAsyncTask = RES_DEL_NOK;
 				return null;
 			}
 		} else {
-			Log.d("!(json == null)", RES_DEL_NULL);
+			//Log.d("!(json == null)", RES_DEL_NULL);
 			resultAsyncTask = RES_DEL_NULL;
 			return null;
 		}
@@ -100,12 +100,12 @@ public class TourAsyncDelete extends AsyncTask<String[], Integer, Tour> {
 	protected void onPostExecute(Tour tour) {
 		super.onPostExecute(tour);
 		mProgressDialog.dismiss();
-		Log.d("TourAsyncDelete onPostExecute: ", resultAsyncTask);
+		//Log.d("TourAsyncDelete onPostExecute: ", resultAsyncTask);
 		listener.onTaskComplete(tour);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 	

@@ -14,7 +14,7 @@ import net.louage.bijoux.model.Seat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class SeatAsyncDelete extends AsyncTask<String[], Integer, Seat> {
 
@@ -71,25 +71,25 @@ public class SeatAsyncDelete extends AsyncTask<String[], Integer, Seat> {
 				if (success == 1) {
 					boolean deleted = json.getBoolean(TAG_DEL_SUCCESFULL);
 					if (deleted) {
-						Log.d("Try Catch: ", RES_DEL_OK);
+						//Log.d("Try Catch: ", RES_DEL_OK);
 						resultAsyncTask = RES_DEL_OK;
 						Seat st = new Seat();
 						st.setSeat_id(Integer.parseInt(parameters[1]));
 						return st;
 					} else {
-						Log.d("boolean deleted = false: ", RES_DEL_NOK);
+						//Log.d("boolean deleted = false: ", RES_DEL_NOK);
 						resultAsyncTask = RES_DEL_NOK;
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_DEL_NOK);
+				//Log.d("Try Catch: ", RES_DEL_NOK);
 				resultAsyncTask = RES_DEL_NOK;
 				return null;
 			}
 		} else {
-			Log.d("!(json == null)", RES_DEL_NULL);
+			//Log.d("!(json == null)", RES_DEL_NULL);
 			resultAsyncTask = RES_DEL_NULL;
 			return null;
 		}
@@ -101,12 +101,12 @@ public class SeatAsyncDelete extends AsyncTask<String[], Integer, Seat> {
 	protected void onPostExecute(Seat seat) {
 		super.onPostExecute(seat);
 		mProgressDialog.dismiss();
-		Log.d("SeatAsyncDelete onPostExecute: ", resultAsyncTask);
+		//Log.d("SeatAsyncDelete onPostExecute: ", resultAsyncTask);
 		listener.onTaskComplete(seat);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 	

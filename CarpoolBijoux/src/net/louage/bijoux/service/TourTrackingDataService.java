@@ -17,8 +17,8 @@ import android.os.ConditionVariable;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+//import android.util.Log;
+//import android.widget.Toast;
 
 public class TourTrackingDataService extends Service{
 	//Copied>>
@@ -28,7 +28,7 @@ public class TourTrackingDataService extends Service{
 	//Copied<<
 	
 	Intent intent=null;
-	private String tag="TourTrackingDataService";
+	//private String tag="TourTrackingDataService";
 	private ConditionVariable mCondition;
 	Tour tr;
 	// This is the object that receives interactions from clients.
@@ -48,39 +48,39 @@ public class TourTrackingDataService extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(tag, "onBind was called");
+		//Log.d(tag, "onBind was called");
 		//Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		return mBinder;
 	}
 
 	@Override
 	public void onCreate() {
-	    Log.d(tag, "onCreate");
+	    //Log.d(tag, "onCreate");
 	    initializeLocationManager();
 	    try {
 	        mLocationManager.requestLocationUpdates(
 	                LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
 	                mLocationListeners[1]);
 	    } catch (java.lang.SecurityException ex) {
-	        Log.i(tag, "fail to request location update, ignore", ex);
+	        //Log.i(tag, "fail to request location update, ignore", ex);
 	    } catch (IllegalArgumentException ex) {
-	        Log.d(tag, "network provider does not exist, " + ex.getMessage());
+	        //Log.d(tag, "network provider does not exist, " + ex.getMessage());
 	    }
 	    try {
 	        mLocationManager.requestLocationUpdates(
 	                LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
 	                mLocationListeners[0]);
 	    } catch (java.lang.SecurityException ex) {
-	        Log.i(tag, "fail to request location update, ignore", ex);
+	        //Log.i(tag, "fail to request location update, ignore", ex);
 	    } catch (IllegalArgumentException ex) {
-	        Log.d(tag, "gps provider does not exist " + ex.getMessage());
+	        //Log.d(tag, "gps provider does not exist " + ex.getMessage());
 	    }
 		
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(tag, "onStartCommand was called");
+		//Log.d(tag, "onStartCommand was called");
 		//Toast.makeText(this, tag , Toast.LENGTH_LONG).show();
 		this.intent=intent;
 		// Get Tour from intent 
@@ -95,14 +95,14 @@ public class TourTrackingDataService extends Service{
 		/*// Stop the thread from generating further notifications
 		mCondition.open();
 		super.onDestroy();*/
-		   Log.d(tag, "onDestroy");
+		   //Log.d(tag, "onDestroy");
 		    super.onDestroy();
 		    if (mLocationManager != null) {
 		        for (int i = 0; i < mLocationListeners.length; i++) {
 		            try {
 		                mLocationManager.removeUpdates(mLocationListeners[i]);
 		            } catch (Exception ex) {
-		                Log.i(tag, "fail to remove location listners, ignore", ex);
+		                //Log.i(tag, "fail to remove location listners, ignore", ex);
 		            }
 		        }
 		    }
@@ -112,13 +112,13 @@ public class TourTrackingDataService extends Service{
 		Location mLastLocation;
 		public LocationListener(String provider)
 		{
-			Log.d(tag, "LocationListener " + provider);
+			//Log.d(tag, "LocationListener " + provider);
 			mLastLocation = new Location(provider);
 		}
 		@Override
 		public void onLocationChanged(Location location)
 		{
-			Log.d(tag, "onLocationChanged: " + location);
+			//Log.d(tag, "onLocationChanged: " + location);
 			mLastLocation.set(location);
 			String tag = "TrackingActivity onLocationChanged";
 			if (tr != null) {
@@ -134,23 +134,23 @@ public class TourTrackingDataService extends Service{
 				int _id = (int) sh.addTracking(tracking);
 				tracking.setTracking_id(_id);
 				sh.close();
-				Log.d(tag, "Tracking" + tracking.getLatitude() + " "+tracking.getLongitude());
+				//Log.d(tag, "Tracking" + tracking.getLatitude() + " "+tracking.getLongitude());
 			}
 		}
 		@Override
 		public void onProviderDisabled(String provider)
 		{
-			Log.d(tag, "onProviderDisabled: " + provider);            
+			//Log.d(tag, "onProviderDisabled: " + provider);            
 		}
 		@Override
 		public void onProviderEnabled(String provider)
 		{
-			Log.d(tag, "onProviderEnabled: " + provider);
+			//Log.d(tag, "onProviderEnabled: " + provider);
 		}
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras)
 		{
-			Log.d(tag, "onStatusChanged: " + provider);
+			//Log.d(tag, "onStatusChanged: " + provider);
 		}
 	}
 	
@@ -160,7 +160,7 @@ public class TourTrackingDataService extends Service{
 	};
 	
 	private void initializeLocationManager() {
-	    Log.d(tag, "initializeLocationManager");
+	    //Log.d(tag, "initializeLocationManager");
 	    if (mLocationManager == null) {
 	        mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 	    }

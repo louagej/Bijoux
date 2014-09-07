@@ -34,7 +34,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.location.Address;
-import android.util.Log;
+//import android.util.Log;
 
 public class JSONParser {
 
@@ -78,7 +78,7 @@ public class JSONParser {
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);
-				Log.d("JSONParser method GET: ", httpGet.getURI().toString());
+				//Log.d("JSONParser method GET: ", httpGet.getURI().toString());
 
 				HttpResponse httpResponse = httpClient.execute(httpGet);
 				HttpEntity httpEntity = httpResponse.getEntity();
@@ -104,14 +104,14 @@ public class JSONParser {
 			is.close();
 			json = sb.toString();
 		} catch (Exception e) {
-			Log.e("Buffer Error", "Error converting result " + e.toString());
+			//Log.e("Buffer Error", "Error converting result " + e.toString());
 		}
 
 		// try parse the string to a JSON object
 		try {
 			jObj = new JSONObject(json);
 		} catch (JSONException e) {
-			Log.e("JSON Parser", "Error parsing data " + e.toString());
+			//Log.e("JSON Parser", "Error parsing data " + e.toString());
 		}
 
 		// return JSON String

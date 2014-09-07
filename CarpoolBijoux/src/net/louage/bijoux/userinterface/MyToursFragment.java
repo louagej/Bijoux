@@ -19,7 +19,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,9 +88,9 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 	}
 
 	private void setTourList(ArrayList<Tour> trs) {
-		String tag="MyToursFragment setTourList";
+		//String tag="MyToursFragment setTourList";
 		//tours.clear();
-		Log.d(tag, "trs size: "+trs.size());
+		//Log.d(tag, "trs size: "+trs.size());
 		rowIconItems.clear();
 		tours = trs;
 		if (tours != null) {
@@ -103,7 +103,7 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 			});
 			for (int i = 0; i < tours.size(); i++) {
 				Tour tr = tours.get(i);
-				Log.d(tag, "Tour: "+tr.getTour_id());
+				//Log.d(tag, "Tour: "+tr.getTour_id());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(tr.getDate());
 				int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -143,15 +143,15 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		String tag = "MyToursFragment onActivityResult";
+		//String tag = "MyToursFragment onActivityResult";
 		if (data==null) {
 			Toast.makeText(getActivity(), "Intent data is null", Toast.LENGTH_SHORT).show();
 		}
  		//Toast.makeText(getActivity(), "onActivityResult was started",
 		//		Toast.LENGTH_SHORT).show();
 		
-		Log.d(tag, "requestCode: " + requestCode);
-		Log.d(tag, "resultCode: " + resultCode);
+		//Log.d(tag, "requestCode: " + requestCode);
+		//Log.d(tag, "resultCode: " + resultCode);
 		if (requestCode == GET_TOUR_INFO) {
 			ArrayList<Tour> toursUpdate = new ArrayList<Tour>();
 			if (resultCode == Activity.RESULT_OK) {
@@ -162,7 +162,7 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 					Gson gson = new Gson();
 					Tour tr = gson.fromJson(jsonTour, Tour.class);
 					toursUpdate = tours;
-					Log.d(tag, "toursUpdate size(): " + toursUpdate.size());
+					//Log.d(tag, "toursUpdate size(): " + toursUpdate.size());
 					Boolean deleted = data.getBooleanExtra("tourDeleted", false);
 					Boolean newTour = data.getBooleanExtra("newTour", false);
 					
@@ -181,14 +181,14 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 							//Now we can remove this Tour object from the ArrayList tours
 							toursUpdate.remove(removeIndex);
 							//Toast.makeText(getActivity(), "tour at position "+removeIndex+" is deleted. " + deleted ,Toast.LENGTH_SHORT).show();
-							Log.d("onTaskComplete", "Removed tour at position " + removeIndex);
+							//Log.d("onTaskComplete", "Removed tour at position " + removeIndex);
 						}
 						
 					} else if (newTour==true){
 						//Add a new tour to the existing ArrayList tours
 						toursUpdate.add(tr);
 						//Toast.makeText(getActivity(), "tour "+tr.getTour_id()+" is added. " + newTour ,Toast.LENGTH_SHORT).show();
-						Log.d("onTaskComplete", "Added tour: " + tr.getTour_id());
+						//Log.d("onTaskComplete", "Added tour: " + tr.getTour_id());
 					}else{
 						//Update the existing ArrayList tours with returned Tour tr
 						for (int i = 0; i < toursUpdate.size(); i++) {
@@ -197,7 +197,7 @@ public class MyToursFragment extends ListFragment implements OnItemClickListener
 								// Replace the old tour object with the updated object in the original ArrayList tours
 								toursUpdate.set(i, tr);
 								//Toast.makeText(getActivity(), "tour "+tr.getTour_id()+" is updated.",Toast.LENGTH_SHORT).show();
-								Log.d("onTaskComplete", "Updated tour: " + tr.getTour_id());
+								//Log.d("onTaskComplete", "Updated tour: " + tr.getTour_id());
 							}
 						}
 					}

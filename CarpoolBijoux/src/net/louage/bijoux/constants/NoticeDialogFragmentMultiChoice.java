@@ -12,7 +12,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 
 public class NoticeDialogFragmentMultiChoice extends DialogFragment {
 
@@ -33,17 +33,17 @@ public class NoticeDialogFragmentMultiChoice extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		String tag="NoticeDialogFragmentMultiChoice onCreateDialog";
+		//String tag="NoticeDialogFragmentMultiChoice onCreateDialog";
 		mSelectedItems = new ArrayList<Integer>();
 		teams = new ArrayList<Team>();
 		teams = SharedPreferences.getUser(getActivity()).getManagerOf();
 		teamnames=new String[teams.size()];
-		Log.d(tag, "teams.size(): "+teams.size());
+		//Log.d(tag, "teams.size(): "+teams.size());
 		for (int i = 0; i < teams.size(); i++) {
 			Team tm = new Team();
 			tm=teams.get(i);
 			teamnames[i] = tm.getTeamname();
-			Log.d(tag, "teamname "+i+": "+tm.getTeamname());
+			//Log.d(tag, "teamname "+i+": "+tm.getTeamname());
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		// Set the dialog title
@@ -78,7 +78,7 @@ public class NoticeDialogFragmentMultiChoice extends DialogFragment {
 								}
 								Gson gson = new Gson();
 								String jsonResultSelection = gson.toJson(resultSelection);
-								Log.d("setPositiveButton" + " resultSelection:", jsonResultSelection);
+								//Log.d("setPositiveButton" + " resultSelection:", jsonResultSelection);
 								getActivity().getIntent().putExtra("jsonResultSelection", jsonResultSelection);
 								//mListener.onDialogPositiveClick(NoticeDialogFragmentMultiChoice.this);
 								getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());

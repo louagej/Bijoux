@@ -16,7 +16,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,7 +94,7 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 	private Country getCountry(String iso3166) {
 		sh = new SchemaHelper(this);
 		sh.openDataBase();
-		Log.d("iso3166", iso3166);
+		//Log.d("iso3166", iso3166);
 		Country ct = new Country();
 		Cursor c = sh.getCountryDescription(iso3166);
 		String countryDescription = "";
@@ -214,8 +214,8 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 			AsTskObjectCompleteListener<Vehicle> {
 		@Override
 		public void onTaskComplete(Vehicle vh) {
-			Log.d("onTaskComplete: ",
-					"UpdateVehicleTaskCompleteListener Started");
+			//Log.d("onTaskComplete: ",
+			//		"UpdateVehicleTaskCompleteListener Started");
 			VehicleActivity.this.onTaskCompleteCreateOrUpdate(vh);
 		}
 	}
@@ -247,8 +247,8 @@ public class VehicleActivity extends Activity implements View.OnClickListener,
 			AsTskObjectCompleteListener<Vehicle> {
 		@Override
 		public void onTaskComplete(Vehicle vh) {
-			Log.d("onTaskComplete: ",
-					"DeleteVehicleTaskCompleteListener Started");
+			//Log.d("onTaskComplete: ",
+			//		"DeleteVehicleTaskCompleteListener Started");
 			VehicleActivity.this.onTaskCompleteDelete(vh);
 		}
 	}

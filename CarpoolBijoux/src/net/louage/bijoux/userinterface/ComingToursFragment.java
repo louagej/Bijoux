@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -187,14 +187,14 @@ public class ComingToursFragment extends ListFragment implements
 							//Now we can remove this Tour object from the ArrayList tours
 							toursUpdate.remove(removeIndex);
 							//Toast.makeText(getActivity(), "tour at position "+removeIndex+" is deleted. " + deleted ,Toast.LENGTH_SHORT).show();
-							Log.d("onTaskComplete", "Removed tour at position " + removeIndex);
+							//Log.d("onTaskComplete", "Removed tour at position " + removeIndex);
 						}
 						
 					} else if (newTour==true){
 						//Add a new tour to the existing ArrayList tours
 						toursUpdate.add(tr);
 						//Toast.makeText(getActivity(), "tour "+tr.getTour_id()+" is added. " + newTour ,Toast.LENGTH_SHORT).show();
-						Log.d("onTaskComplete", "Added tour: " + tr.getTour_id());
+						//Log.d("onTaskComplete", "Added tour: " + tr.getTour_id());
 					}else{
 						//Update the existing ArrayList tours with returned Tour tr
 						for (int i = 0; i < toursUpdate.size(); i++) {
@@ -203,7 +203,7 @@ public class ComingToursFragment extends ListFragment implements
 								// Replace the old tour object with the updated object in the original ArrayList tours
 								toursUpdate.set(i, tr);
 								//Toast.makeText(getActivity(), "tour "+tr.getTour_id()+" is updated.",Toast.LENGTH_SHORT).show();
-								Log.d("onTaskComplete", "Updated tour: " + tr.getTour_id());
+								//Log.d("onTaskComplete", "Updated tour: " + tr.getTour_id());
 							}
 						}
 					}

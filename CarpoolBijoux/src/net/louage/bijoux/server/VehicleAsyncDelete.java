@@ -15,7 +15,7 @@ import net.louage.bijoux.model.Vehicle;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 
@@ -54,7 +54,7 @@ public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 
 	@Override
 	protected Vehicle doInBackground(String[]... params) {
-		String tag = "GetMyVehicles doInBackground";
+		//String tag = "GetMyVehicles doInBackground";
 		// Building Parameters
 		List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 		// Set the method name
@@ -65,16 +65,16 @@ public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 		// Check if installation was already done by getting Universally
 		// unique identifier
 		String instalId = Installation.id(context);
-		Log.d(tag + " Installation.id uuid: ", instalId);
+		//Log.d(tag + " Installation.id uuid: ", instalId);
 		UUID uid = UUID.fromString(instalId);
 		Long lng = uid.getMostSignificantBits();
-		Log.d(tag, "getMostSignificantBits(): " + lng);
+		//Log.d(tag, "getMostSignificantBits(): " + lng);
 		instalId = Long.toString(lng);
-		Log.d(tag, "Long.toString(lng): " + instalId);
+		//Log.d(tag, "Long.toString(lng): " + instalId);
 		params1.add(new BasicNameValuePair("uuid", instalId));
 		params1.add(new BasicNameValuePair("vehicle_id", parameters[1]));
 
-		Log.d("Check params1: ", params1.toString());
+		//Log.d("Check params1: ", params1.toString());
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL, "GET",
 				params1);
@@ -87,22 +87,22 @@ public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 				if (success == 1) {
 					boolean deleted = json.getBoolean(TAG_DEL_SUCCESFULL);
 					if (deleted) {
-						Log.d("Try Catch: ", RES_DEL_OK);
+						//Log.d("Try Catch: ", RES_DEL_OK);
 						Vehicle vh = new Vehicle();
 						vh.setVehicle_id(Integer.parseInt(parameters[1]));
 						return vh;
 					} else {
-						Log.d("Try Catch: ", RES_DEL_NOK);
+						//Log.d("Try Catch: ", RES_DEL_NOK);
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_DEL_NOK);
+				//Log.d("Try Catch: ", RES_DEL_NOK);
 				return null;
 			}
 		} else {
-			Log.d("json is null", RES_DEL_NULL);
+			//Log.d("json is null", RES_DEL_NULL);
 			return null;
 		}
 
@@ -113,12 +113,12 @@ public class VehicleAsyncDelete extends AsyncTask<String[], Integer, Vehicle> {
 	protected void onPostExecute(Vehicle vehicle) {
 		super.onPostExecute(vehicle);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(vehicle);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 	

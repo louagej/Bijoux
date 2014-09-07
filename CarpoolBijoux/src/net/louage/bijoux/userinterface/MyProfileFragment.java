@@ -27,7 +27,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -193,7 +193,7 @@ public class MyProfileFragment extends ListFragment implements
 
 		@Override
 		protected String doInBackground(String[]... params) {
-			String tag = "UpdateMyProfile doInBackground";
+			//String tag = "UpdateMyProfile doInBackground";
 			// Building Parameters
 			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 			// Set the method name
@@ -212,17 +212,17 @@ public class MyProfileFragment extends ListFragment implements
 			// Check if installation was already done by getting Universally
 			// unique identifier
 			String instalId = Installation.id(context);
-			Log.d(tag + " Installation.id uuid: ", instalId);
+			//Log.d(tag + " Installation.id uuid: ", instalId);
 			// instalId = instalId.replace("-", "");
 			// Long lng = Long.parseLong(instalId, 16);
 			UUID uid = UUID.fromString(instalId);
 			Long lng = uid.getMostSignificantBits();
-			Log.d(tag, "getMostSignificantBits(): " + lng);
+			//Log.d(tag, "getMostSignificantBits(): " + lng);
 			instalId = Long.toString(lng);
-			Log.d(tag, "Long.toString(lng): " + instalId);
+			//Log.d(tag, "Long.toString(lng): " + instalId);
 			params1.add(new BasicNameValuePair("uuid", instalId));
 
-			Log.d("Check params1: ", params1.toString());
+			//Log.d("Check params1: ", params1.toString());
 			// getting JSON string from URL
 			JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL,
 					"GET", params1);
@@ -248,7 +248,7 @@ public class MyProfileFragment extends ListFragment implements
 		}
 
 		protected void onProgressUpdate(String... progress) {
-			Log.d("ANDRO_ASYNC", progress[0]);
+			//Log.d("ANDRO_ASYNC", progress[0]);
 			mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 		}
 
@@ -271,7 +271,7 @@ public class MyProfileFragment extends ListFragment implements
 	@SuppressLint("DefaultLocale")
 	@Override
 	public void onTaskComplete(ArrayList<Vehicle> vhs) {
-		Log.d("onTaskComplete: ", "MyProfileFragment Started");
+		//Log.d("onTaskComplete: ", "MyProfileFragment Started");
 		vehicles.clear();
 		vehicles = vhs;
 		rowIconItems = new ArrayList<RowIconItem>();
@@ -287,7 +287,7 @@ public class MyProfileFragment extends ListFragment implements
 		}
 
 		adapter = new CustomIconAdapter(getActivity(), rowIconItems);
-		Log.d("setListAdapter: ", "MyProfileFragment Started");
+		//Log.d("setListAdapter: ", "MyProfileFragment Started");
 		setListAdapter(adapter);
 		getListView().setOnItemClickListener(this);
 	}
@@ -296,7 +296,7 @@ public class MyProfileFragment extends ListFragment implements
 			AsTskArrayListCompleteListener<Vehicle> {
 		@Override
 		public void onTaskComplete(ArrayList<Vehicle> vhs) {
-			Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
+			//Log.d("onTaskComplete: ", "FetchMyVehicleTaskCompleteListener Started");
 			MyProfileFragment.this.onTaskComplete(vhs);			
 		}
 	}

@@ -14,7 +14,7 @@ import net.louage.bijoux.model.User;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class UserApproveRegAsyncUpdate extends AsyncTask<String[], Integer, User> {
 
@@ -71,23 +71,23 @@ public class UserApproveRegAsyncUpdate extends AsyncTask<String[], Integer, User
 				// Check if getMyUsers was successfully
 				int success = json.getInt(TAG_CALL_SUCCESFULL);
 				if (success == 1) {
-					Log.d("Try Catch: ", RES_UPD_OK);
+					//Log.d("Try Catch: ", RES_UPD_OK);
 					resultAsyncTask = RES_UPD_OK;
 					User usr = new User();
 					usr.setUser_id(Integer.parseInt(parameters[1]));
 					return usr;
 				} else {
-					Log.d("Try Catch: ", RES_UPD_NOK);
+					//Log.d("Try Catch: ", RES_UPD_NOK);
 					resultAsyncTask = RES_UPD_NOK;
 					return null;
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				resultAsyncTask = RES_UPD_NOK;
 				return null;
 			}
 		} else {
-			Log.d("!(json == null)", RES_DEL_NULL);
+			//Log.d("!(json == null)", RES_DEL_NULL);
 			resultAsyncTask = RES_DEL_NULL;
 			return null;
 		}
@@ -97,12 +97,12 @@ public class UserApproveRegAsyncUpdate extends AsyncTask<String[], Integer, User
 	protected void onPostExecute(User user) {
 		super.onPostExecute(user);
 		mProgressDialog.dismiss();
-		Log.d("UserApproveRegAsyncUpdate onPostExecute: ", resultAsyncTask + " from teams "+parameters[2] );
+		//Log.d("UserApproveRegAsyncUpdate onPostExecute: ", resultAsyncTask + " from teams "+parameters[2] );
 		listener.onTaskComplete(user);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 }

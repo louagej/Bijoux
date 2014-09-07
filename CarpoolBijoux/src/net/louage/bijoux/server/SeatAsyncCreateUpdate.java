@@ -15,7 +15,7 @@ import net.louage.bijoux.model.Seat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 
@@ -54,7 +54,7 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 
 	@Override
 	protected Seat doInBackground(String[]... params) {
-		String tag = "UpdateSeats doInBackground";
+		//String tag = "UpdateSeats doInBackground";
 		// Building Parameters
 		List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 		// Set the method name
@@ -65,12 +65,12 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 		// Check if installation was already done by getting Universally
 		// unique identifier
 		String instalId = Installation.id(context);
-		Log.d(tag + " Installation.id uuid: ", instalId);
+		//Log.d(tag + " Installation.id uuid: ", instalId);
 		UUID uid = UUID.fromString(instalId);
 		Long lng = uid.getMostSignificantBits();
-		Log.d(tag, "getMostSignificantBits(): " + lng);
+		//Log.d(tag, "getMostSignificantBits(): " + lng);
 		instalId = Long.toString(lng);
-		Log.d(tag, "Long.toString(lng): " + instalId);
+		//Log.d(tag, "Long.toString(lng): " + instalId);
 		params1.add(new BasicNameValuePair("uuid", instalId));
 		params1.add(new BasicNameValuePair("seat_id", parameters[1]));
 		params1.add(new BasicNameValuePair("created_by_user_id", parameters[2]));
@@ -95,22 +95,22 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 				if (success == 1) {
 					JSONObject json_seat = json.getJSONObject(TAG_UPD_SUCCESFULL);
 					if (json_seat!=null) {
-						Log.d("Try Catch: ", RES_UPD_OK);
+						//Log.d("Try Catch: ", RES_UPD_OK);
 						Seat st = new Seat();
 						st=JSONParser.getSeat(json_seat);
 						return st;
 					} else {
-						Log.d("Try Catch: ", RES_UPD_NOK);
+						//Log.d("Try Catch: ", RES_UPD_NOK);
 						return null;
 					}
 				} else {
 				}
 			} catch (JSONException e) {
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				return null;
 			}
 		} else {
-			Log.d("json is null", RES_UPD_NULL);
+			//Log.d("json is null", RES_UPD_NULL);
 			return null;
 		}
 
@@ -121,12 +121,12 @@ public class SeatAsyncCreateUpdate extends AsyncTask<String[], Integer, Seat>{
 	protected void onPostExecute(Seat seat) {
 		super.onPostExecute(seat);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", "OK");
+		//Log.d("onPostExecute: ", "OK");
 		listener.onTaskComplete(seat);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 }

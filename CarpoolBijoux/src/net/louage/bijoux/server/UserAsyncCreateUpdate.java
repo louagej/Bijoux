@@ -13,7 +13,7 @@ import net.louage.bijoux.model.User;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 import android.widget.Toast;
 
 public class UserAsyncCreateUpdate extends AsyncTask<String[], Integer, User> {
@@ -89,12 +89,12 @@ public class UserAsyncCreateUpdate extends AsyncTask<String[], Integer, User> {
 				}
 			} catch (JSONException e) {
 				serverResult= serverResult + ": " + RES_UPD_NOK;
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				return null;
 			}
 		} else {
 			serverResult= serverResult + ": " + RES_UPD_NULL;
-			Log.d("json is null", RES_UPD_NULL);
+			//Log.d("json is null", RES_UPD_NULL);
 			return null;
 		}
 	}
@@ -103,13 +103,13 @@ public class UserAsyncCreateUpdate extends AsyncTask<String[], Integer, User> {
 	protected void onPostExecute(User user) {
 		super.onPostExecute(user);
 		mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", serverResult);
+		//Log.d("onPostExecute: ", serverResult);
 		Toast.makeText(context, serverResult, Toast.LENGTH_LONG).show();
 		listener.onTaskComplete(user);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 

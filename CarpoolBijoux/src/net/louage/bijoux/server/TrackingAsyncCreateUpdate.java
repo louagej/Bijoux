@@ -13,8 +13,8 @@ import net.louage.bijoux.model.Tracking;
 //import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
+//import android.util.Log;
+//import android.widget.Toast;
 
 public class TrackingAsyncCreateUpdate extends AsyncTask<String[], Integer, Tracking> {
 
@@ -69,7 +69,7 @@ public class TrackingAsyncCreateUpdate extends AsyncTask<String[], Integer, Trac
 		params1.add(new BasicNameValuePair("accuracy", parameters[6]));
 		params1.add(new BasicNameValuePair("altitude", parameters[7]));
 		params1.add(new BasicNameValuePair("speed", parameters[8]));
-		Log.d("tracking_id before makeHttpRequest: ", ""+tracking_id);
+		//Log.d("tracking_id before makeHttpRequest: ", ""+tracking_id);
 		tracking_id=Integer.parseInt(parameters[9]);
 		// getting JSON string from URL
 		JSONObject json = jParser.makeHttpRequest(Constants.SERVICE_URL, "GET",	params1);
@@ -87,7 +87,7 @@ public class TrackingAsyncCreateUpdate extends AsyncTask<String[], Integer, Trac
 					tracking=JSONParser.getTrackingfromJson(json_tracking);
 					if (tracking!=null) {
 						tracking.setTracking_id(tracking_id);
-						Log.d("tracking_id after makeHttpRequest: ", ""+tracking_id);
+						//Log.d("tracking_id after makeHttpRequest: ", ""+tracking_id);
 					}
 					return tracking;
 				} else {
@@ -96,12 +96,12 @@ public class TrackingAsyncCreateUpdate extends AsyncTask<String[], Integer, Trac
 				}
 			} catch (JSONException e) {
 				serverResult= serverResult + ": " + RES_UPD_NOK;
-				Log.d("Try Catch: ", RES_UPD_NOK);
+				//Log.d("Try Catch: ", RES_UPD_NOK);
 				return null;
 			}
 		} else {
 			serverResult= serverResult + ": " + RES_UPD_NULL;
-			Log.d("json is null", RES_UPD_NULL);
+			//Log.d("json is null", RES_UPD_NULL);
 			return null;
 		}
 	}
@@ -110,13 +110,13 @@ public class TrackingAsyncCreateUpdate extends AsyncTask<String[], Integer, Trac
 	protected void onPostExecute(Tracking tracking) {
 		super.onPostExecute(tracking);
 		//mProgressDialog.dismiss();
-		Log.d("onPostExecute: ", serverResult);
+		//Log.d("onPostExecute: ", serverResult);
 		//Toast.makeText(context, serverResult, Toast.LENGTH_LONG).show();
 		listener.onTaskComplete(tracking);
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		//mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 

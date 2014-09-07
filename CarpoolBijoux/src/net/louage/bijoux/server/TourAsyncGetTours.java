@@ -27,7 +27,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Address;
 import android.os.AsyncTask;
-import android.util.Log;
+//import android.util.Log;
 
 public class TourAsyncGetTours extends
 		AsyncTask<String[], Integer, ArrayList<Tour>> {
@@ -131,7 +131,7 @@ public class TourAsyncGetTours extends
 						Date tourDate = DateTime.getDateFormString(json_tour.getString(Tour.TAG_DATE));
 						tr.setDate(tourDate);
 						Date tourTime = DateTime.getTimeFormString(json_tour.getString(Tour.TAG_TIME));
-						Log.d(tag, "Tour: "+ tourTime.toString());
+						//Log.d(tag, "Tour: "+ tourTime.toString());
 						tr.setTime(tourTime);
 						JSONObject json_user = json_tour.getJSONObject(TAG_USER);
 						User tourUser = getUserFromJson(json_user);
@@ -179,11 +179,11 @@ public class TourAsyncGetTours extends
 					syncUsersSQLiteDatabase(users);
 					return tours;
 				} else {
-					Log.d("Try Catch: ", "NOK building Object tours");
+					//Log.d("Try Catch: ", "NOK building Object tours");
 					return null;
 				}
 			} catch (JSONException e) {
-				Log.d("JSON Null: ", "No connection to server could be made");
+				//Log.d("JSON Null: ", "No connection to server could be made");
 				e.printStackTrace();
 				return null;
 			}
@@ -213,7 +213,7 @@ public class TourAsyncGetTours extends
 				//There wasn't found a match between the user received from json and the user in the database
 				//this user should be removed
 				shUsers.userDelete(sqLiteUser.getUser_id());
-				Log.d(tag, "User"+ sqLiteUser.getFirstname()+" "+ sqLiteUser.getLastname()+" was removed from the sqLite database: ");
+				//Log.d(tag, "User"+ sqLiteUser.getFirstname()+" "+ sqLiteUser.getLastname()+" was removed from the sqLite database: ");
 			}
 			//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
 		}
@@ -242,7 +242,7 @@ public class TourAsyncGetTours extends
 				//There wasn't found a match between the user received from json and the user in the database
 				//this user should be removed
 				shTours.tourDelete(sqLiteTour.getTour_id());
-				Log.d(tag, "Tour "+ sqLiteTour.getTour_id()+" was removed from the sqLite database: ");
+				//Log.d(tag, "Tour "+ sqLiteTour.getTour_id()+" was removed from the sqLite database: ");
 			}
 			//Log.d(tag, "User from sqLite database: "+usrCheckTwo.getLastname());
 		}
@@ -315,7 +315,7 @@ public class TourAsyncGetTours extends
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		Log.d("ANDRO_ASYNC", progress[0]);
+		//Log.d("ANDRO_ASYNC", progress[0]);
 		mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 	}
 

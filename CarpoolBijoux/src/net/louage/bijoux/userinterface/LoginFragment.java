@@ -29,7 +29,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,7 +155,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
 		@Override
 		protected String doInBackground(String[]... params) {
-			String tag = "CheckLogin doInBackground";
+			//String tag = "CheckLogin doInBackground";
 			// Building Parameters
 			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 			// Set the method name
@@ -167,17 +167,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 			// Check if installation was already done by getting Universally
 			// unique identifier
 			String instalId = Installation.id(context);
-			Log.d(tag + " Installation.id uuid: ", instalId);
+			//Log.d(tag + " Installation.id uuid: ", instalId);
 			// instalId = instalId.replace("-", "");
 			// Long lng = Long.parseLong(instalId, 16);
 			UUID uid = UUID.fromString(instalId);
 			Long lng = uid.getMostSignificantBits();
-			Log.d(tag, "getMostSignificantBits(): " + lng);
+			//Log.d(tag, "getMostSignificantBits(): " + lng);
 			instalId = Long.toString(lng);
-			Log.d(tag, "Long.toString(lng): " + instalId);
+			//Log.d(tag, "Long.toString(lng): " + instalId);
 			params1.add(new BasicNameValuePair("uuid", instalId));
 
-			Log.d("Check params1: ", params1.toString());
+			//Log.d("Check params1: ", params1.toString());
 			// getting JSON string from URL
 			JSONObject json = jParser.makeHttpRequest(
 					Constants.SERVICE_URL, "GET", params1);
@@ -189,14 +189,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 					int success_user_id = json.getInt(TAG_LOGIN_SUCCESFULL);
 					if (success_user_id != 0) {
 						// login OK
-						Log.d("success login: ", json.toString());
+						//Log.d("success login: ", json.toString());
 						JSONObject json_user_info = json.getJSONObject(TAG_USER_INFO_RESULT);
 						int approved=json_user_info.getInt(TAG_USER_APPROVED);
 						if (approved==0) {
 							serverResult=ACCOUNT_WAITING_FOR_APPROVAL;
 						} else {
 							JSONObject json_user = json_user_info.getJSONObject(TAG_USER);
-							Log.d("success login: ", json_user.toString());
+							//Log.d("success login: ", json_user.toString());
 							User user = new User();
 							user.setUser_id(json_user.getInt(User.TAG_ID));
 							Date date = DateTime.getDateFormString(json_user.getString(User.TAG_ACTIVATION));
@@ -264,7 +264,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
 									JSONObject json_user_teamleder_of = json_user_info.getJSONObject(TAG_USER_TEAMLEADER_OF);
 									JSONArray json_teamleaderteams = json_user_teamleder_of.getJSONArray(User.TAG_MANAGER_OF);
-									Log.d(tag, "json_teamleaderteams.length(): "+json_teamleaderteams.length());
+									//Log.d(tag, "json_teamleaderteams.length(): "+json_teamleaderteams.length());
 									ArrayList<Team> managedTeams = new ArrayList<Team>();
 									for (int i = 0; i < json_teamleaderteams.length(); i++) {
 										JSONObject json_team = json_teamleaderteams.getJSONObject(i);
@@ -272,7 +272,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 										int teamid = Integer.parseInt(json_team.getString(Team.TAG_ID));
 										Team team = new Team(teamname, teamid);
 										managedTeams.add(team);
-										Log.d(tag, "teamname "+i+": "+team.getTeamname());
+										//Log.d(tag, "teamname "+i+": "+team.getTeamname());
 									}
 									user.setManagerOf(managedTeams);
 
@@ -287,7 +287,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 						
 						return serverResult;
 					} else {
-						Log.d("failure login: ", json.toString());
+						//Log.d("failure login: ", json.toString());
 						serverResult=json.getString(TAG_RESULT_MESSAGE);
 						return serverResult;
 					}
@@ -304,7 +304,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 		}
 
 		protected void onProgressUpdate(String... progress) {
-			Log.d("ANDRO_ASYNC", progress[0]);
+			//Log.d("ANDRO_ASYNC", progress[0]);
 			mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 		}
 

@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.android.gms.maps.model.LatLng;
-import android.util.Log;
+//import android.util.Log;
 
 public class GMapV2GetRouteDirection {
     public final static String MODE_DRIVING = "driving";
@@ -50,7 +50,7 @@ public class GMapV2GetRouteDirection {
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-        Log.i("DurationText", node2.getTextContent());
+        //Log.i("DurationText", node2.getTextContent());
         return node2.getTextContent();
     }
 
@@ -59,7 +59,7 @@ public class GMapV2GetRouteDirection {
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-        Log.i("DurationValue", node2.getTextContent());
+        //Log.i("DurationValue", node2.getTextContent());
         return Integer.parseInt(node2.getTextContent());
     }
 
@@ -68,7 +68,7 @@ public class GMapV2GetRouteDirection {
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-        Log.i("DistanceText", node2.getTextContent());
+        //Log.i("DistanceText", node2.getTextContent());
         return node2.getTextContent();
     }
 
@@ -77,28 +77,28 @@ public class GMapV2GetRouteDirection {
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-        Log.i("DistanceValue", node2.getTextContent());
+        //Log.i("DistanceValue", node2.getTextContent());
         return Integer.parseInt(node2.getTextContent());
     }
 
     public String getStartAddress (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("start_address");
         Node node1 = nl1.item(0);
-        Log.i("StartAddress", node1.getTextContent());
+        //Log.i("StartAddress", node1.getTextContent());
         return node1.getTextContent();
     }
 
     public String getEndAddress (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("end_address");
         Node node1 = nl1.item(0);
-        Log.i("StartAddress", node1.getTextContent());
+        //Log.i("StartAddress", node1.getTextContent());
         return node1.getTextContent();
     }
 
     public String getCopyRights (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("copyrights");
         Node node1 = nl1.item(0);
-        Log.i("CopyRights", node1.getTextContent());
+        ////Log.i("CopyRights", node1.getTextContent());
         return node1.getTextContent();
     }
 

@@ -1,9 +1,6 @@
 package net.louage.bijoux.userinterface;
 
 import net.louage.bijoux.R;
-import net.louage.bijoux.R.id;
-import net.louage.bijoux.R.layout;
-import net.louage.bijoux.R.menu;
 import net.louage.bijoux.constants.SharedPreferences;
 import net.louage.bijoux.model.Seat;
 import net.louage.bijoux.model.User;
@@ -15,7 +12,7 @@ import com.google.gson.Gson;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,7 +103,7 @@ public class SeatActivity extends Activity implements OnClickListener{
 	AsTskObjectCompleteListener<Seat> {
 		@Override
 		public void onTaskComplete(Seat st) {
-			Log.d("CreateOrUpdateSeatTaskCompleteListener: ", "onTaskComplete(Seat st) Started");
+			//Log.d("CreateOrUpdateSeatTaskCompleteListener: ", "onTaskComplete(Seat st) Started");
 			if (st!=null) {
 				Toast.makeText(getApplicationContext(), TRANS_SUCCESS, Toast.LENGTH_LONG).show();
 				onBackPressed();
